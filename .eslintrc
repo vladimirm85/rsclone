@@ -30,9 +30,11 @@
   },
   "rules": {
     "linebreak-style": "off",
+    "react/prop-types": "off",
     "prettier/prettier": [
       "error",
       {
+        "tabWidth": 2,
         "singleQuote": true,
         "endOfLine": "auto"
       }
