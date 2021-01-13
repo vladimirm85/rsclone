@@ -1,4 +1,5 @@
 import { SAVE_GAME, SAVE_SCORE } from '../actions/testActions';
+import * as testActions from '../action-creators/ac-test';
 
 const initialState = {
   saves: ['hello'] as Array<string>,
@@ -7,7 +8,14 @@ const initialState = {
 
 type InitialStateType = typeof initialState;
 
-const testReducer = (state = initialState, action: any): InitialStateType => {
+type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
+
+type ActionTypes = ReturnType<InferValueTypes<typeof testActions>>;
+
+const testReducer = (
+  state = initialState,
+  action: ActionTypes,
+): InitialStateType => {
   switch (action.type) {
     case SAVE_GAME:
       return {
@@ -22,11 +30,6 @@ const testReducer = (state = initialState, action: any): InitialStateType => {
     default:
       return state;
   }
-};
-
-export const actionCreators = {
-  saveGame: (data: string) => ({ type: SAVE_GAME, payload: data } as const),
-  saveScore: (data: string) => ({ type: SAVE_SCORE, payload: data } as const),
 };
 
 export default testReducer;
