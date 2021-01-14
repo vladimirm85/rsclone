@@ -1,0 +1,48 @@
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+
+  &__img {
+    line-height: 0;
+
+    img {
+      width: 200px;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    padding-bottom: 40px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: #565656;
+
+    li {
+      padding: 20px;
+      cursor: pointer;
+      background: transparent;
+      transition: .3s;
+
+      &:first-child {
+        border-top-left-radius: 13px;
+        border-bottom-left-radius: 13px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 13px;
+        border-bottom-right-radius: 13px;
+      }
+
+      &:hover {
+        color: white;
+        background: #00ACAE;
+      }
+
+      &:not(:last-child) {
+        border-right: 1px solid rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import './canvas.scss';
 
 // Import sprites
 import bgSprite from './assets/img/background.png';
@@ -217,7 +218,15 @@ const Canvas: React.FC = (): JSX.Element => {
     };
   });
 
-  return <canvas ref={canvasRef} width={width} height={height} />;
+  return (
+    <main>
+      <div className="container-inner">
+        <div className="game-content">
+          <canvas ref={canvasRef} width={width} height={height} />
+        </div>
+      </div>
+    </main>
+  );
 };
 
 export default Canvas;

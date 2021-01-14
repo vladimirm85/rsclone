@@ -1,0 +1,10 @@
+.game-content {
+  display: flex;
+  justify-content: center;
+
+  canvas {
+    margin: 10px 0 50px;
+    border-radius: 10px;
+    box-shadow: 0 0 2px 2px rgba(0,0,0,0.5);
+  }
+}

@@ -1,6 +1,16 @@
-@import './stylesheets/common/reset';
+@import 'assets/stylesheets/common/reset';
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.container-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.red-letter {
+  color: red;
 }
