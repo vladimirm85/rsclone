@@ -35,16 +35,20 @@
   "rules": {
     "linebreak-style": "off",
     "react/prop-types": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
     "prettier/prettier": [
       "error",
       {
         "singleQuote": true,
+        "endOfLine": "auto",
         "semi": true,
         "tabWidth": 2,
         "trailingComma": "all",
         "jsxBracketSameLine": false,
-        "bracketSpacing": true,
-        "endOfLine": "auto"
+        "bracketSpacing": true
       }
     ]
   }
