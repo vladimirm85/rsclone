@@ -1,16 +1,40 @@
-import { height, width } from './constants';
+import { gameWidth, gameHeight } from './constants';
 import random from './helpers/random';
 
 export default class Ball {
-  velocity = 3;
-  dx = 0;
-  dy = 0;
-  x = 374;
-  y = 380;
-  frame = 0;
-  width = 20;
-  height = 20;
-  isRun = false;
+  velocity: number;
+  dx: number;
+  dy: number;
+  x: number;
+  y: number;
+  frame: number;
+  width: number;
+  height: number;
+  isRun: boolean;
+
+  constructor(
+    // objInitBall: interfaceInitBall
+    velocity: number,
+    dx: number,
+    dy: number,
+    x: number,
+    y: number,
+    frame: number,
+    width: number,
+    height: number,
+    isRun: boolean,
+  ) {
+    // this.options = objInitBall
+    this.velocity = velocity;
+    this.dx = dx;
+    this.dy = dy;
+    this.x = x;
+    this.y = y;
+    this.frame = frame;
+    this.width = width;
+    this.height = height;
+    this.isRun = isRun;
+  }
 
   start(): void {
     if (!this.isRun) {
@@ -46,8 +70,23 @@ export default class Ball {
     }
   }
 
-  bumpBlock() {
+  changeDirection() {
     this.dy *= -1;
+  }
+
+  platformBounce(platformDx: number, platformGetTouchOffset: number) {
+    if (platformDx) {
+      this.x += platformDx;
+    }
+
+    if (this.dy > 0) {
+      this.dy = -this.velocity;
+      this.dx = this.velocity * platformGetTouchOffset;
+    }
+  }
+
+  getTouchX() {
+    return this.x + this.width / 2;
   }
 
   changeSize(option: string) {
@@ -74,19 +113,19 @@ export default class Ball {
     if (ballLeft < worldLeft) {
       this.x = 0;
       this.dx = this.velocity;
-    } else if (ballRight > width) {
-      this.x = width - this.width;
+    } else if (ballRight > gameWidth) {
+      this.x = gameWidth - this.width;
       this.dx = -this.velocity;
     } else if (ballTop < worldTop) {
       this.y = 0;
       this.dy = this.velocity;
-    } else if (ballBottom > height) {
+    } else if (ballBottom > gameHeight) {
       this.stop();
       window.location.reload();
     }
   }
 
-  collide(elem: any): boolean {
+  isCollide(elem: any): boolean {
     const x = this.x + this.dx;
     const y = this.y + this.dy;
 
@@ -99,5 +138,13 @@ export default class Ball {
       return true;
     }
     return false;
+  }
+
+  moveWithPlatform(platformDx: number) {
+    this.x += platformDx;
+  }
+
+  getRunStatus() {
+    return this.isRun;
   }
 }

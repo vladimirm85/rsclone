@@ -1,27 +1,46 @@
 import React, { useRef, useEffect } from 'react';
 
-// Import sprites
-import bgSprite from './assets/img/background.png';
-import ballSprite from './assets/img/ball.png';
-import platformSprite from './assets/img/platform.png';
-import blockSprite from './assets/img/block.png';
-
-// Import sounds
-// @ts-ignore
-import collideSound from './assets/sound/pim.mp3';
-
 // Import elements
 import Ball from './Ball';
 import Platform from './Platform';
 
 // Import constants
-import { KEYS, width, height } from './constants';
+import {
+  KEYS,
+  gameWidth,
+  gameHeight,
+  platformStartSettings,
+  ballStartSettings,
+  // BallSettings,
+} from './constants';
+import { sounds, preload, sprites } from './utils/preload';
+import Game from './Game';
 
-const spritesLinks = [bgSprite, ballSprite, platformSprite, blockSprite];
-const soundsLinks = [collideSound];
+// const spritesLinks = [bgSprite, ballSprite, platformSprite, blockSprite];
+// const soundsLinks = [collideSound];
+const ball: any = new Ball(
+  // ballStartSettings: BallSettings
+  ballStartSettings.velocity,
+  ballStartSettings.dx,
+  ballStartSettings.dy,
+  ballStartSettings.x,
+  ballStartSettings.y,
+  ballStartSettings.frame,
+  ballStartSettings.width,
+  ballStartSettings.height,
+  ballStartSettings.isRun,
+);
+const platform = new Platform(
+  platformStartSettings.velocity,
+  platformStartSettings.dx,
+  platformStartSettings.x,
+  platformStartSettings.y,
+  platformStartSettings.width,
+  platformStartSettings.height,
+);
 
-const ball: any = new Ball();
-const platform = new Platform();
+const game = new Game(ball, platform);
+console.log(game);
 
 const Canvas: React.FC = (): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -31,55 +50,8 @@ const Canvas: React.FC = (): JSX.Element => {
   const rows = 5;
   const cols = 10;
   const blocks: Block[] = [];
+
   // const livesCount = 3; // TODO: PUT IN STATE
-  let pimSound: any;
-
-  type HTMLOrNull = HTMLImageElement | null;
-
-  interface Sprites {
-    bg: HTMLOrNull;
-    ball: HTMLOrNull;
-    platform: HTMLOrNull;
-    block: HTMLOrNull;
-  }
-
-  const sprites: Sprites = {
-    bg: null,
-    ball: null,
-    platform: null,
-    block: null,
-  };
-
-  const preloadSprites = (onResourceLoad: () => void) => {
-    Object.keys(sprites).forEach((elem, i: number) => {
-      sprites[elem as keyof Sprites] = new Image();
-      sprites[elem as keyof Sprites]!.src = spritesLinks[i];
-      sprites[elem as keyof Sprites]!.addEventListener('load', onResourceLoad);
-    });
-  };
-
-  const preloadSound = (onResourceLoad: () => void) => {
-    pimSound = new Audio(soundsLinks[0]);
-    pimSound.addEventListener('canplaythrough', onResourceLoad, {
-      once: true,
-    });
-  };
-
-  const preload = (callback: () => void) => {
-    let loaded = 0;
-    const required = Object.keys(sprites).length + 1;
-
-    const onResourceLoad = () => {
-      loaded += 1;
-
-      if (loaded >= required) {
-        callback();
-      }
-    };
-
-    preloadSprites(onResourceLoad);
-    preloadSound(onResourceLoad);
-  };
 
   const renderBlocks = (ctx: any) => {
     blocks.forEach((elem) => {
@@ -87,11 +59,18 @@ const Canvas: React.FC = (): JSX.Element => {
         ctx.drawImage(sprites.block, elem.x, elem.y);
       }
     });
+
+    // blocksData.forEach((elem) => { // TODO:
+    //   if (elem.active) {
+    //     ctx.drawImage(elem.sprite, elem.x, elem.y);
+    //   }
+    // });
   };
 
   const draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, gameWidth, gameHeight);
     ctx.drawImage(sprites.bg!, 0, 0);
+    // ctx.drawImage(blocksData.bg!, 0, 0); // TODO: DRAW BG ON CURRENT LEVEL
 
     ctx.drawImage(
       sprites.ball!,
@@ -104,9 +83,21 @@ const Canvas: React.FC = (): JSX.Element => {
       ball.width,
       ball.height,
     );
+    // ctx.drawImage( // TODO: DRAW BALL ON CURRENT LEVEL
+    //   sprites.ball!, // TODO: smth.ball
+    //   ball.frame * ball.width, // TODO: ballData.frame...
+    //   0,
+    //   ball.width, // TODO: ballData.width....
+    //   ball.height,
+    //   ball.x,
+    //   ball.y,
+    //   ball.width,
+    //   ball.height,
+    // );
     ctx.drawImage(sprites.platform!, platform.x, platform.y);
 
     renderBlocks(ctx); //  TODO: Create blocks here
+    // renderBlocks(ctx);  // TODO: go to =>
   };
 
   interface Block {
@@ -115,6 +106,8 @@ const Canvas: React.FC = (): JSX.Element => {
     height: number;
     x: number;
     y: number;
+    setActiveStatus: any;
+    isActive: any;
   }
 
   const create = () => {
@@ -126,57 +119,56 @@ const Canvas: React.FC = (): JSX.Element => {
           height: 18,
           x: 65 * col + 65,
           y: 30 * row + 35,
+          setActiveStatus(option: boolean) {
+            if (option) {
+              // eslint-disable-next-line react/no-this-in-sfc
+              this.active = true;
+            }
+            // eslint-disable-next-line react/no-this-in-sfc
+            this.active = false;
+          },
+          isActive(): boolean {
+            // eslint-disable-next-line react/no-this-in-sfc
+            return this.active;
+          },
         });
       }
     }
   };
 
-  const movePlatform = (): void => {
-    if (platform.dx) {
-      platform.x += platform.dx;
-      if (!ball.isRun) {
-        ball.x += platform.dx;
-      }
-    }
-  };
-
-  const collideBlocks = () => {
+  const destroyBlocks = () => {
     blocks.forEach((block) => {
-      if (block.active && ball.collide(block)) {
+      if (block.isActive() && ball.isCollide(block)) {
         // eslint-disable-next-line no-param-reassign
-        block.active = false;
-        ball.bumpBlock();
-        pimSound.currentTime = 0;
-        pimSound.play();
+        block.setActiveStatus(false);
+        ball.changeDirection();
+        sounds.pim!.currentTime = 0;
+        sounds.pim!.play();
       }
     });
   };
 
-  const bumpPlatform = () => {
-    if (platform.dx) {
-      ball.x += platform.dx;
-    }
-
-    if (ball.dy > 0) {
-      ball.dy = -ball.velocity;
-      const touchX = ball.x + ball.width / 2;
-      ball.dx = ball.velocity * platform.getTouchOffset(touchX);
-    }
-  };
-
   const collidePlatform = () => {
-    if (ball.collide(platform)) {
-      bumpPlatform();
+    if (ball.isCollide(platform)) {
+      const platformTouchOffset = platform.getTouchOffset(ball.getTouchX());
+      ball.platformBounce(platform.getDx(), platformTouchOffset);
     }
   };
 
   const update = () => {
-    collideBlocks();
+    // TODO: RENAME!!!
+    destroyBlocks();
     collidePlatform();
     ball.collideBounds();
     platform.collideBounds();
-    movePlatform();
-    ball.move();
+    // platform.move(ball.getRunStatus(), ball.moveWithPlatform);
+    // platform.move(ball);
+    platform.move();
+    if (!ball.getRunStatus()) {
+      ball.moveWithPlatform(platform.getDx());
+    } else {
+      ball.move();
+    }
   };
 
   const addListeners = () => {
@@ -197,10 +189,13 @@ const Canvas: React.FC = (): JSX.Element => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
     let animationFrameId: number;
+
     addListeners();
+    // game = new Game (objectOnSave || new);
 
     const render = () => {
       if (context) draw(context);
+      // if (context) game.draw(context);
       animationFrameId = window.requestAnimationFrame(() => {
         update();
         render();
@@ -217,7 +212,17 @@ const Canvas: React.FC = (): JSX.Element => {
     };
   });
 
-  return <canvas ref={canvasRef} width={width} height={height} />;
+  return <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />;
 };
 
 export default Canvas;
+
+// TODO: Create new Game class
+// function draw(ctx) {
+//   ctx.drawImgae(bg);
+//   ball.draw(ctx);
+//   platform.draw(ctx);
+//   blocksData.forEach((blocks) => {
+//     block.draw(ctx)
+//   })
+// }

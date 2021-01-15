@@ -1,7 +1,22 @@
-import { KEYS, width } from './constants';
+import { KEYS, gameWidth } from './constants';
 
 export default class Platform {
-  velocity = 6;
+  constructor(
+    velocity: number,
+    dx: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) {
+    this.velocity = velocity;
+    this.dx = dx;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+  velocity = 12;
   dx = 0;
   x = 334;
   y = 400;
@@ -20,6 +35,12 @@ export default class Platform {
     this.dx = 0;
   }
 
+  move() {
+    if (this.dx) {
+      this.x += this.dx;
+    }
+  }
+
   getTouchOffset(x: number) {
     const diff = this.x + this.width - x;
     const offset = this.width - diff;
@@ -33,8 +54,12 @@ export default class Platform {
 
     const worldLeft = 0;
 
-    if (platformLeft < worldLeft || platformRight > width) {
+    if (platformLeft < worldLeft || platformRight > gameWidth) {
       this.dx = 0;
     }
+  }
+
+  getDx() {
+    return this.dx;
   }
 }
