@@ -25,6 +25,20 @@
       background: transparent;
       transition: .3s;
 
+      button {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        font-family:inherit;
+        font-size: inherit;
+        color: inherit;
+        outline: none;
+        cursor: pointer;
+      }
+
       &:first-child {
         border-top-left-radius: 13px;
         border-bottom-left-radius: 13px;

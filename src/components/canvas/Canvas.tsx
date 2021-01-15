@@ -17,6 +17,7 @@ import Platform from './Platform';
 
 // Import constants
 import { KEYS, width, height } from './constants';
+import Login from '../login/login';
 
 const spritesLinks = [bgSprite, ballSprite, platformSprite, blockSprite];
 const soundsLinks = [collideSound];

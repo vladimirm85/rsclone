@@ -1,8 +1,19 @@
 import React from 'react';
 import './header.scss';
 import logo from '../../assets/img/logo.png';
+import Login from '../login/login';
 
 const Header: React.FC = (): JSX.Element => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <header>
       <div className="container-inner">
@@ -22,12 +33,15 @@ const Header: React.FC = (): JSX.Element => {
                 G<span className="red-letter">a</span>me
               </li>
               <li>
-                L<span className="red-letter">o</span>gin
+                <button type="button" onClick={handleOpen}>
+                  L<span className="red-letter">o</span>gin
+                </button>
               </li>
             </ul>
           </nav>
         </div>
       </div>
+      <Login open={open} close={handleClose} />
     </header>
   );
 };
