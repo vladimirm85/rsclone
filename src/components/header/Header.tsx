@@ -1,7 +1,8 @@
 import React from 'react';
 import './header.scss';
+import { NavLink } from 'react-router-dom';
 import logo from '../../assets/img/logo.png';
-import Login from '../login/login';
+import AuthModal from '../login/AuthModal';
 
 const Header: React.FC = (): JSX.Element => {
   const [open, setOpen] = React.useState(false);
@@ -27,10 +28,14 @@ const Header: React.FC = (): JSX.Element => {
                 Ab<span className="red-letter">o</span>ut
               </li>
               <li>
-                Sc<span className="red-letter">o</span>re
+                <NavLink to="/score">
+                  Sc<span className="red-letter">o</span>re
+                </NavLink>
               </li>
               <li>
-                G<span className="red-letter">a</span>me
+                <NavLink to="/game">
+                  G<span className="red-letter">a</span>me
+                </NavLink>
               </li>
               <li>
                 <button type="button" onClick={handleOpen}>
@@ -41,7 +46,7 @@ const Header: React.FC = (): JSX.Element => {
           </nav>
         </div>
       </div>
-      <Login open={open} close={handleClose} />
+      <AuthModal open={open} close={handleClose} />
     </header>
   );
 };

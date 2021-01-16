@@ -21,9 +21,12 @@
 
     li {
       padding: 20px;
-      cursor: pointer;
-      background: transparent;
-      transition: .3s;
+
+      a {
+        cursor: pointer;
+        background: transparent;
+        transition: .3s;
+      }
 
       button {
         width: 100%;
