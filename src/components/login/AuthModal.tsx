@@ -5,7 +5,6 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import { Typography } from '@material-ui/core';
 import logo from '../../assets/img/logo.png';
 import Login from './Login';
 import Register from './Register';

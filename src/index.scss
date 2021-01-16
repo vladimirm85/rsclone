@@ -5,10 +5,26 @@ code {
     monospace;
 }
 
+body {
+  background: #f4f4f5;
+}
+
+main {
+  margin: 10px 0 50px;
+}
+
 .container-inner {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 40px;
+}
+
+.main-title {
+  font-size: 3rem;
+  font-family: 'Prata', serif;
+  color: #565656;
+  text-align: center;
+  margin-bottom: 25px;
 }
 
 .red-letter {

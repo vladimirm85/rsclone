@@ -1,3 +1,7 @@
+.active-menu-item {
+  text-decoration: underline !important;
+}
+
 .header-content {
   display: flex;
   justify-content: space-between;
@@ -13,52 +17,50 @@
   }
 
   &__nav {
-    display: flex;
-    padding-bottom: 40px;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.5rem;
-    color: #565656;
+    border-radius: 13px;
+    overflow: hidden;
 
-    li {
-      padding: 20px;
+    ul {
+      display: flex;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5rem;
+      color: #565656;
 
-      a {
-        cursor: pointer;
-        background: transparent;
-        transition: .3s;
-      }
+      li {
+        display: flex;
+        transition: background .3s;
 
-      button {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        border: none;
-        background: transparent;
-        font-family:inherit;
-        font-size: inherit;
-        color: inherit;
-        outline: none;
-        cursor: pointer;
-      }
+        &:hover {
+          color: white;
+          background: #00ACAE;
+        }
 
-      &:first-child {
-        border-top-left-radius: 13px;
-        border-bottom-left-radius: 13px;
-      }
+        &:active {
+          background: #009092;
+        }
 
-      &:last-child {
-        border-top-right-radius: 13px;
-        border-bottom-right-radius: 13px;
-      }
+        &:not(:last-child) {
+          border-right: 1px solid rgba(0, 0, 0, 0.3);
+        }
 
-      &:hover {
-        color: white;
-        background: #00ACAE;
-      }
+        a {
+          padding: 20px;
+          text-decoration: none;
+          color: inherit;
+          background: transparent;
+          transition: .3s;
+        }
 
-      &:not(:last-child) {
-        border-right: 1px solid rgba(0, 0, 0, 0.3);
+        button {
+          padding: 20px;
+          border: none;
+          background: transparent;
+          font-family:inherit;
+          font-size: inherit;
+          color: inherit;
+          outline: none;
+          cursor: pointer;
+        }
       }
     }
   }

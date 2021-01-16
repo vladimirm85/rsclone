@@ -22,18 +22,20 @@ const Header: React.FC = (): JSX.Element => {
           <div className="header-content__img">
             <img src={logo} alt="logo" />
           </div>
-          <nav>
-            <ul className="header-content__nav">
+          <nav className="header-content__nav">
+            <ul>
               <li>
-                Ab<span className="red-letter">o</span>ut
+                <NavLink to="/about" activeClassName="active-menu-item">
+                  Ab<span className="red-letter">o</span>ut
+                </NavLink>
               </li>
               <li>
-                <NavLink to="/score">
+                <NavLink to="/score" activeClassName="active-menu-item">
                   Sc<span className="red-letter">o</span>re
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/game">
+                <NavLink to="/game" activeClassName="active-menu-item">
                   G<span className="red-letter">a</span>me
                 </NavLink>
               </li>
