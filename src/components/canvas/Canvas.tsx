@@ -39,7 +39,7 @@ const Canvas: React.FC = (): JSX.Element => {
     <main>
       <div className="container-inner">
         <div className="game-content">
-          <canvas ref={canvasRef} width={width} height={height} />
+          <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />
         </div>
       </div>
     </main>
