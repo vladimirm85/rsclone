@@ -1,26 +1,56 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import loader from '../../assets/img/loader.svg';
+import { connect } from 'react-redux';
 import './verification.scss';
+import { AppStateType } from '../../store/store';
+import { verifyEmail } from '../../store/action-creators/verify-ac';
+import Preloader from '../common/Preloader/Preloader';
 
-const Verification: React.FC<RouteComponentProps> = ({
-  location,
-}): JSX.Element => {
+type PropsType = {
+  isLoading: boolean;
+  isVerify: boolean;
+  verifyEmail: (arg: string) => void;
+};
+
+const Verification: React.FC<RouteComponentProps & PropsType> = (
+  props,
+): JSX.Element => {
+  const { isLoading, isVerify, location } = props;
+
   useEffect(() => {
     const url = location.pathname;
-    const dataArray = url.split('/').splice(-2);
-    const [email, verificationKey] = dataArray;
+    const [key] = url.split('/').splice(-1);
+    if (!isVerify) {
+      props.verifyEmail(key);
+    }
   });
 
   return (
     <main>
       <div className="container-inner">
         <div className="loader_content">
-          <img src={loader} alt="loader" />
+          {isLoading && <Preloader />}
+          {isVerify ? (
+            <p>
+              Verification was successful! Log in to the game using your e-mail
+              and password.
+            </p>
+          ) : (
+            <p>Verification in progress. Wait a second...</p>
+          )}
         </div>
       </div>
     </main>
   );
 };
 
-export default Verification;
+const mapStateToProps = (state: AppStateType) => {
+  return {
+    isLoading: state.verifyData.isLoading,
+    isVerify: state.verifyData.isVerify,
+  };
+};
+
+const VerificationC = connect(mapStateToProps, { verifyEmail })(Verification);
+
+export default VerificationC;

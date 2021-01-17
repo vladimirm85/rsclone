@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Typography } from '@material-ui/core';
+import { connect } from 'react-redux';
+import { AppStateType } from '../../store/store';
+import {
+  loginAndSetUserData,
+  actions,
+} from '../../store/action-creators/auth-ac';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -14,19 +20,64 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type PropsType = {
+type MapStatePropsType = {
   setIsLoginModal: (arg: boolean) => void;
+  email: string;
+  password: string;
+  isAuth: boolean;
+  error: string;
 };
 
-const Login: React.FC<PropsType> = ({ setIsLoginModal }): JSX.Element => {
+type MapDispatchPropsType = {
+  loginAndSetUserData: (arg0: string, arg1: string) => void;
+  setEmail: (arg: string) => void;
+  setPassword: (arg: string) => void;
+};
+
+type InputPropsType = {
+  close: () => void;
+};
+
+type PropsType = MapStatePropsType & MapDispatchPropsType & InputPropsType;
+
+const Login: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useStyles();
+  const {
+    setIsLoginModal,
+    email,
+    password,
+    setEmail,
+    setPassword,
+    close,
+    isAuth,
+    error,
+  } = props;
+
+  useEffect(() => {
+    if (isAuth) {
+      close();
+    }
+  });
+
+  const emailHandler = (e: any) => {
+    setEmail(e.target.value);
+  };
+
+  const passwordHandler = (e: any) => {
+    setPassword(e.target.value);
+  };
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    props.loginAndSetUserData(email, password);
+  };
 
   return (
     <>
       <Typography component="h1" variant="h5">
         Login
       </Typography>
-      <form className={classes.form} noValidate>
+      <form className={classes.form} noValidate onSubmit={handleSubmit}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -36,6 +87,8 @@ const Login: React.FC<PropsType> = ({ setIsLoginModal }): JSX.Element => {
           label="Email Address"
           name="email"
           autoComplete="email"
+          value={email}
+          onChange={emailHandler}
           autoFocus
         />
         <TextField
@@ -47,8 +100,15 @@ const Login: React.FC<PropsType> = ({ setIsLoginModal }): JSX.Element => {
           label="Password"
           type="password"
           id="password"
+          value={password}
+          onChange={passwordHandler}
           autoComplete="current-password"
         />
+        {error && (
+          <Typography component="p" variant="subtitle1" color="error">
+            Incorrect email or password.
+          </Typography>
+        )}
         <Button
           type="submit"
           fullWidth
@@ -66,4 +126,17 @@ const Login: React.FC<PropsType> = ({ setIsLoginModal }): JSX.Element => {
   );
 };
 
-export default Login;
+const mapStateToProps = (state: AppStateType) => {
+  return {
+    email: state.authData.email,
+    password: state.authData.password,
+    isAuth: state.authData.isAuth,
+    error: state.authData.error,
+  };
+};
+
+const LoginC = connect(mapStateToProps, { loginAndSetUserData, ...actions })(
+  Login,
+);
+
+export default LoginC;

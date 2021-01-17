@@ -5,7 +5,7 @@ import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import Score from './components/score/Score';
 import About from './components/about/About';
-import Verification from './components/verification/Verification';
+import VerificationC from './components/verification/Verification';
 
 const App: React.FC = (): JSX.Element => {
   return (
@@ -16,7 +16,7 @@ const App: React.FC = (): JSX.Element => {
         <Route path="/About" render={() => <About />} />
         <Route path="/score" render={() => <Score />} />
         <Route path="/game" render={() => <Canvas />} />
-        <Route path="/verification" component={Verification} />
+        <Route path="/verify" component={VerificationC} />
       </Switch>
       <Footer />
     </>

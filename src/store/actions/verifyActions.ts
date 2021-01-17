@@ -1,0 +1,2 @@
+export const SET_LOADING_STATUS = 'LOADING_STATUS';
+export const SET_VERIFY_STATUS = 'VERIFY_STATUS';

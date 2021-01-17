@@ -1,5 +1,5 @@
 import { SAVE_GAME, SAVE_SCORE } from '../actions/testActions';
-import * as testActions from '../action-creators/ac-test';
+import * as testActions from '../action-creators/test-ac';
 
 const initialState = {
   saves: ['hello'] as Array<string>,
