@@ -12,7 +12,8 @@
   "plugins": [
     "react",
     "@typescript-eslint",
-    "jest"
+    "jest",
+    "prettier"
   ],
   "env": {
     "browser": true,

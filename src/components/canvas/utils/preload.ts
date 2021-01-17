@@ -54,11 +54,6 @@ const preloadSound = (onResourceLoad: () => void) => {
       },
     );
   });
-
-  // pimSound = new Audio(soundsLinks[0]);
-  // pimSound.addEventListener('canplaythrough', onResourceLoad, {
-  //   once: true,
-  // });
 };
 
 export const preload = (callback: () => void) => {

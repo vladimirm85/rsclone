@@ -1,7 +1,13 @@
-import { gameWidth, gameHeight } from './constants';
+import {
+  gameWidth,
+  gameHeight,
+  BallInterface,
+  BallConstructor,
+} from './constants';
 import random from './helpers/random';
+import { sprites } from './utils/preload';
 
-export default class Ball {
+export default class Ball implements BallInterface {
   velocity: number;
   dx: number;
   dy: number;
@@ -12,31 +18,21 @@ export default class Ball {
   height: number;
   isRun: boolean;
 
-  constructor(
-    // objInitBall: interfaceInitBall
-    velocity: number,
-    dx: number,
-    dy: number,
-    x: number,
-    y: number,
-    frame: number,
-    width: number,
-    height: number,
-    isRun: boolean,
-  ) {
-    // this.options = objInitBall
-    this.velocity = velocity;
-    this.dx = dx;
-    this.dy = dy;
-    this.x = x;
-    this.y = y;
-    this.frame = frame;
-    this.width = width;
-    this.height = height;
-    this.isRun = isRun;
+  constructor(props: BallConstructor) {
+    ({
+      velocity: this.velocity,
+      dx: this.dx,
+      dy: this.dy,
+      x: this.x,
+      y: this.y,
+      frame: this.frame,
+      width: this.width,
+      height: this.height,
+      isRun: this.isRun,
+    } = props);
   }
 
-  start(): void {
+  start = (): void => {
     if (!this.isRun) {
       this.isRun = true;
       this.dy = -this.velocity;
@@ -44,37 +40,40 @@ export default class Ball {
 
       this.animate();
     }
-  }
+  };
 
-  stop(): void {
+  stop = (): void => {
     this.isRun = false;
     this.dx = 0;
     this.dy = 0;
-  }
+  };
 
-  animate(): void {
+  animate = (): void => {
     setInterval(() => {
       this.frame += 1;
       if (this.frame > 3) {
         this.frame = 0;
       }
     }, 100);
-  }
+  };
 
-  move(): void {
+  move = (): void => {
     if (this.dy) {
       this.y += this.dy;
     }
     if (this.dx) {
       this.x += this.dx;
     }
-  }
+  };
 
-  changeDirection() {
+  changeDirection = (): void => {
     this.dy *= -1;
-  }
+  };
 
-  platformBounce(platformDx: number, platformGetTouchOffset: number) {
+  platformBounce = (
+    platformDx: number,
+    platformGetTouchOffset: number,
+  ): void => {
     if (platformDx) {
       this.x += platformDx;
     }
@@ -83,13 +82,14 @@ export default class Ball {
       this.dy = -this.velocity;
       this.dx = this.velocity * platformGetTouchOffset;
     }
-  }
+  };
 
-  getTouchX() {
+  getTouchX = (): number => {
     return this.x + this.width / 2;
-  }
+  };
 
-  changeSize(option: string) {
+  changeSize = (option: string) => {
+    // TODO: FOR BONUS ?
     if (this.width > 10 && this.width < 30) {
       if (option === 'reduce') {
         this.width -= 5;
@@ -99,9 +99,9 @@ export default class Ball {
         this.height += 5;
       }
     }
-  }
+  };
 
-  collideBounds() {
+  collideBounds = (): void => {
     const ballLeft = this.x + this.dx;
     const ballRight = ballLeft + this.width;
     const ballTop = this.y + this.dy;
@@ -123,28 +123,39 @@ export default class Ball {
       this.stop();
       window.location.reload();
     }
-  }
+  };
 
-  isCollide(elem: any): boolean {
-    const x = this.x + this.dx;
-    const y = this.y + this.dy;
-
-    if (
-      x + this.width > elem.x &&
-      x < elem.x + elem.width &&
-      y + this.height > elem.y &&
-      y < elem.y + elem.height
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  moveWithPlatform(platformDx: number) {
+  moveWithPlatform = (platformDx: number): void => {
     this.x += platformDx;
-  }
+  };
 
-  getRunStatus() {
+  getRunStatus = (): boolean => {
     return this.isRun;
-  }
+  };
+
+  draw = (ctx: CanvasRenderingContext2D): void => {
+    ctx.drawImage(
+      sprites.ball!,
+      this.frame * this.width,
+      0,
+      this.width,
+      this.height,
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+    );
+  };
+
+  getCurrentBallData = (): BallConstructor => ({
+    velocity: this.velocity,
+    dx: this.dx,
+    dy: this.dy,
+    x: this.x,
+    y: this.y,
+    frame: this.frame,
+    width: this.width,
+    height: this.height,
+    isRun: this.isRun,
+  });
 }
