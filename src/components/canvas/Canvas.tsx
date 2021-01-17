@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import './canvas.scss';
 
 // Import constants
 import { gameWidth, gameHeight, initialGameData } from './constants';
@@ -34,7 +35,15 @@ const Canvas: React.FC = (): JSX.Element => {
     };
   });
 
-  return <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />;
+  return (
+    <main>
+      <div className="container-inner">
+        <div className="game-content">
+          <canvas ref={canvasRef} width={width} height={height} />
+        </div>
+      </div>
+    </main>
+  );
 };
 
 export default Canvas;

@@ -1,51 +1,55 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-
-const useStyles = makeStyles((theme) => ({
-  header: {
-    display: 'block',
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-  container: {
-    paddingLeft: '20px',
-    paddingRight: '20px',
-    margin: '0 auto',
-    maxWidth: '1100px',
-  },
-}));
+import './header.scss';
+import { NavLink } from 'react-router-dom';
+import logo from '../../assets/img/logo.png';
+import AuthModal from '../login/AuthModal';
 
 const Header: React.FC = (): JSX.Element => {
-  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <AppBar position="static" className={classes.header}>
-      <Toolbar className={classes.container} disableGutters>
-        <Typography variant="h4" className={classes.title}>
-          BallBouncer
-        </Typography>
-        <ButtonGroup
-          variant="text"
-          color="inherit"
-          size="large"
-          aria-label="text primary button group"
-        >
-          <Button>About</Button>
-          <Button>Score</Button>
-          <Button>Login</Button>
-        </ButtonGroup>
-      </Toolbar>
-    </AppBar>
+    <header>
+      <div className="container-inner">
+        <div className="header-content">
+          <div className="header-content__img">
+            <img src={logo} alt="logo" />
+          </div>
+          <nav className="header-content__nav">
+            <ul>
+              <li>
+                <NavLink to="/about" activeClassName="active-menu-item">
+                  Ab<span className="red-letter">o</span>ut
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/score" activeClassName="active-menu-item">
+                  Sc<span className="red-letter">o</span>re
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/game" activeClassName="active-menu-item">
+                  G<span className="red-letter">a</span>me
+                </NavLink>
+              </li>
+              <li>
+                <button type="button" onClick={handleOpen}>
+                  L<span className="red-letter">o</span>gin
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <AuthModal open={open} close={handleClose} />
+    </header>
   );
 };
 
