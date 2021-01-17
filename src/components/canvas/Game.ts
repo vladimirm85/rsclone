@@ -24,7 +24,9 @@ export default class Game implements GameInterface {
   // blocksInAllLevels: BlocksData[];
   blocksData: BlocksData;
   blocks: BlockInterface[];
+  isPause: boolean;
 
+  // TODO: add TOTAL SCORE
   constructor(props: GameConstructor) {
     this.currentLevel = props.initLevel;
     this.numberOfLives = props.numberOfLives;
@@ -36,14 +38,18 @@ export default class Game implements GameInterface {
     this.blocks = props.blocksData.map(
       (block: BlockDataInterface) => new Block(block),
     );
+    this.isPause = false;
   }
 
   addListeners = (): void => {
+    // TODO: SWITCH!
     window.addEventListener('keydown', (e) => {
       if (e.code === KEYS.SPACE) {
         this.ball.start();
       } else if (e.code === KEYS.LEFT || e.code === KEYS.RIGHT) {
         this.platform.start(e.code);
+      } else if (e.code === KEYS.Z) {
+        this.isPause = !this.isPause;
       }
     });
 
@@ -86,7 +92,7 @@ export default class Game implements GameInterface {
     this.blocks.forEach((block) => {
       if (block.isActive() && this.ballIsCollide(block)) {
         block.reduceLives();
-        this.ball.changeDirection();
+        this.ball.changeDirection(block.getBlockX(), block.getBlockWidth());
         sounds.pim!.currentTime = 0;
         sounds.pim!.play();
       }
@@ -122,4 +128,10 @@ export default class Game implements GameInterface {
     platformData: this.platform.getCurrentPlatformData(),
     blocksData: this.blocks.map((block) => block.getCurrentBlockData()),
   });
+
+  setIsPause = (option: boolean): void => {
+    this.isPause = option;
+  };
+
+  getIsPause = (): boolean => this.isPause;
 }
