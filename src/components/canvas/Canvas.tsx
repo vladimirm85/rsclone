@@ -18,9 +18,11 @@ const Canvas: React.FC = (): JSX.Element => {
     game.addListeners();
 
     const render = () => {
-      if (context) game.draw(context);
-      animationFrameId = window.requestAnimationFrame(() => {
+      if (context && !game.getIsPause()) {
+        game.draw(context);
         game.checkCurrentStateGame();
+      }
+      animationFrameId = window.requestAnimationFrame(() => {
         render();
       });
     };

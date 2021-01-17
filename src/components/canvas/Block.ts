@@ -30,4 +30,8 @@ export default class Block implements BlockInterface {
     y: this.y,
     lives: this.lives,
   });
+
+  getBlockX = (): number => this.x;
+
+  getBlockWidth = (): number => this.width;
 }
