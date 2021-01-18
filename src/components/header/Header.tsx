@@ -5,21 +5,21 @@ import { connect } from 'react-redux';
 import logo from '../../assets/img/logo.png';
 import AuthModal from '../login/AuthModal';
 import { AppStateType } from '../../store/store';
+import { actions } from '../../store/action-creators/auth-ac';
 
 type MapStatePropsType = {
   isAuth: boolean;
+  isModalOpen: boolean;
 };
 
-const Header: React.FC<MapStatePropsType> = ({ isAuth }): JSX.Element => {
-  const [open, setOpen] = React.useState(false);
+type MapDispatchPropsType = {
+  setModal: (arg: boolean) => void;
+};
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
+type PropsType = MapStatePropsType & MapDispatchPropsType;
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+const Header: React.FC<PropsType> = (props): JSX.Element => {
+  const { isAuth, isModalOpen, setModal } = props;
 
   return (
     <header>
@@ -62,7 +62,7 @@ const Header: React.FC<MapStatePropsType> = ({ isAuth }): JSX.Element => {
                 </li>
               ) : (
                 <li>
-                  <button type="button" onClick={handleOpen}>
+                  <button type="button" onClick={() => setModal(true)}>
                     L<span className="red-letter">o</span>gin
                   </button>
                 </li>
@@ -71,15 +71,16 @@ const Header: React.FC<MapStatePropsType> = ({ isAuth }): JSX.Element => {
           </nav>
         </div>
       </div>
-      <AuthModal open={open} close={handleClose} />
+      <AuthModal isModalOpen={isModalOpen} setModal={setModal} />
     </header>
   );
 };
 
 const mapStateToProps = (state: AppStateType) => ({
   isAuth: state.authData.isAuth,
+  isModalOpen: state.authData.isModalOpen,
 });
 
-const HeaderW = connect(mapStateToProps)(Header);
+const HeaderW = connect(mapStateToProps, { ...actions })(Header);
 
 export default HeaderW;

@@ -3,3 +3,5 @@ export const SET_LOGIN_PASSWORD = 'SET_LOGIN_PASSWORD';
 export const SET_AUTH_STATUS = 'SET_AUTH_STATUS';
 export const SET_AUTH_EMAIL = 'SET_AUTH_EMAIL';
 export const SET_LOGIN_ERROR = 'SET_LOGIN_ERROR';
+export const SET_LOGIN_LOADING = 'SET_LOGIN_LOADING';
+export const SET_MODAL = 'SET_MODAL';

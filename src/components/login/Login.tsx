@@ -9,6 +9,7 @@ import {
   loginAndSetUserData,
   actions,
 } from '../../store/action-creators/auth-ac';
+import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -21,21 +22,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type MapStatePropsType = {
-  setIsLoginModal: (arg: boolean) => void;
   email: string;
   password: string;
   isAuth: boolean;
   error: string;
+  isLoading: boolean;
 };
 
 type MapDispatchPropsType = {
   loginAndSetUserData: (arg0: string, arg1: string) => void;
   setEmail: (arg: string) => void;
   setPassword: (arg: string) => void;
+  setModal: (arg: boolean) => void;
 };
 
 type InputPropsType = {
-  close: () => void;
+  setIsLoginModal: (arg: boolean) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType & InputPropsType;
@@ -48,14 +50,15 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
     password,
     setEmail,
     setPassword,
-    close,
+    setModal,
     isAuth,
     error,
+    isLoading,
   } = props;
 
   useEffect(() => {
     if (isAuth) {
-      close();
+      setModal(false);
     }
   });
 
@@ -115,8 +118,9 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           variant="contained"
           color="primary"
           className={classes.submit}
+          disabled={isLoading}
         >
-          Go!
+          {isLoading ? <AuthPreloader /> : 'Go!'}
         </Button>
         <Button size="small" onClick={() => setIsLoginModal(false)}>
           Dont have an account? Register -&gt;
@@ -132,6 +136,8 @@ const mapStateToProps = (state: AppStateType) => {
     password: state.authData.password,
     isAuth: state.authData.isAuth,
     error: state.authData.error,
+    isLoading: state.authData.isLoading,
+    isModalOpen: state.authData.isModalOpen,
   };
 };
 
