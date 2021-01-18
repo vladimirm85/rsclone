@@ -1,23 +1,24 @@
+import { Dispatch } from 'redux';
 import {
-  SET_LOADING_STATUS,
+  SET_VERIFY_LOADING_STATUS,
   SET_VERIFY_STATUS,
 } from '../actions/verifyActions';
 import verifyApi from '../../api/verify-api';
 
 export const actions = {
-  setLoading: (data: boolean) =>
+  setLoading: (isLoading: boolean) =>
     ({
-      type: SET_LOADING_STATUS,
-      payload: data,
+      type: SET_VERIFY_LOADING_STATUS,
+      payload: { isLoading },
     } as const),
-  setVerifyStatus: (data: boolean) =>
+  setVerifyStatus: (isVerify: boolean) =>
     ({
       type: SET_VERIFY_STATUS,
-      payload: data,
+      payload: { isVerify },
     } as const),
 };
 
-export const verifyEmail = (key: string) => async (dispatch: any) => {
+export const verifyEmail = (key: string) => async (dispatch: Dispatch) => {
   dispatch(actions.setLoading(true));
   try {
     const data = await verifyApi.verifyEmail(key);

@@ -1,12 +1,15 @@
 import {
-  SET_VERIFY_LOADING_STATUS,
-  SET_VERIFY_STATUS,
-} from '../actions/verifyActions';
-import { actions } from '../action-creators/verify-ac';
+  SET_REG_EMAIL,
+  SET_REG_PASSWORD,
+  SET_REG_REPEAT_PASSWORD,
+  SET_REG_ERROR,
+} from '../actions/registrationActions';
+import { actions } from '../action-creators/registration-ac';
 
 const initialState = {
-  isLoading: false,
-  isVerify: false,
+  regEmail: '',
+  regPassword: '',
+  regRepeatPassword: '',
 };
 
 type InitialStateType = typeof initialState;
@@ -15,13 +18,15 @@ type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
 type ActionTypes = ReturnType<InferValueTypes<typeof actions>>;
 
-const verifyReducer = (
+const regReducer = (
   state = initialState,
   action: ActionTypes,
 ): InitialStateType => {
   switch (action.type) {
-    case SET_VERIFY_LOADING_STATUS:
-    case SET_VERIFY_STATUS:
+    case SET_REG_EMAIL:
+    case SET_REG_PASSWORD:
+    case SET_REG_REPEAT_PASSWORD:
+    case SET_REG_ERROR:
       return {
         ...state,
         ...action.payload,
@@ -31,4 +36,4 @@ const verifyReducer = (
   }
 };
 
-export default verifyReducer;
+export default regReducer;

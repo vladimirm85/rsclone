@@ -1,9 +1,9 @@
 import {
-  SET_PASSWORD,
-  SET_EMAIL,
+  SET_LOGIN_PASSWORD,
+  SET_LOGIN_EMAIL,
   SET_AUTH_STATUS,
   SET_AUTH_EMAIL,
-  SET_ERROR,
+  SET_LOGIN_ERROR,
 } from '../actions/authActions';
 import { actions } from '../action-creators/auth-ac';
 
@@ -26,30 +26,14 @@ const authReducer = (
   action: ActionTypes,
 ): InitialStateType => {
   switch (action.type) {
-    case SET_EMAIL:
-      return {
-        ...state,
-        email: action.payload,
-      };
-    case SET_PASSWORD:
-      return {
-        ...state,
-        password: action.payload,
-      };
+    case SET_LOGIN_EMAIL:
+    case SET_LOGIN_PASSWORD:
     case SET_AUTH_STATUS:
-      return {
-        ...state,
-        isAuth: action.payload,
-      };
     case SET_AUTH_EMAIL:
+    case SET_LOGIN_ERROR:
       return {
         ...state,
-        authEmail: action.payload,
-      };
-    case SET_ERROR:
-      return {
-        ...state,
-        error: action.payload,
+        ...action.payload,
       };
     default:
       return state;

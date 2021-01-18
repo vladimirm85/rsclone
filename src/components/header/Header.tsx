@@ -1,10 +1,16 @@
 import React from 'react';
 import './header.scss';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 import logo from '../../assets/img/logo.png';
 import AuthModal from '../login/AuthModal';
+import { AppStateType } from '../../store/store';
 
-const Header: React.FC = (): JSX.Element => {
+type MapStatePropsType = {
+  isAuth: boolean;
+};
+
+const Header: React.FC<MapStatePropsType> = ({ isAuth }): JSX.Element => {
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
@@ -29,21 +35,38 @@ const Header: React.FC = (): JSX.Element => {
                   Ab<span className="red-letter">o</span>ut
                 </NavLink>
               </li>
-              <li>
-                <NavLink to="/score" activeClassName="active-menu-item">
-                  Sc<span className="red-letter">o</span>re
-                </NavLink>
-              </li>
+              {isAuth && (
+                <>
+                  <li>
+                    <NavLink to="/saves" activeClassName="active-menu-item">
+                      S<span className="red-letter">a</span>ves
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/score" activeClassName="active-menu-item">
+                      Sc<span className="red-letter">o</span>re
+                    </NavLink>
+                  </li>
+                </>
+              )}
               <li>
                 <NavLink to="/game" activeClassName="active-menu-item">
                   G<span className="red-letter">a</span>me
                 </NavLink>
               </li>
-              <li>
-                <button type="button" onClick={handleOpen}>
-                  L<span className="red-letter">o</span>gin
-                </button>
-              </li>
+              {isAuth ? (
+                <li>
+                  <NavLink to="/settings" activeClassName="active-menu-item">
+                    S<span className="red-letter">e</span>ttings
+                  </NavLink>
+                </li>
+              ) : (
+                <li>
+                  <button type="button" onClick={handleOpen}>
+                    L<span className="red-letter">o</span>gin
+                  </button>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
@@ -53,4 +76,10 @@ const Header: React.FC = (): JSX.Element => {
   );
 };
 
-export default Header;
+const mapStateToProps = (state: AppStateType) => ({
+  isAuth: state.authData.isAuth,
+});
+
+const HeaderW = connect(mapStateToProps)(Header);
+
+export default HeaderW;

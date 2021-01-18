@@ -59,15 +59,15 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
     }
   });
 
-  const emailHandler = (e: any) => {
+  const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const passwordHandler = (e: any) => {
+  const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     props.loginAndSetUserData(email, password);
   };
@@ -135,8 +135,8 @@ const mapStateToProps = (state: AppStateType) => {
   };
 };
 
-const LoginC = connect(mapStateToProps, { loginAndSetUserData, ...actions })(
+const LoginW = connect(mapStateToProps, { loginAndSetUserData, ...actions })(
   Login,
 );
 
-export default LoginC;
+export default LoginW;

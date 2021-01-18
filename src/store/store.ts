@@ -1,13 +1,13 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import testReducer from './reducers/test-reducer';
 import verifyReducer from './reducers/verify-reducer';
 import authReducer from './reducers/auth-reducer';
+import regReducer from './reducers/registration-reducer';
 
 const rootReducer = combineReducers({
-  gameData: testReducer,
   verifyData: verifyReducer,
   authData: authReducer,
+  regData: regReducer,
 });
 
 type RootReducerType = typeof rootReducer;

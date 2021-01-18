@@ -51,6 +51,6 @@ const mapStateToProps = (state: AppStateType) => {
   };
 };
 
-const VerificationC = connect(mapStateToProps, { verifyEmail })(Verification);
+const VerificationW = connect(mapStateToProps, { verifyEmail })(Verification);
 
-export default VerificationC;
+export default VerificationW;

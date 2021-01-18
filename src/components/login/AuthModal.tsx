@@ -7,7 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import logo from '../../assets/img/logo.png';
 import Register from './Register';
-import LoginC from './Login';
+import LoginW from './Login';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -72,7 +72,7 @@ const AuthModal: React.FC<PropsType> = ({ open, close }): JSX.Element => {
                   <img src={logo} alt="logo" />
                 </div>
                 {isLoginModal ? (
-                  <LoginC setIsLoginModal={setIsLoginModal} close={close} />
+                  <LoginW setIsLoginModal={setIsLoginModal} close={close} />
                 ) : (
                   <Register setIsLoginModal={setIsLoginModal} />
                 )}

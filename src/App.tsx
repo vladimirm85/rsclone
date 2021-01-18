@@ -1,22 +1,27 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Canvas from './components/canvas/Canvas';
-import Header from './components/header/Header';
+import HeaderW from './components/header/Header';
 import Footer from './components/footer/Footer';
-import Score from './components/score/Score';
+import ScoreW from './components/score/Score';
 import About from './components/about/About';
-import VerificationC from './components/verification/Verification';
+import VerificationW from './components/verification/Verification';
+import SavesW from './components/saves/Saves';
+import SettingsW from './components/settings/Settings';
 
 const App: React.FC = (): JSX.Element => {
   return (
     <>
-      <Header />
+      <HeaderW />
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/game" />} />
-        <Route path="/About" render={() => <About />} />
-        <Route path="/score" render={() => <Score />} />
+        <Route path="/about" render={() => <About />} />
+        <Route path="/saves" render={() => <SavesW />} />
+        <Route path="/score" render={() => <ScoreW />} />
         <Route path="/game" render={() => <Canvas />} />
-        <Route path="/verify" component={VerificationC} />
+        <Route path="/settings" render={() => <SettingsW />} />
+        <Route path="/verify" component={VerificationW} />
+        <Route path="*" render={() => <Redirect to="/game" />} />
       </Switch>
       <Footer />
     </>

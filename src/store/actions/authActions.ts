@@ -1,5 +1,5 @@
-export const SET_EMAIL = 'SET_EMAIL';
-export const SET_PASSWORD = 'SET_PASSWORD';
+export const SET_LOGIN_EMAIL = 'SET_LOGIN_EMAIL';
+export const SET_LOGIN_PASSWORD = 'SET_LOGIN_PASSWORD';
 export const SET_AUTH_STATUS = 'SET_AUTH_STATUS';
 export const SET_AUTH_EMAIL = 'SET_AUTH_EMAIL';
-export const SET_ERROR = 'SET_ERROR';
+export const SET_LOGIN_ERROR = 'SET_LOGIN_ERROR';
