@@ -14,7 +14,18 @@ export default class Block implements BlockInterface {
   }
 
   draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.drawImage(sprites.block!, this.x, this.y);
+    ctx.drawImage(
+      sprites.block!,
+      (this.lives - 1) * this.width,
+      0,
+      this.width,
+      this.height,
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+    );
+    // ctx.drawImage(sprites.block!, this.x, this.y);
   };
 
   isActive = (): boolean => {
