@@ -1,26 +1,99 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import loader from '../../assets/img/loader.svg';
-import './verification.scss';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { AppStateType } from '../../store/store';
+import { verifyEmail } from '../../store/action-creators/verify-ac';
+import Preloader from '../common/Preloader/Preloader';
 
-const Verification: React.FC<RouteComponentProps> = ({
-  location,
-}): JSX.Element => {
+const useStyles = makeStyles({
+  root: {
+    color: 'green',
+  },
+});
+
+type PropsType = {
+  isLoading: boolean;
+  isVerify: boolean;
+  isAuth: boolean;
+  verifyEmail: (arg: string) => void;
+  verifyError: string;
+};
+
+const Verification: React.FC<RouteComponentProps & PropsType> = (
+  props,
+): JSX.Element => {
+  const classes = useStyles();
+  const { isLoading, isAuth, isVerify, location, verifyError } = props;
+
   useEffect(() => {
     const url = location.pathname;
-    const dataArray = url.split('/').splice(-2);
-    const [email, verificationKey] = dataArray;
+    const [key] = url.split('/').splice(-1);
+    if (!isVerify && !verifyError) {
+      props.verifyEmail(key);
+    }
   });
 
   return (
-    <main>
-      <div className="container-inner">
-        <div className="loader_content">
-          <img src={loader} alt="loader" />
-        </div>
-      </div>
-    </main>
+    <>
+      {!isAuth ? (
+        <main>
+          <div className="container-inner">
+            <div>
+              {isLoading && <Preloader />}
+              {isVerify ? (
+                <>
+                  <Typography
+                    variant="h5"
+                    component="h5"
+                    align="center"
+                    className={classes.root}
+                    paragraph
+                  >
+                    Verification was successful!
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    component="p"
+                    align="center"
+                    paragraph
+                  >
+                    Log in to the game using your e-mail and password.
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    component="p"
+                    align="center"
+                    color="textSecondary"
+                  >
+                    Login form will open automatically
+                  </Typography>
+                </>
+              ) : (
+                <Typography variant="subtitle1" component="p" align="center">
+                  {verifyError || 'Verification in progress. Wait a second...'}
+                </Typography>
+              )}
+            </div>
+          </div>
+        </main>
+      ) : (
+        <Redirect to="/game" />
+      )}
+    </>
   );
 };
 
-export default Verification;
+const mapStateToProps = (state: AppStateType) => {
+  return {
+    isLoading: state.verifyData.isLoading,
+    isVerify: state.verifyData.isVerify,
+    verifyError: state.verifyData.verifyError,
+    isAuth: state.authData.isAuth,
+  };
+};
+
+const VerificationW = connect(mapStateToProps, { verifyEmail })(Verification);
+
+export default VerificationW;

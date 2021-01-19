@@ -3,11 +3,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import logo from '../../assets/img/logo.png';
-import Login from './Login';
 import Register from './Register';
+import LoginW from './Login';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -38,11 +37,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export type PropsType = {
-  open: boolean;
-  close: () => void;
+  isModalOpen: boolean;
+  setModal: (arg: boolean) => void;
 };
 
-const AuthModal: React.FC<PropsType> = ({ open, close }): JSX.Element => {
+const AuthModal: React.FC<PropsType> = ({
+  isModalOpen,
+  setModal,
+}): JSX.Element => {
   const classes = useStyles();
   const [isLoginModal, setIsLoginModal] = useState(true);
 
@@ -52,10 +54,9 @@ const AuthModal: React.FC<PropsType> = ({ open, close }): JSX.Element => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={open}
+        open={isModalOpen}
         onClose={() => {
-          close();
-          setIsLoginModal(true);
+          setModal(false);
         }}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -63,18 +64,20 @@ const AuthModal: React.FC<PropsType> = ({ open, close }): JSX.Element => {
           timeout: 500,
         }}
       >
-        <Fade in={open}>
+        <Fade in={isModalOpen}>
           <div className={classes.paperModal}>
             <Container component="main" maxWidth="xs">
-              <CssBaseline />
               <div className={classes.paperForm}>
                 <div className={classes.logo}>
                   <img src={logo} alt="logo" />
                 </div>
                 {isLoginModal ? (
-                  <Login setIsLoginModal={setIsLoginModal} />
+                  <LoginW setIsLoginModal={setIsLoginModal} />
                 ) : (
-                  <Register setIsLoginModal={setIsLoginModal} />
+                  <Register
+                    setIsLoginModal={setIsLoginModal}
+                    setModal={setModal}
+                  />
                 )}
               </div>
             </Container>

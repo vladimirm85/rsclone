@@ -1,19 +1,25 @@
 import React from 'react';
 import './header.scss';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 import logo from '../../assets/img/logo.png';
 import AuthModal from '../login/AuthModal';
+import { AppStateType } from '../../store/store';
+import { actions } from '../../store/action-creators/auth-ac';
 
-const Header: React.FC = (): JSX.Element => {
-  const [open, setOpen] = React.useState(false);
+type MapStatePropsType = {
+  isAuth: boolean;
+  isModalOpen: boolean;
+};
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
+type MapDispatchPropsType = {
+  setModal: (arg: boolean) => void;
+};
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+type PropsType = MapStatePropsType & MapDispatchPropsType;
+
+const Header: React.FC<PropsType> = (props): JSX.Element => {
+  const { isAuth, isModalOpen, setModal } = props;
 
   return (
     <header>
@@ -29,28 +35,52 @@ const Header: React.FC = (): JSX.Element => {
                   Ab<span className="red-letter">o</span>ut
                 </NavLink>
               </li>
-              <li>
-                <NavLink to="/score" activeClassName="active-menu-item">
-                  Sc<span className="red-letter">o</span>re
-                </NavLink>
-              </li>
+              {isAuth && (
+                <>
+                  <li>
+                    <NavLink to="/saves" activeClassName="active-menu-item">
+                      S<span className="red-letter">a</span>ves
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/score" activeClassName="active-menu-item">
+                      Sc<span className="red-letter">o</span>re
+                    </NavLink>
+                  </li>
+                </>
+              )}
               <li>
                 <NavLink to="/game" activeClassName="active-menu-item">
                   G<span className="red-letter">a</span>me
                 </NavLink>
               </li>
-              <li>
-                <button type="button" onClick={handleOpen}>
-                  L<span className="red-letter">o</span>gin
-                </button>
-              </li>
+              {isAuth ? (
+                <li>
+                  <NavLink to="/settings" activeClassName="active-menu-item">
+                    S<span className="red-letter">e</span>ttings
+                  </NavLink>
+                </li>
+              ) : (
+                <li>
+                  <button type="button" onClick={() => setModal(true)}>
+                    L<span className="red-letter">o</span>gin
+                  </button>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
       </div>
-      <AuthModal open={open} close={handleClose} />
+      <AuthModal isModalOpen={isModalOpen} setModal={setModal} />
     </header>
   );
 };
 
-export default Header;
+const mapStateToProps = (state: AppStateType) => ({
+  isAuth: state.authData.isAuth,
+  isModalOpen: state.authData.isModalOpen,
+});
+
+const HeaderW = connect(mapStateToProps, { ...actions })(Header);
+
+export default HeaderW;

@@ -8,6 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import withAuthRedirect from '../../hoc/withAuthRedirect';
 
 const useStyles = makeStyles({
   table: {
@@ -67,4 +68,6 @@ const Score: React.FC = (): JSX.Element => {
   );
 };
 
-export default Score;
+const ScoreW = withAuthRedirect(Score);
+
+export default ScoreW;
