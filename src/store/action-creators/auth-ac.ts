@@ -7,8 +7,10 @@ import {
   SET_LOGIN_ERROR,
   SET_LOGIN_LOADING,
   SET_MODAL,
+  SET_INITIALIZE_STATUS,
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
+import { set } from '../../helpers/storage';
 
 export const actions = {
   setEmail: (email: string) =>
@@ -36,15 +38,20 @@ export const actions = {
       type: SET_LOGIN_LOADING,
       payload: { isLoading },
     } as const),
-  setError: (error: string) =>
+  setLoginError: (loginError: string) =>
     ({
       type: SET_LOGIN_ERROR,
-      payload: { error },
+      payload: { loginError },
     } as const),
   setModal: (isModalOpen: boolean) =>
     ({
       type: SET_MODAL,
       payload: { isModalOpen },
+    } as const),
+  setInitializeStatus: (isInitialized: boolean) =>
+    ({
+      type: SET_INITIALIZE_STATUS,
+      payload: { isInitialized },
     } as const),
 };
 
@@ -55,16 +62,29 @@ export const loginAndSetUserData = (email: string, password: string) => async (
   try {
     const data = await authApi.login(email, password);
     if (data.data.success) {
+      set('authKey', data.data.payload);
       dispatch(actions.setAuthEmail(email));
       dispatch(actions.setAuthStatus(true));
-      dispatch(actions.setError(''));
-      dispatch(actions.setEmail(''));
+      dispatch(actions.setLoginError(''));
       dispatch(actions.setPassword(''));
+      dispatch(actions.setEmail(''));
     } else {
       dispatch(actions.setAuthStatus(false));
     }
   } catch (e) {
-    dispatch(actions.setError(e.message));
+    dispatch(actions.setLoginError(e.message));
   }
   dispatch(actions.setLoading(false));
+};
+
+export const authMe = (key: string) => async (dispatch: Dispatch) => {
+  dispatch(actions.setInitializeStatus(false));
+  const data = await authApi.me(key);
+  if (data.data.success) {
+    dispatch(actions.setAuthEmail(data.data.payload.email));
+    dispatch(actions.setAuthStatus(true));
+  } else {
+    dispatch(actions.setAuthStatus(false));
+  }
+  dispatch(actions.setInitializeStatus(true));
 };

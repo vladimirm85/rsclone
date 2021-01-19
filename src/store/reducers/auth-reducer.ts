@@ -6,6 +6,7 @@ import {
   SET_LOGIN_ERROR,
   SET_LOGIN_LOADING,
   SET_MODAL,
+  SET_INITIALIZE_STATUS,
 } from '../actions/authActions';
 import { actions } from '../action-creators/auth-ac';
 
@@ -14,9 +15,10 @@ const initialState = {
   password: '',
   isAuth: false,
   authEmail: '',
-  error: '',
+  loginError: '',
   isLoading: false,
   isModalOpen: false,
+  isInitialized: false,
 };
 
 type InitialStateType = typeof initialState;
@@ -37,6 +39,7 @@ const authReducer = (
     case SET_LOGIN_ERROR:
     case SET_LOGIN_LOADING:
     case SET_MODAL:
+    case SET_INITIALIZE_STATUS:
       return {
         ...state,
         ...action.payload,

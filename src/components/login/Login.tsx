@@ -25,7 +25,7 @@ type MapStatePropsType = {
   email: string;
   password: string;
   isAuth: boolean;
-  error: string;
+  loginError: string;
   isLoading: boolean;
 };
 
@@ -52,7 +52,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
     setPassword,
     setModal,
     isAuth,
-    error,
+    loginError,
     isLoading,
   } = props;
 
@@ -107,7 +107,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           onChange={passwordHandler}
           autoComplete="current-password"
         />
-        {error && (
+        {loginError && (
           <Typography component="p" variant="subtitle1" color="error">
             Incorrect email or password.
           </Typography>
@@ -135,7 +135,7 @@ const mapStateToProps = (state: AppStateType) => {
     email: state.authData.email,
     password: state.authData.password,
     isAuth: state.authData.isAuth,
-    error: state.authData.error,
+    loginError: state.authData.loginError,
     isLoading: state.authData.isLoading,
     isModalOpen: state.authData.isModalOpen,
   };

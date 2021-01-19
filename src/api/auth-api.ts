@@ -9,6 +9,11 @@ const authApi = {
       })
       .then((res) => res);
   },
+  me(key: string) {
+    return api
+      .get('account', { headers: { Authorization: key } })
+      .then((res) => res);
+  },
 };
 
 export default authApi;
