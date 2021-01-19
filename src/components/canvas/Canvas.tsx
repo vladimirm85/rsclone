@@ -17,18 +17,22 @@ const Canvas: React.FC = (): JSX.Element => {
     const game = new Game(initialGameData);
     game.addListeners();
 
-    const render = () => {
-      if (context && !game.getIsPause()) {
-        game.draw(context);
-        game.checkCurrentStateGame();
+    let start: number | null = null;
+    const fpsDivider = 25;
+
+    const render = (timestamp: number) => {
+      if (timestamp > start! + fpsDivider) {
+        if (context && !game.getIsPause()) {
+          game.draw(context);
+          game.checkCurrentStateGame();
+        }
+        start = timestamp;
       }
-      animationFrameId = window.requestAnimationFrame(() => {
-        render();
-      });
+      animationFrameId = window.requestAnimationFrame(render);
     };
 
     preload(() => {
-      // create(); // TODO ? POSSIBLY NEED
+      // @ts-ignore
       render();
     });
 

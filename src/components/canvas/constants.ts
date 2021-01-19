@@ -41,7 +41,7 @@ export interface BallInterface extends BallConstructor {
 }
 
 export const ballStartData: BallConstructor = {
-  velocity: 6,
+  velocity: 10,
   dx: 0,
   dy: 0,
   x: 374,
@@ -67,7 +67,7 @@ export interface PlatformInterface extends PlatformConstructor {
 }
 
 export const platformStartData: PlatformConstructor = {
-  velocity: 12,
+  velocity: 20,
   dx: 0,
   x: 334,
   y: 450,
@@ -689,5 +689,5 @@ export const initialGameData: GameConstructor = {
   score: 0,
   ballData: ballStartData,
   platformData: platformStartData,
-  blocksData: blocksLevelsData[1], // TODO: REFACTOR!
+  blocksData: blocksLevelsData[0], // TODO: REFACTOR!
 };
