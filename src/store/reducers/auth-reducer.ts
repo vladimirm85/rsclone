@@ -7,6 +7,7 @@ import {
   SET_LOGIN_LOADING,
   SET_MODAL,
   SET_INITIALIZE_STATUS,
+  SET_USER_SCORE,
 } from '../actions/authActions';
 import { actions } from '../action-creators/auth-ac';
 
@@ -19,6 +20,7 @@ const initialState = {
   isLoading: false,
   isModalOpen: false,
   isInitialized: false,
+  userScore: 0,
 };
 
 type InitialStateType = typeof initialState;
@@ -40,6 +42,7 @@ const authReducer = (
     case SET_LOGIN_LOADING:
     case SET_MODAL:
     case SET_INITIALIZE_STATUS:
+    case SET_USER_SCORE:
       return {
         ...state,
         ...action.payload,

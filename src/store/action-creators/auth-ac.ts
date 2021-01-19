@@ -8,6 +8,7 @@ import {
   SET_LOGIN_LOADING,
   SET_MODAL,
   SET_INITIALIZE_STATUS,
+  SET_USER_SCORE,
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
 import { set } from '../../helpers/storage';
@@ -53,6 +54,21 @@ export const actions = {
       type: SET_INITIALIZE_STATUS,
       payload: { isInitialized },
     } as const),
+  setUserScore: (userScore: number) =>
+    ({
+      type: SET_USER_SCORE,
+      payload: { userScore },
+    } as const),
+};
+
+export const authMe = (key: string) => async (dispatch: Dispatch) => {
+  const data = await authApi.me(key);
+  if (data.data.success) {
+    dispatch(actions.setAuthEmail(data.data.payload.email));
+    dispatch(actions.setUserScore(data.data.payload.totalScore));
+    dispatch(actions.setAuthStatus(true));
+  }
+  dispatch(actions.setInitializeStatus(true));
 };
 
 export const loginAndSetUserData = (email: string, password: string) => async (
@@ -62,29 +78,15 @@ export const loginAndSetUserData = (email: string, password: string) => async (
   try {
     const data = await authApi.login(email, password);
     if (data.data.success) {
-      set('authKey', data.data.payload);
-      dispatch(actions.setAuthEmail(email));
-      dispatch(actions.setAuthStatus(true));
+      const key = data.data.payload;
+      set('authKey', key);
+      dispatch(actions.setInitializeStatus(false));
       dispatch(actions.setLoginError(''));
       dispatch(actions.setPassword(''));
       dispatch(actions.setEmail(''));
-    } else {
-      dispatch(actions.setAuthStatus(false));
     }
   } catch (e) {
     dispatch(actions.setLoginError(e.message));
   }
   dispatch(actions.setLoading(false));
-};
-
-export const authMe = (key: string) => async (dispatch: Dispatch) => {
-  dispatch(actions.setInitializeStatus(false));
-  const data = await authApi.me(key);
-  if (data.data.success) {
-    dispatch(actions.setAuthEmail(data.data.payload.email));
-    dispatch(actions.setAuthStatus(true));
-  } else {
-    dispatch(actions.setAuthStatus(false));
-  }
-  dispatch(actions.setInitializeStatus(true));
 };
