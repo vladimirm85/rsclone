@@ -88,7 +88,12 @@ export default class Game implements GameInterface {
     return false;
   };
 
+  makeCompactArrOfBlocks = () => {
+    this.blocks = this.blocks.filter((block) => block.isActive());
+  };
+
   destroyBlocks = (): void => {
+    this.makeCompactArrOfBlocks();
     this.blocks.forEach((block) => {
       if (block.isActive() && this.ballIsCollide(block)) {
         block.reduceLives();
