@@ -66,8 +66,15 @@ export default class Ball implements BallInterface {
     }
   };
 
-  changeDirection = (): void => {
-    this.dy *= -1;
+  changeDirection = (blockX: number, blockWidth: number): void => {
+    const fullBallX = this.x + this.width;
+    const fullBlockX = blockX + blockWidth;
+
+    if (this.x > fullBlockX || fullBallX < blockX) {
+      this.dx *= -1;
+    } else {
+      this.dy *= -1;
+    }
   };
 
   platformBounce = (
