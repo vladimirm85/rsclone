@@ -14,6 +14,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { Typography } from '@material-ui/core';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
 import {
@@ -22,9 +23,14 @@ import {
   getAndSetLevelScore,
 } from '../../store/action-creators/score-ac';
 import { get } from '../../helpers/storage';
+import { ScoreType } from '../../types/types';
+import Preloader from '../common/Preloader/Preloader';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    error: {
+      color: 'red',
+    },
     formControl: {
       marginBottom: theme.spacing(3),
       minWidth: 120,
@@ -44,26 +50,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function createData(email: string, score: number, date: string) {
-  return { email, score, date };
-}
-
-const rows = [
-  createData('sanya-pitersky@nagibator.ru', 159, '12.01.2021'),
-  createData('volodya-top8@backend.ua', 237, '14.01.2021'),
-  createData('artemka@design.by', 132435, '12.01.2021'),
-  createData('vasja-igrok@game.by', 305, '12.01.2021'),
-  createData('aleksandr-grigorevich@father.by', 80, '09.08.2021'),
-];
-
 type MapStateToPropsType = {
-  totalScore: any;
-  levelScore: any;
+  totalScore: Array<ScoreType>;
+  levelScore: Array<ScoreType>;
+  scoreError: string;
+  isScoreLoading: boolean;
 };
 
 type MapDispatchToPropsType = {
-  setTotalScore: (totalScore: number) => void;
-  setLevelScore: (levelScore: number) => void;
   getAndSetTotalScore: (key: string) => void;
   getAndSetLevelScore: (key: string, lvl: number) => void;
 };
@@ -71,10 +65,16 @@ type MapDispatchToPropsType = {
 type PropsType = MapStateToPropsType & MapDispatchToPropsType;
 
 const Score: React.FC<PropsType> = (props): JSX.Element => {
-  const { totalScore, levelScore, setTotalScore, setLevelScore } = props;
+  const { totalScore, levelScore, scoreError, isScoreLoading } = props;
   const classes = useStyles();
   const [scoreType, setScoreType] = React.useState('0');
   const authKey = get('authKey');
+
+  useEffect(() => {
+    if (totalScore.length === 0) {
+      props.getAndSetTotalScore(authKey);
+    }
+  });
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setScoreType(event.target.value as string);
@@ -104,28 +104,59 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
               <MenuItem value={3}>Level 3</MenuItem>
               <MenuItem value={4}>Level 4</MenuItem>
               <MenuItem value={5}>Level 5</MenuItem>
+              <MenuItem value={6}>Level 6</MenuItem>
             </Select>
           </FormControl>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>E-mail</TableCell>
-                  <TableCell align="center">Score</TableCell>
-                  <TableCell align="center">Date</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.email}>
-                    <TableCell>{row.email}</TableCell>
-                    <TableCell align="center">{row.score}</TableCell>
-                    <TableCell align="center">{row.date}</TableCell>
+          {scoreError ? (
+            <Typography
+              variant="h5"
+              component="h5"
+              align="center"
+              className={classes.error}
+              paragraph
+            >
+              {scoreError}
+            </Typography>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell align="center">Score</TableCell>
+                    <TableCell align="center">Date</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                {isScoreLoading ? (
+                  <Preloader />
+                ) : (
+                  <TableBody>
+                    {!+scoreType
+                      ? totalScore.map((row: ScoreType) => (
+                          <TableRow key={row.createdAt}>
+                            <TableCell>{row.nickname}</TableCell>
+                            <TableCell align="center">
+                              {row.totalScore}
+                            </TableCell>
+                            <TableCell align="center">
+                              {row.createdAt.split('T')[0]}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      : levelScore.map((row: ScoreType) => (
+                          <TableRow key={row.createdAt}>
+                            <TableCell>{row.nickname}</TableCell>
+                            <TableCell align="center">{row.score}</TableCell>
+                            <TableCell align="center">
+                              {row.createdAt.split('T')[0]}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                  </TableBody>
+                )}
+              </Table>
+            </TableContainer>
+          )}
         </div>
       </div>
     </main>
@@ -135,6 +166,8 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
 const MapStateToProps = (state: AppStateType) => ({
   totalScore: state.scoreData.totalScore,
   levelScore: state.scoreData.levelScore,
+  scoreError: state.scoreData.scoreError,
+  isScoreLoading: state.scoreData.isScoreLoading,
 });
 
 const ScoreW = compose<React.ComponentType>(
