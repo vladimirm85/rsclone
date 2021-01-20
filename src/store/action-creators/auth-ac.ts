@@ -3,12 +3,11 @@ import {
   SET_LOGIN_EMAIL,
   SET_LOGIN_PASSWORD,
   SET_AUTH_STATUS,
-  SET_AUTH_EMAIL,
+  SET_AUTH_USER_DATA,
   SET_LOGIN_ERROR,
   SET_LOGIN_LOADING,
   SET_MODAL,
   SET_INITIALIZE_STATUS,
-  SET_USER_SCORE,
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
 import { set } from '../../helpers/storage';
@@ -29,10 +28,10 @@ export const actions = {
       type: SET_AUTH_STATUS,
       payload: { isAuth },
     } as const),
-  setAuthEmail: (authEmail: string) =>
+  setAuthUserData: (authEmail: string, userScore: number) =>
     ({
-      type: SET_AUTH_EMAIL,
-      payload: { authEmail },
+      type: SET_AUTH_USER_DATA,
+      payload: { authEmail, userScore },
     } as const),
   setLoading: (isLoading: boolean) =>
     ({
@@ -54,19 +53,22 @@ export const actions = {
       type: SET_INITIALIZE_STATUS,
       payload: { isInitialized },
     } as const),
-  setUserScore: (userScore: number) =>
-    ({
-      type: SET_USER_SCORE,
-      payload: { userScore },
-    } as const),
 };
 
 export const authMe = (key: string) => async (dispatch: Dispatch) => {
-  const data = await authApi.me(key);
-  if (data.data.success) {
-    dispatch(actions.setAuthEmail(data.data.payload.email));
-    dispatch(actions.setUserScore(data.data.payload.totalScore));
-    dispatch(actions.setAuthStatus(true));
+  try {
+    const data = await authApi.me(key);
+    if (data.data.success) {
+      dispatch(
+        actions.setAuthUserData(
+          data.data.payload.email,
+          data.data.payload.totalScore,
+        ),
+      );
+      dispatch(actions.setAuthStatus(true));
+    }
+  } catch (e) {
+    dispatch(actions.setAuthStatus(false));
   }
   dispatch(actions.setInitializeStatus(true));
 };

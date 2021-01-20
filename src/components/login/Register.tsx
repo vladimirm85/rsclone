@@ -36,11 +36,15 @@ type MapStatePropsType = {
 };
 
 type MapDispatchPropsType = {
-  setRegEmail: (arg: string) => void;
-  setRegPassword: (arg: string) => void;
-  setRegRepeatPassword: (arg: string) => void;
-  registration: (arg0: string, arg1: string, arg2: string) => void;
-  setIsRegistered: (arg0: boolean) => void;
+  setRegEmail: (email: string) => void;
+  setRegPassword: (password: string) => void;
+  setRegRepeatPassword: (repeatPassword: string) => void;
+  registration: (
+    email: string,
+    password: string,
+    repeatPassword: string,
+  ) => void;
+  setIsRegistered: (isRegistered: boolean) => void;
 };
 
 type PropsType = InputPropsType & MapStatePropsType & MapDispatchPropsType;

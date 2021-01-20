@@ -17,7 +17,7 @@ type PropsType = {
   isLoading: boolean;
   isVerify: boolean;
   isAuth: boolean;
-  verifyEmail: (arg: string) => void;
+  verifyEmail: (key: string) => void;
   verifyError: string;
 };
 

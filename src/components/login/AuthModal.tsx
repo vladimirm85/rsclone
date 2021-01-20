@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 export type PropsType = {
   isModalOpen: boolean;
-  setModal: (arg: boolean) => void;
+  setModal: (isModalOpen: boolean) => void;
 };
 
 const AuthModal: React.FC<PropsType> = ({

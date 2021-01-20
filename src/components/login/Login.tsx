@@ -30,14 +30,14 @@ type MapStatePropsType = {
 };
 
 type MapDispatchPropsType = {
-  loginAndSetUserData: (arg0: string, arg1: string) => void;
-  setEmail: (arg: string) => void;
-  setPassword: (arg: string) => void;
-  setModal: (arg: boolean) => void;
+  loginAndSetUserData: (email: string, password: string) => void;
+  setEmail: (email: string) => void;
+  setPassword: (password: string) => void;
+  setModal: (isModalOpen: boolean) => void;
 };
 
 type InputPropsType = {
-  setIsLoginModal: (arg: boolean) => void;
+  setIsLoginModal: (isLoginModal: boolean) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType & InputPropsType;

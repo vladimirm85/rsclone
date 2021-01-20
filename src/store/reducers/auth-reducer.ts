@@ -2,12 +2,11 @@ import {
   SET_LOGIN_PASSWORD,
   SET_LOGIN_EMAIL,
   SET_AUTH_STATUS,
-  SET_AUTH_EMAIL,
+  SET_AUTH_USER_DATA,
   SET_LOGIN_ERROR,
   SET_LOGIN_LOADING,
   SET_MODAL,
   SET_INITIALIZE_STATUS,
-  SET_USER_SCORE,
 } from '../actions/authActions';
 import { actions } from '../action-creators/auth-ac';
 
@@ -37,12 +36,11 @@ const authReducer = (
     case SET_LOGIN_EMAIL:
     case SET_LOGIN_PASSWORD:
     case SET_AUTH_STATUS:
-    case SET_AUTH_EMAIL:
     case SET_LOGIN_ERROR:
     case SET_LOGIN_LOADING:
     case SET_MODAL:
     case SET_INITIALIZE_STATUS:
-    case SET_USER_SCORE:
+    case SET_AUTH_USER_DATA:
       return {
         ...state,
         ...action.payload,

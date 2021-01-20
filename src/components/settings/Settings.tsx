@@ -23,21 +23,19 @@ type MapStateProps = {
 
 type MapDispatchToProps = {
   setAuthStatus: (arg: boolean) => void;
-  setAuthEmail: (arg: string) => void;
-  setUserScore: (arg: number) => void;
+  setAuthUserData: (email: string, userScore: number) => void;
 };
 
 type PropsType = MapStateProps & MapDispatchToProps;
 
 const Settings: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useStyles();
-  const { authEmail, setAuthStatus, setAuthEmail, setUserScore } = props;
+  const { authEmail, setAuthStatus, setAuthUserData } = props;
   const name = authEmail.split('@')[0];
 
   const logout = () => {
     del('authKey');
-    setAuthEmail('');
-    setUserScore(0);
+    setAuthUserData('', 0);
     setAuthStatus(false);
   };
 
