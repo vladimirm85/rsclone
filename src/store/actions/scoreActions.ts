@@ -1,0 +1,2 @@
+export const SET_TOTAL_SCORE = 'SET_TOTAL_SCORE';
+export const SET_LEVEL_SCORE = 'SET_LEVEL_SCORE';

@@ -3,11 +3,13 @@ import thunk from 'redux-thunk';
 import verifyReducer from './reducers/verify-reducer';
 import authReducer from './reducers/auth-reducer';
 import regReducer from './reducers/registration-reducer';
+import scoreReducer from './reducers/score-reducer';
 
 const rootReducer = combineReducers({
   verifyData: verifyReducer,
   authData: authReducer,
   regData: regReducer,
+  scoreData: scoreReducer,
 });
 
 type RootReducerType = typeof rootReducer;
