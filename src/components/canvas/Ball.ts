@@ -132,8 +132,8 @@ export default class Ball implements BallInterface {
     }
   };
 
-  moveWithPlatform = (platformDx: number): void => {
-    this.x += platformDx;
+  moveWithPlatform = (platformMiddlePosition: number): void => {
+    this.x = platformMiddlePosition - this.width / 2;
   };
 
   getRunStatus = (): boolean => {

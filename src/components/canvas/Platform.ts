@@ -55,14 +55,22 @@ export default class Platform implements PlatformInterface {
 
     const worldLeft = 0;
 
-    if (platformLeft < worldLeft || platformRight > gameWidth) {
+    if (platformLeft < worldLeft) {
       this.dx = 0;
+      this.x = 0;
+    }
+    if (platformRight > gameWidth) {
+      this.dx = 0;
+      this.x = gameWidth - this.width;
+      // console.log(this.x);
     }
   };
 
   getDx = (): number => {
     return this.dx;
   };
+
+  getMiddlePlatformPosition = (): number => this.x + this.width / 2;
 
   draw = (ctx: CanvasRenderingContext2D): void => {
     ctx.drawImage(sprites.platform!, this.x, this.y);

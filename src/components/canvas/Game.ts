@@ -120,7 +120,7 @@ export default class Game implements GameInterface {
     this.platform.collideBounds();
     this.platform.move();
     if (!this.ball.getRunStatus()) {
-      this.ball.moveWithPlatform(this.platform.getDx());
+      this.ball.moveWithPlatform(this.platform.getMiddlePlatformPosition());
     } else {
       this.ball.move();
     }

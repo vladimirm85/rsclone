@@ -35,13 +35,13 @@ export interface BallInterface extends BallConstructor {
   platformBounce: (platformDx: number, platformTouchOffset: number) => void;
   collideBounds: () => void;
   getRunStatus: () => boolean;
-  moveWithPlatform: (platformDx: number) => void;
+  moveWithPlatform: (platformMiddlePosition: number) => void;
   move: () => void;
   getCurrentBallData: () => BallConstructor;
 }
 
 export const ballStartData: BallConstructor = {
-  velocity: 10,
+  velocity: 6,
   dx: 0,
   dy: 0,
   x: 374,
@@ -64,10 +64,11 @@ export interface PlatformInterface extends PlatformConstructor {
   collideBounds: () => void;
   move: () => void;
   getCurrentPlatformData: () => PlatformConstructor;
+  getMiddlePlatformPosition: () => number;
 }
 
 export const platformStartData: PlatformConstructor = {
-  velocity: 18,
+  velocity: 12,
   dx: 0,
   x: 334,
   y: 450,
