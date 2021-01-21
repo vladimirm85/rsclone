@@ -71,7 +71,7 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
   const authKey = get('authKey');
 
   useEffect(() => {
-    if (totalScore.length === 0) {
+    if (totalScore.length === 0 && !scoreError) {
       props.getAndSetTotalScore(authKey);
     }
   });

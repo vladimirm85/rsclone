@@ -8,10 +8,10 @@ import {
   SET_LOGIN_LOADING,
   SET_MODAL,
   SET_INITIALIZE_STATUS,
-  SET_AUTH_KEY,
+  SET_NOTIFY_MODAL,
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
-import { set } from '../../helpers/storage';
+import { del, set } from '../../helpers/storage';
 
 export const actions = {
   setEmail: (email: string) =>
@@ -54,10 +54,10 @@ export const actions = {
       type: SET_INITIALIZE_STATUS,
       payload: { isInitialized },
     } as const),
-  setAuthKey: (authKey: string) =>
+  setNotifyModal: (notifyShow: boolean) =>
     ({
-      type: SET_AUTH_KEY,
-      payload: { authKey },
+      type: SET_NOTIFY_MODAL,
+      payload: { notifyShow },
     } as const),
 };
 
@@ -74,6 +74,7 @@ export const authMe = (key: string) => async (dispatch: Dispatch) => {
       dispatch(actions.setAuthStatus(true));
     }
   } catch (e) {
+    del('authKey');
     dispatch(actions.setAuthStatus(false));
   }
   dispatch(actions.setInitializeStatus(true));
@@ -88,7 +89,7 @@ export const loginAndSetUserData = (email: string, password: string) => async (
     if (data.data.success) {
       const authKey = data.data.payload;
       set('authKey', authKey);
-      dispatch(actions.setAuthKey(authKey));
+      dispatch(actions.setInitializeStatus(false));
       dispatch(actions.setLoginError(''));
       dispatch(actions.setPassword(''));
       dispatch(actions.setEmail(''));

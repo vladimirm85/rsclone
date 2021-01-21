@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { notification } from 'antd';
 import Canvas from './components/canvas/Canvas';
 import HeaderW from './components/header/Header';
 import Footer from './components/footer/Footer';
@@ -13,18 +14,17 @@ import { get } from './helpers/storage';
 import { AppStateType } from './store/store';
 import { authMe, actions } from './store/action-creators/auth-ac';
 import Preloader from './components/common/Preloader/Preloader';
-import Notification from './components/notification/Notification';
 
 type MapStatePropsType = {
   isAuth: boolean;
   isInitialized: boolean;
-  authKey: string;
+  notifyShow: boolean;
 };
 
 type MapDispatchType = {
   authMe: (arg: string) => void;
   setInitializeStatus: (arg: boolean) => void;
-  setAuthKey: (authKey: string) => void;
+  setNotifyModal: (showNotify: boolean) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchType;
@@ -34,19 +34,28 @@ const App: React.FC<PropsType> = (props): JSX.Element => {
     isAuth,
     isInitialized,
     setInitializeStatus,
-    setAuthKey,
-    authKey,
+    setNotifyModal,
+    notifyShow,
   } = props;
 
   useEffect(() => {
     const localAuthKey = get('authKey');
-    if (localAuthKey) {
-      setAuthKey(localAuthKey);
+    if (localAuthKey && !isAuth) {
+      props.authMe(localAuthKey);
     } else {
+      if (notifyShow && !isAuth) {
+        setTimeout(() => {
+          notification.info({
+            message: 'Notification',
+            description:
+              'Log in to get access to the full functionality of the game. Saves and score table are available to authorized users.',
+            duration: 15,
+            placement: 'bottomRight',
+          });
+        }, 2000);
+        setNotifyModal(false);
+      }
       setInitializeStatus(true);
-    }
-    if (!isAuth && authKey) {
-      props.authMe(authKey);
     }
   });
 
@@ -68,7 +77,6 @@ const App: React.FC<PropsType> = (props): JSX.Element => {
             <Route path="*" render={() => <Redirect to="/game" />} />
           </Switch>
           <Footer />
-          <Notification />
         </>
       )}
     </>
@@ -79,7 +87,7 @@ const mapStateToProps = (state: AppStateType) => {
   return {
     isAuth: state.authData.isAuth,
     isInitialized: state.authData.isInitialized,
-    authKey: state.authData.authKey,
+    notifyShow: state.authData.notifyShow,
   };
 };
 
