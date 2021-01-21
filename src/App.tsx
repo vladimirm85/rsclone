@@ -13,28 +13,40 @@ import { get } from './helpers/storage';
 import { AppStateType } from './store/store';
 import { authMe, actions } from './store/action-creators/auth-ac';
 import Preloader from './components/common/Preloader/Preloader';
+import Notification from './components/notification/Notification';
 
 type MapStatePropsType = {
   isAuth: boolean;
   isInitialized: boolean;
+  authKey: string;
 };
 
 type MapDispatchType = {
   authMe: (arg: string) => void;
   setInitializeStatus: (arg: boolean) => void;
+  setAuthKey: (authKey: string) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchType;
 
 const App: React.FC<PropsType> = (props): JSX.Element => {
-  const { isAuth, isInitialized, setInitializeStatus } = props;
-  const authKey = get('authKey');
+  const {
+    isAuth,
+    isInitialized,
+    setInitializeStatus,
+    setAuthKey,
+    authKey,
+  } = props;
 
   useEffect(() => {
-    if (!isAuth && authKey) {
-      props.authMe(authKey);
+    const localAuthKey = get('authKey');
+    if (localAuthKey) {
+      setAuthKey(localAuthKey);
     } else {
       setInitializeStatus(true);
+    }
+    if (!isAuth && authKey) {
+      props.authMe(authKey);
     }
   });
 
@@ -56,6 +68,7 @@ const App: React.FC<PropsType> = (props): JSX.Element => {
             <Route path="*" render={() => <Redirect to="/game" />} />
           </Switch>
           <Footer />
+          <Notification />
         </>
       )}
     </>
@@ -66,6 +79,7 @@ const mapStateToProps = (state: AppStateType) => {
   return {
     isAuth: state.authData.isAuth,
     isInitialized: state.authData.isInitialized,
+    authKey: state.authData.authKey,
   };
 };
 

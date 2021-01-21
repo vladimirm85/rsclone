@@ -7,6 +7,7 @@ import {
   SET_LOGIN_LOADING,
   SET_MODAL,
   SET_INITIALIZE_STATUS,
+  SET_AUTH_KEY,
 } from '../actions/authActions';
 import { actions } from '../action-creators/auth-ac';
 
@@ -20,6 +21,7 @@ const initialState = {
   isModalOpen: false,
   isInitialized: false,
   userScore: 0,
+  authKey: '',
 };
 
 type InitialStateType = typeof initialState;
@@ -41,6 +43,7 @@ const authReducer = (
     case SET_MODAL:
     case SET_INITIALIZE_STATUS:
     case SET_AUTH_USER_DATA:
+    case SET_AUTH_KEY:
       return {
         ...state,
         ...action.payload,

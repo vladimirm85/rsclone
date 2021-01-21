@@ -6,3 +6,4 @@ export const SET_LOGIN_ERROR = 'SET_LOGIN_ERROR';
 export const SET_LOGIN_LOADING = 'SET_LOGIN_LOADING';
 export const SET_MODAL = 'SET_MODAL';
 export const SET_INITIALIZE_STATUS = 'SET_INITIALIZE_STATUS';
+export const SET_AUTH_KEY = 'SET_AUTH_KEY';

@@ -50,7 +50,14 @@
 }
 
 .footer-year {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: 'Roboto', sans-serif;
   padding-bottom: 40px;
+
+  img {
+    width: 20px;
+    margin: 0 5px 0 10px;
+  }
 }

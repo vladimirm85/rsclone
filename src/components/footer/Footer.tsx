@@ -1,6 +1,9 @@
 import React from 'react';
 import './footer.scss';
 import rs from '../../assets/img/rs_school_js.svg';
+import belarus from '../../assets/img/belarus.jpg';
+import russia from '../../assets/img/russia.jpg';
+import ukraine from '../../assets/img/ukraine.jpg';
 
 const Footer: React.FC = (): JSX.Element => {
   return (
@@ -43,7 +46,12 @@ const Footer: React.FC = (): JSX.Element => {
             </a>
           </div>
         </div>
-        <div className="footer-year">2021 Minsk, Kiev, St. Petersburg</div>
+        <div className="footer-year">
+          2021
+          <img src={belarus} alt="belarus" /> Minsk,
+          <img src={ukraine} alt="ukraine" /> Kiev,
+          <img src={russia} alt="russia" /> St. Petersburg
+        </div>
       </div>
     </footer>
   );

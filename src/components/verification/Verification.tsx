@@ -59,15 +59,7 @@ const Verification: React.FC<RouteComponentProps & PropsType> = (
                     align="center"
                     paragraph
                   >
-                    Log in to the game using your e-mail and password.
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    component="p"
-                    align="center"
-                    color="textSecondary"
-                  >
-                    Login form will open automatically
+                    You will enter the game automatically after 5 seconds.
                   </Typography>
                 </>
               ) : (

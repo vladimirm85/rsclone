@@ -5,6 +5,7 @@ import {
   SET_VERIFY_ERROR,
 } from '../actions/verifyActions';
 import verifyApi from '../../api/verify-api';
+import { set } from '../../helpers/storage';
 import { actions as authActions } from './auth-ac';
 
 export const actions = {
@@ -30,13 +31,14 @@ export const verifyEmail = (key: string) => async (dispatch: Dispatch) => {
   try {
     const data = await verifyApi.verifyEmail(key);
     if (data.data.success) {
+      const authKey = data.data.payload;
+      set('authKey', authKey);
       dispatch(actions.setVerifyStatus(true));
       setTimeout(() => {
-        dispatch(authActions.setModal(true));
-      }, 4000);
-      dispatch(actions.setVerifyError(''));
+        dispatch(authActions.setAuthKey(authKey));
+      }, 5000);
     } else {
-      dispatch(actions.setVerifyStatus(false));
+      dispatch(actions.setVerifyError(data.data.message));
     }
   } catch (e) {
     dispatch(actions.setVerifyError(e.message));
