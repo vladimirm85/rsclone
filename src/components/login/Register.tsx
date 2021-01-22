@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Typography } from '@material-ui/core';
@@ -10,16 +9,7 @@ import {
   actions,
 } from '../../store/action-creators/registration-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
-
-const useStyles = makeStyles((theme) => ({
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+import { useRegisterStyles } from './style';
 
 type InputPropsType = {
   setIsLoginModal: (arg: boolean) => void;
@@ -50,7 +40,7 @@ type MapDispatchPropsType = {
 type PropsType = InputPropsType & MapStatePropsType & MapDispatchPropsType;
 
 const Register: React.FC<PropsType> = (props): JSX.Element => {
-  const classes = useStyles();
+  const classes = useRegisterStyles();
   const {
     setIsLoginModal,
     regEmail,

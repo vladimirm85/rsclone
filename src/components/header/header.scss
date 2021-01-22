@@ -2,66 +2,94 @@
   text-decoration: underline !important;
 }
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-
-  &__img {
-    line-height: 0;
-
-    img {
-      width: 200px;
-    }
+header {
+  @media (max-width: 870px) {
+    margin-bottom: 30px;
   }
 
-  &__nav {
-    border-radius: 13px;
-    overflow: hidden;
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
 
-    ul {
-      display: flex;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.5rem;
-      color: #565656;
+    @media (max-width: 870px) {
+      flex-direction: column;
+      align-items: center;
+    }
 
-      li {
+    &__img {
+      line-height: 0;
+
+      @media (max-width: 870px) {
+        margin-bottom: 25px;
+      }
+
+      img {
+        width: 200px;
+      }
+    }
+
+    &__nav {
+      border-radius: 13px;
+      overflow: hidden;
+
+      ul {
         display: flex;
-        transition: background .3s;
+        font-family: 'Fredoka One', cursive;
+        font-size: 1.5rem;
+        color: #565656;
 
-        &:hover {
-          color: white;
-          background: #00ACAE;
+        @media (max-width: 640px) {
+          font-size: 1.2rem;
         }
 
-        &:active {
-          background: #009092;
-        }
+        li {
+          display: flex;
+          transition: background .3s;
 
-        &:not(:last-child) {
-          border-right: 1px solid rgba(0, 0, 0, 0.3);
-        }
+          &:hover {
+            color: white;
+            background: #00ACAE;
+          }
 
-        a {
-          padding: 20px;
-          text-decoration: none;
-          color: inherit;
-          background: transparent;
-          transition: .3s;
-        }
+          &:active {
+            background: #009092;
+          }
 
-        button {
-          padding: 20px;
-          border: none;
-          background: transparent;
-          font-family:inherit;
-          font-size: inherit;
-          color: inherit;
-          outline: none;
-          cursor: pointer;
+          &:not(:last-child) {
+            border-right: 1px solid rgba(0, 0, 0, 0.3);
+          }
+
+          a {
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            background: transparent;
+            transition: .3s;
+
+            @media (max-width: 640px) {
+              padding: 10px;
+            }
+          }
+
+          button {
+            padding: 20px;
+            border: none;
+            background: transparent;
+            font-family:inherit;
+            font-size: inherit;
+            color: inherit;
+            outline: none;
+            cursor: pointer;
+
+            @media (max-width: 640px) {
+              padding: 10px;
+            }
+          }
         }
       }
     }
   }
 }
+

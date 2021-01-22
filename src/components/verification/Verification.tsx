@@ -2,16 +2,10 @@ import React, { useEffect } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { AppStateType } from '../../store/store';
 import { verifyEmail } from '../../store/action-creators/verify-ac';
 import Preloader from '../common/Preloader/Preloader';
-
-const useStyles = makeStyles({
-  root: {
-    color: 'green',
-  },
-});
+import useStyles from './style';
 
 type PropsType = {
   isLoading: boolean;

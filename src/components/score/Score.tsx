@@ -1,20 +1,21 @@
 import React, { useEffect } from 'react';
 import './score.scss';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  FormControl,
+  MenuItem,
+  InputLabel,
+  Paper,
+  Select,
+  TableRow,
+  TableHead,
+  TableContainer,
+  TableCell,
+  TableBody,
+  Table,
+} from '@material-ui/core';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
 import {
@@ -25,30 +26,7 @@ import {
 import { get } from '../../helpers/storage';
 import { ScoreType } from '../../types/types';
 import Preloader from '../common/Preloader/Preloader';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    error: {
-      color: 'red',
-    },
-    formControl: {
-      marginBottom: theme.spacing(3),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    table: {
-      minWidth: 650,
-      '& th': {
-        fontSize: '1.3rem',
-      },
-      '& td': {
-        fontSize: '1.1rem',
-      },
-    },
-  }),
-);
+import useStyles from './style';
 
 type MapStateToPropsType = {
   totalScore: Array<ScoreType>;

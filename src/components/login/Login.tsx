@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Typography } from '@material-ui/core';
@@ -10,16 +9,7 @@ import {
   actions,
 } from '../../store/action-creators/auth-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
-
-const useStyles = makeStyles((theme) => ({
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+import { useLoginStyles } from './style';
 
 type MapStatePropsType = {
   email: string;
@@ -43,7 +33,7 @@ type InputPropsType = {
 type PropsType = MapStatePropsType & MapDispatchPropsType & InputPropsType;
 
 const Login: React.FC<PropsType> = (props): JSX.Element => {
-  const classes = useStyles();
+  const classes = useLoginStyles();
   const {
     setIsLoginModal,
     email,
