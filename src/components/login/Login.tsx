@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import { Typography } from '@material-ui/core';
+import { Typography, Grid, Button, TextField } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { AppStateType } from '../../store/store';
 import {
@@ -27,7 +25,7 @@ type MapDispatchPropsType = {
 };
 
 type InputPropsType = {
-  setIsLoginModal: (isLoginModal: boolean) => void;
+  setModalType: (arg: 'login' | 'register' | 'restorePass') => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType & InputPropsType;
@@ -35,7 +33,7 @@ type PropsType = MapStatePropsType & MapDispatchPropsType & InputPropsType;
 const Login: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useLoginStyles();
   const {
-    setIsLoginModal,
+    setModalType,
     email,
     password,
     setEmail,
@@ -79,7 +77,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           id="email"
           label="Email Address"
           name="email"
-          autoComplete="email"
+          autoComplete="on"
           value={email}
           onChange={emailHandler}
           autoFocus
@@ -95,7 +93,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           id="password"
           value={password}
           onChange={passwordHandler}
-          autoComplete="current-password"
+          autoComplete="on"
         />
         {loginError && (
           <Typography component="p" variant="subtitle1" color="error">
@@ -112,9 +110,18 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
         >
           {isLoading ? <AuthPreloader /> : 'Go!'}
         </Button>
-        <Button size="small" onClick={() => setIsLoginModal(false)}>
-          Dont have an account? Register -&gt;
-        </Button>
+        <Grid container>
+          <Grid item xs>
+            <Button size="small" onClick={() => setModalType('restorePass')}>
+              Forgot pass?
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button size="small" onClick={() => setModalType('register')}>
+              Dont have an account? Register
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </>
   );

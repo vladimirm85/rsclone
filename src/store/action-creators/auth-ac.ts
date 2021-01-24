@@ -3,12 +3,14 @@ import {
   SET_LOGIN_EMAIL,
   SET_LOGIN_PASSWORD,
   SET_AUTH_STATUS,
-  SET_AUTH_USER_DATA,
+  SET_AUTH_USER_EMAIL,
   SET_LOGIN_ERROR,
   SET_LOGIN_LOADING,
   SET_MODAL,
   SET_INITIALIZE_STATUS,
   SET_NOTIFY_MODAL,
+  SET_USER_AVATAR,
+  SET_TOTAL_USER_SCORE,
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
 import { del, set } from '../../helpers/storage';
@@ -29,10 +31,15 @@ export const actions = {
       type: SET_AUTH_STATUS,
       payload: { isAuth },
     } as const),
-  setAuthUserData: (authEmail: string, userScore: number) =>
+  setAuthUserEmail: (authEmail: string) =>
     ({
-      type: SET_AUTH_USER_DATA,
-      payload: { authEmail, userScore },
+      type: SET_AUTH_USER_EMAIL,
+      payload: { authEmail },
+    } as const),
+  setTotalUserScore: (userTotalScore: number) =>
+    ({
+      type: SET_TOTAL_USER_SCORE,
+      payload: { userTotalScore },
     } as const),
   setLoading: (isLoading: boolean) =>
     ({
@@ -59,18 +66,19 @@ export const actions = {
       type: SET_NOTIFY_MODAL,
       payload: { notifyShow },
     } as const),
+  setUserAvatar: (avatar: string) =>
+    ({
+      type: SET_USER_AVATAR,
+      payload: { avatar },
+    } as const),
 };
 
 export const authMe = (key: string) => async (dispatch: Dispatch) => {
   try {
     const data = await authApi.me(key);
     if (data.data.success) {
-      dispatch(
-        actions.setAuthUserData(
-          data.data.payload.email,
-          data.data.payload.totalScore,
-        ),
-      );
+      dispatch(actions.setAuthUserEmail(data.data.payload.email));
+      dispatch(actions.setTotalUserScore(data.data.payload.totalScore));
       dispatch(actions.setAuthStatus(true));
     }
   } catch (e) {
@@ -98,4 +106,15 @@ export const loginAndSetUserData = (email: string, password: string) => async (
     dispatch(actions.setLoginError(e.message));
   }
   dispatch(actions.setLoading(false));
+};
+
+export const loadAvatar = (
+  photoFile: string | ArrayBuffer | null | undefined,
+  key: string,
+) => async (dispatch: Dispatch) => {
+  try {
+    const data = await authApi.savePhoto(photoFile, key);
+  } catch (e) {
+    console.log(e.message);
+  }
 };

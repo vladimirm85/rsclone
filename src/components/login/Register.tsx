@@ -12,7 +12,7 @@ import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { useRegisterStyles } from './style';
 
 type InputPropsType = {
-  setIsLoginModal: (arg: boolean) => void;
+  setModalType: (arg: 'login' | 'register' | 'restorePass') => void;
   setModal: (arg: boolean) => void;
 };
 
@@ -42,7 +42,7 @@ type PropsType = InputPropsType & MapStatePropsType & MapDispatchPropsType;
 const Register: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useRegisterStyles();
   const {
-    setIsLoginModal,
+    setModalType,
     regEmail,
     regPassword,
     regRepeatPassword,
@@ -77,7 +77,7 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
     setModal(false);
     setTimeout(() => {
       setIsRegistered(false);
-      setIsLoginModal(true);
+      setModalType('login');
     }, 500);
   };
 
@@ -143,8 +143,8 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
             >
               {isLoading ? <AuthPreloader /> : 'Register!'}
             </Button>
-            <Button size="small" onClick={() => setIsLoginModal(true)}>
-              &lt;- Return to login page
+            <Button size="small" onClick={() => setModalType('login')}>
+              Return to login page
             </Button>
           </form>
         </>

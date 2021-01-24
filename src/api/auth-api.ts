@@ -7,11 +7,20 @@ const authApi = {
         email,
         password,
       })
-      .then((res) => res);
+      .then((res) => res.data);
   },
   me(key: string) {
     return api
       .get('account', { headers: { Authorization: key } })
+      .then((res) => res);
+  },
+  savePhoto(photoFile: string | ArrayBuffer | null | undefined, key: string) {
+    return api
+      .post('account/set-avatar', photoFile, {
+        headers: {
+          Authorization: key,
+        },
+      })
       .then((res) => res);
   },
 };

@@ -14,6 +14,7 @@ import { get } from './helpers/storage';
 import { AppStateType } from './store/store';
 import { authMe, actions } from './store/action-creators/auth-ac';
 import Preloader from './components/common/Preloader/Preloader';
+import NewPasswordW from './components/new-password/NewPassword';
 
 type MapStatePropsType = {
   isAuth: boolean;
@@ -73,7 +74,8 @@ const App: React.FC<PropsType> = (props): JSX.Element => {
             <Route path="/score" render={() => <ScoreW />} />
             <Route path="/game" render={() => <Canvas />} />
             <Route path="/settings" render={() => <SettingsW />} />
-            <Route path="/verify" component={VerificationW} />
+            <Route path="/verify/*" component={VerificationW} />
+            <Route path="/forgot-password/*" component={NewPasswordW} />
             <Route path="*" render={() => <Redirect to="/game" />} />
           </Switch>
           <Footer />
