@@ -1,10 +1,6 @@
-import {
-  KEYS,
-  gameWidth,
-  PlatformConstructor,
-  PlatformInterface,
-} from './constants';
+import { KEYS, gameWidth } from './constants';
 import { sprites } from './utils/preload';
+import { PlatformConstructor, PlatformInterface } from './interfaces';
 
 export default class Platform implements PlatformInterface {
   velocity: number;
@@ -13,6 +9,7 @@ export default class Platform implements PlatformInterface {
   y: number;
   width: number;
   height: number;
+  size: number;
   constructor(props: PlatformConstructor) {
     ({
       velocity: this.velocity,
@@ -21,8 +18,23 @@ export default class Platform implements PlatformInterface {
       y: this.y,
       width: this.width,
       height: this.height,
+      size: this.size, // TODO: RENAME?
     } = props);
   }
+
+  draw = (ctx: CanvasRenderingContext2D): void => {
+    ctx.drawImage(
+      sprites.platform!,
+      0,
+      this.size * this.height,
+      this.width,
+      this.height,
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+    );
+  };
 
   start = (direction: string): void => {
     if (direction === KEYS.LEFT) {
@@ -42,13 +54,6 @@ export default class Platform implements PlatformInterface {
     }
   };
 
-  getTouchOffset = (x: number): number => {
-    const diff = this.x + this.width - x;
-    const offset = this.width - diff;
-    const result = (2 * offset) / this.width;
-    return result - 1;
-  };
-
   collideBounds = (): void => {
     const platformLeft = this.x + this.dx;
     const platformRight = platformLeft + this.width;
@@ -62,18 +67,17 @@ export default class Platform implements PlatformInterface {
     if (platformRight > gameWidth) {
       this.dx = 0;
       this.x = gameWidth - this.width;
-      // console.log(this.x);
     }
   };
 
-  getDx = (): number => {
-    return this.dx;
-  };
-
-  getMiddlePlatformPosition = (): number => this.x + this.width / 2;
-
-  draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.drawImage(sprites.platform!, this.x, this.y);
+  changeSize = (option: string) => {
+    if (option === 'increase' && this.size <= 3) {
+      this.size += 1;
+      this.width += 20;
+    } else if (option === 'decrease' && this.size >= 1) {
+      this.size -= 1;
+      this.width -= 20;
+    }
   };
 
   getCurrentPlatformData = (): PlatformConstructor => {
@@ -84,6 +88,26 @@ export default class Platform implements PlatformInterface {
       y: this.y,
       width: this.width,
       height: this.height,
+      size: this.size,
     };
   };
+
+  getTouchOffset = (x: number): number => {
+    const diff = this.x + this.width - x;
+    const offset = this.width - diff;
+    const result = (2 * offset) / this.width;
+    return result - 1;
+  };
+
+  getMiddlePlatformPosition = (): number => this.x + this.width / 2;
+
+  getDx = (): number => this.dx;
+
+  getX = (): number => this.x;
+
+  getY = (): number => this.y;
+
+  getWidth = (): number => this.width;
+
+  getHeight = (): number => this.height;
 }

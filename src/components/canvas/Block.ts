@@ -1,35 +1,32 @@
-import { BlockDataInterface, BlockInterface } from './constants';
+import { blockHeight, blockWidth } from './constants';
 import { sprites } from './utils/preload';
+import { BlockDataInterface, BlockInterface } from './interfaces';
 
 export default class Block implements BlockInterface {
   x: number;
   y: number;
   lives: number;
-  width: number;
-  height: number;
+  // width: number;
+  // height: number;
+
   constructor(props: BlockDataInterface) {
     ({ x: this.x, y: this.y, lives: this.lives } = props);
-    this.width = 50;
-    this.height = 18;
+    // this.width = blockWidth; // TODO: Go constant ?
+    // this.height = blockHeight; // TODO: Go constant ?
   }
 
   draw = (ctx: CanvasRenderingContext2D): void => {
     ctx.drawImage(
       sprites.block!,
-      (this.lives - 1) * this.width,
+      (this.lives - 1) * blockWidth,
       0,
-      this.width,
-      this.height,
+      blockWidth,
+      blockHeight,
       this.x,
       this.y,
-      this.width,
-      this.height,
+      blockWidth,
+      blockHeight,
     );
-    // ctx.drawImage(sprites.block!, this.x, this.y);
-  };
-
-  isActive = (): boolean => {
-    return !!this.lives;
   };
 
   reduceLives = (): void => {
@@ -42,7 +39,13 @@ export default class Block implements BlockInterface {
     lives: this.lives,
   });
 
-  getBlockX = (): number => this.x;
+  isActive = (): boolean => !!this.lives;
 
-  getBlockWidth = (): number => this.width;
+  getX = (): number => this.x;
+
+  getY = (): number => this.y;
+
+  getWidth = (): number => blockWidth;
+
+  getHeight = (): number => blockHeight;
 }
