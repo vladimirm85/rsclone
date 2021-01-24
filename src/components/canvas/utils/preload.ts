@@ -3,12 +3,19 @@ import bgSprite from '../assets/img/background.png';
 import ballSprite from '../assets/img/ball.png';
 import platformSprite from '../assets/img/platform.png';
 import blockSprite from '../assets/img/block.png';
+import bonusSprite from '../assets/img/bonus.png';
 
 // Import sounds
 // @ts-ignore
 import collideSound from '../assets/sound/pim.mp3';
 
-const spritesLinks = [bgSprite, ballSprite, platformSprite, blockSprite];
+const spritesLinks = [
+  bgSprite,
+  ballSprite,
+  platformSprite,
+  blockSprite,
+  bonusSprite,
+];
 const soundsLinks = [collideSound];
 
 type HTMLOrNull = HTMLImageElement | null;
@@ -18,6 +25,7 @@ interface Sprites {
   ball: HTMLOrNull;
   platform: HTMLOrNull;
   block: HTMLOrNull;
+  bonus: HTMLOrNull;
 }
 
 export const sprites: Sprites = {
@@ -25,6 +33,7 @@ export const sprites: Sprites = {
   ball: null,
   platform: null,
   block: null,
+  bonus: null,
 };
 
 interface Sounds {
