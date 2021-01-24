@@ -20,6 +20,7 @@ export default class Game implements GameInterface {
   currentLevel: number;
   numberOfLives: number;
   score: number;
+  numberOfMisses: number;
   ball: BallInterface;
   platform: PlatformInterface;
   // blocksInAllLevels: BlocksData[];
@@ -34,6 +35,7 @@ export default class Game implements GameInterface {
     this.currentLevel = props.initLevel;
     this.numberOfLives = props.numberOfLives;
     this.score = props.score;
+    this.numberOfMisses = props.numberOfMisses;
     this.ball = new Ball(props.ballData);
     this.platform = new Platform(props.platformData);
     // this.blocksInAllLevels = blocksInAllLevels;
@@ -86,6 +88,17 @@ export default class Game implements GameInterface {
       this.bonuses.forEach((bonus) => {
         bonus.draw(ctx);
       });
+    }
+
+    ctx.font = 'normal 20px sans-serif';
+    ctx.fillStyle = '#1C03FF';
+    ctx.fillText(`Score: ${this.score}`, 10, gameHeight - 10);
+
+    for (let i = 0; i < this.numberOfLives; i += 1) {
+      ctx.beginPath();
+      ctx.fillStyle = '#FFFB00';
+      ctx.arc(gameWidth - 60 + 20 * i, gameHeight - 20, 5, 0, 2 * Math.PI);
+      ctx.fill();
     }
   };
 
@@ -140,15 +153,17 @@ export default class Game implements GameInterface {
     this.bonuses.push(bonus);
   };
 
-  checkHitsOnBlocks = (): void => {
+  checkHitOnBlocks = (): void => {
     this.deleteNoActiveBlocks();
     this.blocks.forEach((block: BlockInterface) => {
       if (block.isActive() && this.ballIsCollide(block)) {
+        console.log(this.numberOfMisses);
         if (isBonusGenerated()) {
           this.spawnNewBonus(block);
         }
         block.reduceLives();
         this.ball.changeDirection(block.getX(), block.getWidth());
+        this.addScorePoint();
         sounds.pim!.currentTime = 0;
         sounds.pim!.play();
       }
@@ -161,15 +176,32 @@ export default class Game implements GameInterface {
         this.ball.getTouchX(),
       );
       this.ball.platformBounce(this.platform.getDx(), platformTouchOffset);
+      this.increaseBlockMiss();
+    }
+  };
+
+  checkLifeLost = (): void => {
+    if (this.ball.getY() > gameHeight && this.numberOfLives > 0) {
+      console.log('Reduce life!');
+      this.reduceLives();
+      this.ball.setStartPosition();
+      this.platform.setStartPosition();
+      this.clearBonuses();
+      if (this.numberOfLives === 0) {
+        console.log('GAME OVER');
+      }
     }
   };
 
   updateCurrentStateGame = (): void => {
-    this.checkHitsOnBlocks();
+    this.checkLifeLost();
+    this.checkHitOnBlocks(); // TODO:
     this.bonusIsCollide();
     this.collidePlatformWithBall();
-    this.ball.collideBounds(); // TODO: BORDER!
-    this.platform.collideBounds(); // TODO: BORDER!
+    if (this.ball.collideBounds()) {
+      this.increaseBlockMiss();
+    }
+    this.platform.collideBounds();
     this.platform.move();
     if (!this.ball.getRunStatus()) {
       this.ball.moveWithPlatform(this.platform.getMiddlePlatformPosition());
@@ -183,6 +215,24 @@ export default class Game implements GameInterface {
     }
   };
 
+  addScorePoint = (): void => {
+    this.score += 100 * this.getScoreRatio();
+    this.resetBlockMisses();
+  };
+
+  getScoreRatio = (): number => {
+    // if (!this.numberOfMisses) return 1;
+    return +(1 / this.numberOfMisses).toFixed(1);
+  };
+
+  increaseBlockMiss = (): void => {
+    this.numberOfMisses += 1;
+  };
+
+  resetBlockMisses = (): void => {
+    this.numberOfMisses = 1;
+  };
+
   getCurrentGameState = () => ({
     numberOfLives: this.numberOfLives,
     score: this.score,
@@ -193,6 +243,14 @@ export default class Game implements GameInterface {
 
   deleteNoActiveBlocks = (): void => {
     this.blocks = this.blocks.filter((block) => block.isActive());
+  };
+
+  reduceLives = (): void => {
+    this.numberOfLives -= 1;
+  };
+
+  clearBonuses = (): void => {
+    this.bonuses = [];
   };
 
   setIsPause = (option: boolean): void => {

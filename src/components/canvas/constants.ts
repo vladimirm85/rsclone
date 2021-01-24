@@ -74,6 +74,7 @@ export const initialGameData: GameConstructor = {
   initLevel: 0,
   numberOfLives: 3,
   score: 0,
+  numberOfMisses: 1,
   ballData: ballStartData,
   platformData: platformStartData,
   blocksData: blocksLevelsData[0], // TODO: REFACTOR!

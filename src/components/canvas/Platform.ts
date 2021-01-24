@@ -1,4 +1,4 @@
-import { KEYS, gameWidth } from './constants';
+import { KEYS, gameWidth, ballStartData, platformStartData } from './constants';
 import { sprites } from './utils/preload';
 import { PlatformConstructor, PlatformInterface } from './interfaces';
 
@@ -46,6 +46,15 @@ export default class Platform implements PlatformInterface {
 
   stop = (): void => {
     this.dx = 0;
+  };
+
+  setStartPosition = (): void => {
+    this.velocity = platformStartData.velocity;
+    this.dx = platformStartData.dx;
+    this.x = platformStartData.x;
+    this.y = platformStartData.y;
+    this.width = platformStartData.width;
+    this.size = platformStartData.size;
   };
 
   move = (): void => {

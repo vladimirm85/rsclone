@@ -12,6 +12,7 @@ export interface GameData {
 export interface GameInit {
   numberOfLives: number;
   score: number;
+  numberOfMisses: number;
   blocksData: BlocksData;
 }
 
@@ -31,10 +32,17 @@ export interface GameInterface extends GameInit {
   bonusIsCollide: () => void;
   bonusDelete: (bonus: BonusInterface) => void;
   spawnNewBonus: (bonus: BlockInterface) => void;
-  checkHitsOnBlocks: () => void;
+  checkHitOnBlocks: () => void;
   collidePlatformWithBall: () => void;
+  checkLifeLost: () => void;
   updateCurrentStateGame: () => void;
+  addScorePoint: () => void;
+  getScoreRatio: () => number;
+  increaseBlockMiss: () => void;
+  resetBlockMisses: () => void;
   getCurrentGameState: () => void;
+  reduceLives: () => void;
+  clearBonuses: () => void;
   setIsPause: (option: boolean) => void;
   getIsPause: () => boolean;
 }
@@ -50,16 +58,18 @@ export interface BallConstructor extends GameData {
 export interface BallInterface extends BallConstructor {
   draw: (ctx: CanvasRenderingContext2D) => void;
   start: () => void;
-  stop: () => void;
+  // stop: () => void;
+  setStartPosition: () => void;
   move: () => void;
   moveWithPlatform: (platformMiddlePosition: number) => void;
   changeDirection: (blockX: number, blockWide: number) => void;
   platformBounce: (platformDx: number, platformTouchOffset: number) => void;
-  collideBounds: () => void;
+  collideBounds: () => boolean;
   getRunStatus: () => boolean;
-  getCurrentBallData: () => BallConstructor;
   changeSpeed: (option: string) => void;
+  getCurrentBallData: () => BallConstructor;
   animate: () => void;
+  stopAnimation: () => void;
   getTouchX: () => number;
   getDx: () => number;
   getDy: () => number;
@@ -141,6 +151,7 @@ export interface PlatformInterface extends PlatformConstructor {
   draw: (ctx: CanvasRenderingContext2D) => void;
   start: (code: string) => void;
   stop: () => void;
+  setStartPosition: () => void;
   move: () => void;
   collideBounds: () => void;
   changeSize: (option: string) => void;
