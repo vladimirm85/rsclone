@@ -14,20 +14,20 @@ const Canvas: React.FC = (): JSX.Element => {
     const context = canvas?.getContext('2d');
     let animationFrameId: number;
 
-    const game = new Game(initialGameData);
+    const game = new Game(initialGameData, context!);
     game.addListeners();
 
     let start: number | null = null;
-    const fpsDivider = 25;
-
+    const fpsDivider = 16;
     const render = (timestamp: number) => {
       if (timestamp > start! + fpsDivider) {
         if (context && !game.getIsPause()) {
           game.draw(context);
-          game.checkCurrentStateGame();
+          game.updateCurrentStateGame();
+          start = timestamp;
         }
-        start = timestamp;
       }
+      // @ts-ignore
       animationFrameId = window.requestAnimationFrame(render);
     };
 

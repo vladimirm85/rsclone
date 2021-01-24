@@ -1,11 +1,7 @@
-import {
-  gameWidth,
-  gameHeight,
-  BallInterface,
-  BallConstructor,
-} from './constants';
-import random from './helpers/random';
+import { gameWidth, gameHeight } from './constants';
+import getRandomValue from './helpers/getRandomValue';
 import { sprites } from './utils/preload';
+import { BallConstructor, BallInterface } from './interfaces';
 
 export default class Ball implements BallInterface {
   velocity: number;
@@ -32,11 +28,25 @@ export default class Ball implements BallInterface {
     } = props);
   }
 
+  draw = (ctx: CanvasRenderingContext2D): void => {
+    ctx.drawImage(
+      sprites.ball!,
+      this.frame * this.width,
+      0,
+      this.width,
+      this.height,
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+    );
+  };
+
   start = (): void => {
     if (!this.isRun) {
       this.isRun = true;
       this.dy = -this.velocity;
-      this.dx = random(-this.velocity, this.velocity);
+      this.dx = getRandomValue(-this.velocity, this.velocity);
 
       this.animate();
     }
@@ -48,15 +58,6 @@ export default class Ball implements BallInterface {
     this.dy = 0;
   };
 
-  animate = (): void => {
-    setInterval(() => {
-      this.frame += 1;
-      if (this.frame > 3) {
-        this.frame = 0;
-      }
-    }, 100);
-  };
-
   move = (): void => {
     if (this.dy) {
       this.y += this.dy;
@@ -64,6 +65,10 @@ export default class Ball implements BallInterface {
     if (this.dx) {
       this.x += this.dx;
     }
+  };
+
+  moveWithPlatform = (platformMiddlePosition: number): void => {
+    this.x = platformMiddlePosition - this.width / 2;
   };
 
   changeDirection = (blockX: number, blockWidth: number): void => {
@@ -91,23 +96,6 @@ export default class Ball implements BallInterface {
     }
   };
 
-  getTouchX = (): number => {
-    return this.x + this.width / 2;
-  };
-
-  changeSize = (option: string) => {
-    // TODO: FOR BONUS ?
-    if (this.width > 10 && this.width < 30) {
-      if (option === 'reduce') {
-        this.width -= 5;
-        this.height -= 5;
-      } else {
-        this.width += 5;
-        this.height += 5;
-      }
-    }
-  };
-
   collideBounds = (): void => {
     const ballLeft = this.x + this.dx;
     const ballRight = ballLeft + this.width;
@@ -127,30 +115,33 @@ export default class Ball implements BallInterface {
       this.y = 0;
       this.dy = this.velocity;
     } else if (ballBottom > gameHeight) {
-      this.stop();
-      window.location.reload();
+      this.dy *= -1;
+      // this.stop();
+      // window.location.reload();
     }
-  };
-
-  moveWithPlatform = (platformDx: number): void => {
-    this.x += platformDx;
   };
 
   getRunStatus = (): boolean => {
     return this.isRun;
   };
 
-  draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.drawImage(
-      sprites.ball!,
-      this.frame * this.width,
-      0,
-      this.width,
-      this.height,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
+  changeSpeed = (option: string): void => {
+    if (option === 'increase' && this.velocity <= 6) {
+      this.velocity *= 1.2;
+      this.dx *= 1.2;
+      this.dy *= 1.2;
+    } else if (option === 'decrease' && this.velocity >= 6) {
+      this.velocity /= 1.2;
+      this.dx /= 1.2;
+      this.dy /= 1.2;
+    }
+    console.log(
+      'this.ball.velocity',
+      this.velocity,
+      'this.ball.dx:',
+      this.dx,
+      'this.ball.dy:',
+      this.dy,
     );
   };
 
@@ -165,4 +156,29 @@ export default class Ball implements BallInterface {
     height: this.height,
     isRun: this.isRun,
   });
+
+  animate = (): void => {
+    setInterval(() => {
+      this.frame += 1;
+      if (this.frame > 3) {
+        this.frame = 0;
+      }
+    }, 100);
+  };
+
+  getTouchX = (): number => {
+    return this.x + this.width / 2;
+  };
+
+  getDx = (): number => this.dx;
+
+  getDy = (): number => this.dy;
+
+  getX = (): number => this.x;
+
+  getY = (): number => this.y;
+
+  getWidth = (): number => this.width;
+
+  getHeight = (): number => this.height;
 }
