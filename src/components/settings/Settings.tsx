@@ -2,50 +2,69 @@ import React from 'react';
 import './settings.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Button, ButtonGroup } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  Avatar,
+  Button,
+  ButtonGroup,
+  Typography,
+  TableContainer,
+  Table,
+  Paper,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from '@material-ui/core';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
 import { actions } from '../../store/action-creators/auth-ac';
 import { del } from '../../helpers/storage';
-
-const useStyles = makeStyles({
-  buttons: {
-    display: 'flex',
-    justifyContent: 'center',
-    color: '#565656',
-  },
-});
+import ava from '../../assets/img/8biticon.jpg';
+import useStyles from './style';
 
 type MapStateProps = {
   authEmail: string;
+  userScore: number;
 };
 
 type MapDispatchToProps = {
   setAuthStatus: (arg: boolean) => void;
-  setAuthEmail: (arg: string) => void;
-  setUserScore: (arg: number) => void;
+  setAuthUserData: (email: string, userScore: number) => void;
 };
 
 type PropsType = MapStateProps & MapDispatchToProps;
 
 const Settings: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useStyles();
-  const { authEmail, setAuthStatus, setAuthEmail, setUserScore } = props;
+  const { authEmail, setAuthStatus, setAuthUserData, userScore } = props;
   const name = authEmail.split('@')[0];
 
   const logout = () => {
     del('authKey');
-    setAuthEmail('');
-    setUserScore(0);
+    setAuthUserData('', 0);
     setAuthStatus(false);
   };
+
+  // const photoSelect = (e: ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files?.length) {
+  //     let file = e.target.files[0];
+  //   }
+  // };
 
   return (
     <main>
       <div className="container-inner">
         <div className="saves-content">
           <div className="main-title">Hello, {name}</div>
+          <Avatar alt="Avatar" src={ava} className={classes.large} />
+          <Typography
+            variant="overline"
+            component="p"
+            align="center"
+            className={classes.score}
+          >
+            Total score: {userScore}
+          </Typography>
           <ButtonGroup
             variant="text"
             color="inherit"
@@ -55,7 +74,31 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
           >
             <Button onClick={logout}>Logout</Button>
             <Button>Change pass</Button>
+            <Button>
+              <label htmlFor="avatar-input">
+                <input id="avatar-input" type="file" />
+                Change avatar
+              </label>
+            </Button>
           </ButtonGroup>
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Level</TableCell>
+                  <TableCell align="center">Score</TableCell>
+                  <TableCell align="center">Screen</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>test</TableCell>
+                  <TableCell align="center">test</TableCell>
+                  <TableCell align="center">test</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
       </div>
     </main>
@@ -64,6 +107,7 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
 
 const MapStateToProps = (state: AppStateType) => ({
   authEmail: state.authData.authEmail,
+  userScore: state.authData.userScore,
 });
 
 const SettingsW = compose<React.ComponentType>(

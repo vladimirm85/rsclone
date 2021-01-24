@@ -1,9 +1,10 @@
-export type DrawType = {
-  draw: (ctx: any, frameCount: number) => void;
+export type ScoreType = {
+  createdAt: string;
+  _id: string;
+  totalScore?: number;
+  userId?: string;
+  nickname: string;
+  __v: number;
+  score?: number;
+  level?: number;
 };
-
-declare module 'axios' {
-  export interface AxiosRequestConfig {
-    verificationKey?: string;
-  }
-}

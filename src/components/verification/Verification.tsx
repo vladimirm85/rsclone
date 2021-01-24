@@ -2,22 +2,16 @@ import React, { useEffect } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { AppStateType } from '../../store/store';
 import { verifyEmail } from '../../store/action-creators/verify-ac';
 import Preloader from '../common/Preloader/Preloader';
-
-const useStyles = makeStyles({
-  root: {
-    color: 'green',
-  },
-});
+import useStyles from './style';
 
 type PropsType = {
   isLoading: boolean;
   isVerify: boolean;
   isAuth: boolean;
-  verifyEmail: (arg: string) => void;
+  verifyEmail: (key: string) => void;
   verifyError: string;
 };
 
@@ -59,15 +53,7 @@ const Verification: React.FC<RouteComponentProps & PropsType> = (
                     align="center"
                     paragraph
                   >
-                    Log in to the game using your e-mail and password.
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    component="p"
-                    align="center"
-                    color="textSecondary"
-                  >
-                    Login form will open automatically
+                    You will enter the game automatically after 5 seconds.
                   </Typography>
                 </>
               ) : (

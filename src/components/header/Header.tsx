@@ -13,7 +13,7 @@ type MapStatePropsType = {
 };
 
 type MapDispatchPropsType = {
-  setModal: (arg: boolean) => void;
+  setModal: (isModalOpen: boolean) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
