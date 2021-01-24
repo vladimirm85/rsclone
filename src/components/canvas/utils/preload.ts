@@ -1,7 +1,7 @@
 // Import sprites
 import bgSprite from '../assets/img/background.png';
 import ballSprite from '../assets/img/ball.png';
-import platformSprite from '../assets/img/platformall.png';
+import platformSprite from '../assets/img/platform.png';
 import blockSprite from '../assets/img/block.png';
 import bonusSprite from '../assets/img/bonus.png';
 
