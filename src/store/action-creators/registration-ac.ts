@@ -55,8 +55,6 @@ export const registration = (
       dispatch(actions.setRegEmail(''));
       dispatch(actions.setRegPassword(''));
       dispatch(actions.setRegRepeatPassword(''));
-    } else {
-      dispatch(actions.setIsRegistered(false));
     }
   } catch (e) {
     dispatch(actions.setRegError(e.message));

@@ -6,9 +6,9 @@ const scoreApi = {
       .get(`total-score/?limit=${limit}`, { headers: { Authorization: key } })
       .then((res) => res);
   },
-  getLevelScore(key: string, lvl: number, limit: number) {
+  getLevelScore(key: string, lvl: number, limit: number, forUser = 0) {
     return api
-      .get(`levels-stats/?level=${lvl}&limit=${limit}`, {
+      .get(`levels-stats/?level=${lvl}&limit=${limit}&forUser=${forUser}`, {
         headers: { Authorization: key },
       })
       .then((res) => res);

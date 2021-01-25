@@ -35,14 +35,14 @@ type MapStateProps = {
   userScore: Array<ScoreType>;
   userScoreLoading: boolean;
   userScoreError: string;
+  avatarError: string;
 };
 
 type MapDispatchToProps = {
   setAuthStatus: (arg: boolean) => void;
   setAuthUserEmail: (authEmail: string) => void;
   setTotalUserScore: (totalScore: number) => void;
-  setUserAvatar: (avatar: string | ArrayBuffer | null | undefined) => void;
-  loadUserScore: (key: string, lvl: number) => void;
+  loadUserScore: (key: string, lvl: number, forUser: number) => void;
   loadAvatar: (
     photoFile: string | ArrayBuffer | null | undefined,
     key: string,
@@ -60,18 +60,18 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
     userTotalScore,
     setAuthUserEmail,
     setTotalUserScore,
-    setUserAvatar,
     avatar,
     userScore,
     userScoreLoading,
     userScoreError,
+    avatarError,
   } = props;
   const name = authEmail.split('@')[0];
   const authKey = get('authKey');
 
   useEffect(() => {
     if (userScore.length === 0 && !userScoreError) {
-      props.loadUserScore(authKey, 1);
+      props.loadUserScore(authKey, 1, 1);
     }
   });
 
@@ -82,22 +82,16 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
     setTotalUserScore(0);
   };
 
-  // const photoSelect = (e: ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files?.length) {
-  //     const file = e.target.files[0];
-  //     const key = get('authKey');
-  //     props.loadAvatar(file, key);
-  //   }
-  // };
+  const removeAvatar = () => {
+    props.loadAvatar(null, authKey);
+  };
 
   const photoSelect = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.length) {
-      const key = get('authKey');
       const file = event.target.files[0];
       const reader = new FileReader();
       reader.onload = (e) => {
-        setUserAvatar(e.target?.result);
-        props.loadAvatar(e.target?.result, key);
+        props.loadAvatar(e.target?.result, authKey);
       };
       reader.readAsDataURL(file);
     }
@@ -105,7 +99,7 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setScoreType(event.target.value as string);
-    props.loadUserScore(authKey, event.target.value as number);
+    props.loadUserScore(authKey, event.target.value as number, 1);
   };
 
   return (
@@ -136,7 +130,19 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
                 Change avatar
               </label>
             </Button>
+            <Button onClick={removeAvatar}>Remove avatar</Button>
           </ButtonGroup>
+          {avatarError && (
+            <Typography
+              component="p"
+              align="center"
+              variant="subtitle1"
+              color="error"
+              paragraph
+            >
+              {avatarError}
+            </Typography>
+          )}
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Score for:</InputLabel>
             <Select
@@ -168,9 +174,9 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
               <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Level</TableCell>
+                    <TableCell>Name</TableCell>
                     <TableCell align="center">Score</TableCell>
-                    <TableCell align="center">Screen</TableCell>
+                    <TableCell align="center">Date</TableCell>
                   </TableRow>
                 </TableHead>
                 {userScoreLoading ? (
@@ -204,6 +210,7 @@ const MapStateToProps = (state: AppStateType) => ({
   userScore: state.settingsData.userScore,
   userScoreLoading: state.settingsData.userScoreLoading,
   userScoreError: state.settingsData.userScoreError,
+  avatarError: state.authData.avatarError,
 });
 
 const SettingsW = compose<React.ComponentType>(

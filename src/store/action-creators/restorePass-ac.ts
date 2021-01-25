@@ -37,8 +37,6 @@ export const restore = (email: string) => async (dispatch: Dispatch) => {
     if (data.data.success) {
       dispatch(actions.setIsRestored(true));
       dispatch(actions.setRestoreEmail(''));
-    } else {
-      dispatch(actions.setIsRestored(false));
     }
   } catch (e) {
     dispatch(actions.setRestoreError(e.message));

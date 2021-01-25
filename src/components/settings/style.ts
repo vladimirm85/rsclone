@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       color: '#565656',
-      marginBottom: '35px',
+      marginBottom: '25px',
     },
     large: {
       width: '250px',

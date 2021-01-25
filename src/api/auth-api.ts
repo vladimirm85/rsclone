@@ -16,11 +16,15 @@ const authApi = {
   },
   savePhoto(photoFile: string | ArrayBuffer | null | undefined, key: string) {
     return api
-      .post('account/set-avatar', photoFile, {
-        headers: {
-          Authorization: key,
+      .post(
+        'account/set-avatar',
+        { avatar: photoFile },
+        {
+          headers: {
+            Authorization: key,
+          },
         },
-      })
+      )
       .then((res) => res);
   },
 };

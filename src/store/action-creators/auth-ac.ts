@@ -11,6 +11,7 @@ import {
   SET_NOTIFY_MODAL,
   SET_USER_AVATAR,
   SET_TOTAL_USER_SCORE,
+  SET_AVATAR_ERROR,
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
 import { del, set } from '../../helpers/storage';
@@ -66,10 +67,15 @@ export const actions = {
       type: SET_NOTIFY_MODAL,
       payload: { notifyShow },
     } as const),
-  setUserAvatar: (avatar: string) =>
+  setUserAvatar: (avatar: string | ArrayBuffer | null | undefined) =>
     ({
       type: SET_USER_AVATAR,
       payload: { avatar },
+    } as const),
+  setAvatarError: (avatarError: string) =>
+    ({
+      type: SET_AVATAR_ERROR,
+      payload: { avatarError },
     } as const),
 };
 
@@ -79,6 +85,7 @@ export const authMe = (key: string) => async (dispatch: Dispatch) => {
     if (data.data.success) {
       dispatch(actions.setAuthUserEmail(data.data.payload.email));
       dispatch(actions.setTotalUserScore(data.data.payload.totalScore));
+      dispatch(actions.setUserAvatar(data.data.payload.avatar));
       dispatch(actions.setAuthStatus(true));
     }
   } catch (e) {
@@ -101,8 +108,6 @@ export const loginAndSetUserData = (email: string, password: string) => async (
       dispatch(actions.setLoginError(''));
       dispatch(actions.setPassword(''));
       dispatch(actions.setEmail(''));
-    } else {
-      dispatch(actions.setLoginError(data.data.message));
     }
   } catch (e) {
     dispatch(actions.setLoginError(e.message));
@@ -114,9 +119,16 @@ export const loadAvatar = (
   photoFile: string | ArrayBuffer | null | undefined,
   key: string,
 ) => async (dispatch: Dispatch) => {
+  dispatch(actions.setAvatarError(''));
   try {
     const data = await authApi.savePhoto(photoFile, key);
+    if (data.data.success) {
+      dispatch(actions.setUserAvatar(data.data.payload.avatar));
+    }
+    if (data.data.statusCode === 404) {
+      dispatch(actions.setAvatarError('File should be < 76 kilobytes.'));
+    }
   } catch (e) {
-    console.log(e.message);
+    dispatch(actions.setAvatarError(e.message));
   }
 };

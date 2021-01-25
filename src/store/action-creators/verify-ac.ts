@@ -37,8 +37,6 @@ export const verifyEmail = (key: string) => async (dispatch: Dispatch) => {
       setTimeout(() => {
         dispatch(authActions.setInitializeStatus(false));
       }, 5000);
-    } else {
-      dispatch(actions.setVerifyError(data.data.message));
     }
   } catch (e) {
     dispatch(actions.setVerifyError(e.message));

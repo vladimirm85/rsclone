@@ -10,6 +10,7 @@ import {
   SET_NOTIFY_MODAL,
   SET_USER_AVATAR,
   SET_TOTAL_USER_SCORE,
+  SET_AVATAR_ERROR,
 } from '../actions/authActions';
 import { actions } from '../action-creators/auth-ac';
 
@@ -18,13 +19,14 @@ const initialState = {
   password: '',
   isAuth: false,
   authEmail: '',
-  avatar: '',
+  avatar: '' as string | ArrayBuffer | null | undefined,
   loginError: '',
   isLoading: false,
   isModalOpen: false,
   isInitialized: false,
   userTotalScore: 0,
   notifyShow: true,
+  avatarError: '',
 };
 
 type InitialStateType = typeof initialState;
@@ -49,6 +51,7 @@ const authReducer = (
     case SET_NOTIFY_MODAL:
     case SET_USER_AVATAR:
     case SET_TOTAL_USER_SCORE:
+    case SET_AVATAR_ERROR:
       return {
         ...state,
         ...action.payload,

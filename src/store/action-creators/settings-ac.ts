@@ -25,16 +25,16 @@ export const actions = {
     } as const),
 };
 
-export const loadUserScore = (key: string, lvl: number) => async (
-  dispatch: Dispatch,
-) => {
+export const loadUserScore = (
+  key: string,
+  lvl: number,
+  forUser: number,
+) => async (dispatch: Dispatch) => {
   dispatch(actions.setUserScoreLoading(true));
   try {
-    const data = await scoreApi.getLevelScore(key, lvl, 100);
+    const data = await scoreApi.getLevelScore(key, lvl, 100, forUser);
     if (data.data.success) {
       dispatch(actions.setUserScore(data.data.payload));
-    } else {
-      dispatch(actions.setUserScoreError(data.data.message));
     }
   } catch (e) {
     dispatch(actions.setUserScoreError(e.message));

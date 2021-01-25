@@ -54,8 +54,6 @@ export const changeOldPassword = (
       setTimeout(() => {
         dispatch(authActions.setInitializeStatus(false));
       }, 5000);
-    } else {
-      dispatch(actions.setNewPassStatus(false));
     }
   } catch (e) {
     dispatch(actions.setNewPassError(e.message));
