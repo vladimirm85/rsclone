@@ -97,7 +97,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
         />
         {loginError && (
           <Typography component="p" variant="subtitle1" color="error">
-            Incorrect email or password.
+            {loginError}
           </Typography>
         )}
         <Button

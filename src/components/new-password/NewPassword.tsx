@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { Typography, Container, TextField, Button } from '@material-ui/core';
 import { connect } from 'react-redux';
@@ -9,6 +9,7 @@ import {
   actions,
   changeOldPassword,
 } from '../../store/action-creators/newPass-ac';
+import { passValidator } from '../../helpers/validator';
 
 type MapStatePropsType = {
   newPass: string;
@@ -45,17 +46,28 @@ const NewPassword: React.FC<RouteComponentProps & PropsType> = (
   const url = location.pathname;
   const [key] = url.split('/').splice(-1);
 
+  const [passValidatorError, setPassValidatorError] = useState('');
+  const [repeatPassValidatorError, setRepeatPassValidatorError] = useState('');
+
   const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassValidatorError('');
     setNewPass(e.target.value);
   };
 
   const repeatPasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRepeatPassValidatorError('');
     setNewRepeatPass(e.target.value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    props.changeOldPassword(newPass, newRepeatPass, key);
+    const passValidate = passValidator(
+      newPass,
+      newRepeatPass,
+      setPassValidatorError,
+      setRepeatPassValidatorError,
+    );
+    if (passValidate) props.changeOldPassword(newPass, newRepeatPass, key);
   };
 
   return (
@@ -76,6 +88,7 @@ const NewPassword: React.FC<RouteComponentProps & PropsType> = (
                       onSubmit={handleSubmit}
                     >
                       <TextField
+                        error={!!passValidatorError}
                         variant="outlined"
                         margin="normal"
                         required
@@ -87,8 +100,10 @@ const NewPassword: React.FC<RouteComponentProps & PropsType> = (
                         value={newPass}
                         onChange={passwordHandler}
                         autoComplete="off"
+                        helperText={passValidatorError}
                       />
                       <TextField
+                        error={!!repeatPassValidatorError}
                         variant="outlined"
                         margin="normal"
                         required
@@ -100,6 +115,7 @@ const NewPassword: React.FC<RouteComponentProps & PropsType> = (
                         value={newRepeatPass}
                         onChange={repeatPasswordHandler}
                         autoComplete="off"
+                        helperText={repeatPassValidatorError}
                       />
                       {newPassError && (
                         <Typography

@@ -101,6 +101,8 @@ export const loginAndSetUserData = (email: string, password: string) => async (
       dispatch(actions.setLoginError(''));
       dispatch(actions.setPassword(''));
       dispatch(actions.setEmail(''));
+    } else {
+      dispatch(actions.setLoginError(data.data.message));
     }
   } catch (e) {
     dispatch(actions.setLoginError(e.message));

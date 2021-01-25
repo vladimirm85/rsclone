@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Typography } from '@material-ui/core';
@@ -10,6 +10,7 @@ import {
 } from '../../store/action-creators/registration-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { useRegisterStyles } from './style';
+import { emailValidator, passValidator } from '../../helpers/validator';
 
 type InputPropsType = {
   setModalType: (arg: 'login' | 'register' | 'restorePass') => void;
@@ -56,21 +57,37 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
     setIsRegistered,
   } = props;
 
+  const [emailValidatorError, setEmailValidatorError] = useState('');
+  const [passValidatorError, setPassValidatorError] = useState('');
+  const [repeatPassValidatorError, setRepeatPassValidatorError] = useState('');
+
   const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailValidatorError('');
     setRegEmail(e.target.value);
   };
 
   const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassValidatorError('');
     setRegPassword(e.target.value);
   };
 
   const repeatPasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRepeatPassValidatorError('');
     setRegRepeatPassword(e.target.value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    props.registration(regEmail, regPassword, regRepeatPassword);
+    const emailValidate = emailValidator(regEmail, setEmailValidatorError);
+    const passValidate = passValidator(
+      regPassword,
+      regRepeatPassword,
+      setPassValidatorError,
+      setRepeatPassValidatorError,
+    );
+    if (emailValidate && passValidate) {
+      props.registration(regEmail, regPassword, regRepeatPassword);
+    }
   };
 
   const handleSubmitVerify = () => {
@@ -90,6 +107,7 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField
+              error={!!emailValidatorError}
               variant="outlined"
               margin="normal"
               required
@@ -101,8 +119,10 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
               value={regEmail}
               onChange={emailHandler}
               autoFocus
+              helperText={emailValidatorError}
             />
             <TextField
+              error={!!passValidatorError}
               variant="outlined"
               margin="normal"
               required
@@ -114,8 +134,10 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
               value={regPassword}
               onChange={passwordHandler}
               autoComplete="off"
+              helperText={passValidatorError}
             />
             <TextField
+              error={!!repeatPassValidatorError}
               variant="outlined"
               margin="normal"
               required
@@ -127,6 +149,7 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
               value={regRepeatPassword}
               onChange={repeatPasswordHandler}
               autoComplete="off"
+              helperText={repeatPassValidatorError}
             />
             {regError && (
               <Typography component="p" variant="subtitle1" color="error">

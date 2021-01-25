@@ -7,7 +7,7 @@ const authApi = {
         email,
         password,
       })
-      .then((res) => res.data);
+      .then((res) => res);
   },
   me(key: string) {
     return api
