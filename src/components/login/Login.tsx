@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { AppStateType } from '../../store/store';
 import {
   loginAndSetUserData,
+  resendVerifyEmail,
   actions,
 } from '../../store/action-creators/auth-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
@@ -15,6 +16,7 @@ type MapStatePropsType = {
   isAuth: boolean;
   loginError: string;
   isLoading: boolean;
+  isResendButtonShow: boolean;
 };
 
 type MapDispatchPropsType = {
@@ -22,6 +24,7 @@ type MapDispatchPropsType = {
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
   setModal: (isModalOpen: boolean) => void;
+  resendVerifyEmail: (email: string) => void;
 };
 
 type InputPropsType = {
@@ -42,6 +45,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
     isAuth,
     loginError,
     isLoading,
+    isResendButtonShow,
   } = props;
 
   useEffect(() => {
@@ -61,6 +65,10 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     props.loginAndSetUserData(email, password);
+  };
+
+  const resendEmail = () => {
+    props.resendVerifyEmail(email);
   };
 
   return (
@@ -96,9 +104,16 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           autoComplete="on"
         />
         {loginError && (
-          <Typography component="p" variant="subtitle1" color="error">
-            {loginError}
-          </Typography>
+          <>
+            <Typography component="p" variant="subtitle1" color="error">
+              {loginError}
+              {isResendButtonShow && (
+                <Button size="small" onClick={resendEmail}>
+                  Resend verify email
+                </Button>
+              )}
+            </Typography>
+          </>
         )}
         <Button
           type="submit"
@@ -135,11 +150,14 @@ const mapStateToProps = (state: AppStateType) => {
     loginError: state.authData.loginError,
     isLoading: state.authData.isLoading,
     isModalOpen: state.authData.isModalOpen,
+    isResendButtonShow: state.authData.isResendButtonShow,
   };
 };
 
-const LoginW = connect(mapStateToProps, { loginAndSetUserData, ...actions })(
-  Login,
-);
+const LoginW = connect(mapStateToProps, {
+  loginAndSetUserData,
+  resendVerifyEmail,
+  ...actions,
+})(Login);
 
 export default LoginW;

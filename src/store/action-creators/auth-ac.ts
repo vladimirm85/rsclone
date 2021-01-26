@@ -12,6 +12,7 @@ import {
   SET_USER_AVATAR,
   SET_TOTAL_USER_SCORE,
   SET_AVATAR_ERROR,
+  SET_SHOW_RESEND_BUTTON,
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
 import { del, set } from '../../helpers/storage';
@@ -77,6 +78,11 @@ export const actions = {
       type: SET_AVATAR_ERROR,
       payload: { avatarError },
     } as const),
+  setShowResendButton: (isResendButtonShow: boolean) =>
+    ({
+      type: SET_SHOW_RESEND_BUTTON,
+      payload: { isResendButtonShow },
+    } as const),
 };
 
 export const authMe = (key: string) => async (dispatch: Dispatch) => {
@@ -99,6 +105,8 @@ export const loginAndSetUserData = (email: string, password: string) => async (
   dispatch: Dispatch,
 ) => {
   dispatch(actions.setLoading(true));
+  dispatch(actions.setShowResendButton(false));
+  dispatch(actions.setLoginError(''));
   try {
     const data = await authApi.login(email, password);
     if (data.data.success) {
@@ -110,7 +118,15 @@ export const loginAndSetUserData = (email: string, password: string) => async (
       dispatch(actions.setEmail(''));
     }
   } catch (e) {
-    dispatch(actions.setLoginError(e.message));
+    const errorMessage = e.message;
+    if (errorMessage.includes(409) || errorMessage.includes(422)) {
+      dispatch(actions.setLoginError('Incorrect email or password.'));
+    } else if (errorMessage.includes(401)) {
+      dispatch(actions.setLoginError('Account not verified.'));
+      dispatch(actions.setShowResendButton(true));
+    } else {
+      dispatch(actions.setLoginError(errorMessage));
+    }
   }
   dispatch(actions.setLoading(false));
 };
@@ -130,5 +146,16 @@ export const loadAvatar = (
     }
   } catch (e) {
     dispatch(actions.setAvatarError(e.message));
+  }
+};
+
+export const resendVerifyEmail = (email: string) => async (
+  dispatch: Dispatch,
+) => {
+  try {
+    const data = await authApi.sendVerifyEmail(email);
+    console.log(data);
+  } catch (e) {
+    dispatch(actions.setLoginError(e.message));
   }
 };

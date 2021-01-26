@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent } from 'react';
 import './settings.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -68,12 +68,6 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
   } = props;
   const name = authEmail.split('@')[0];
   const authKey = get('authKey');
-
-  useEffect(() => {
-    if (userScore.length === 0 && !userScoreError) {
-      props.loadUserScore(authKey, 1, 1);
-    }
-  });
 
   const logout = () => {
     del('authKey');

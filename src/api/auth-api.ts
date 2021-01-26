@@ -27,6 +27,13 @@ const authApi = {
       )
       .then((res) => res);
   },
+  sendVerifyEmail(email: string) {
+    return api
+      .post('account/resend-verify', {
+        email,
+      })
+      .then((res) => res);
+  },
 };
 
 export default authApi;

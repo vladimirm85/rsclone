@@ -11,6 +11,7 @@ import {
   SET_USER_AVATAR,
   SET_TOTAL_USER_SCORE,
   SET_AVATAR_ERROR,
+  SET_SHOW_RESEND_BUTTON,
 } from '../actions/authActions';
 import { actions } from '../action-creators/auth-ac';
 
@@ -27,6 +28,7 @@ const initialState = {
   userTotalScore: 0,
   notifyShow: true,
   avatarError: '',
+  isResendButtonShow: false,
 };
 
 type InitialStateType = typeof initialState;
@@ -52,6 +54,7 @@ const authReducer = (
     case SET_USER_AVATAR:
     case SET_TOTAL_USER_SCORE:
     case SET_AVATAR_ERROR:
+    case SET_SHOW_RESEND_BUTTON:
       return {
         ...state,
         ...action.payload,
