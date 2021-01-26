@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { Typography, Grid, Button, TextField } from '@material-ui/core';
 import { connect } from 'react-redux';
+import GoogleButton from 'react-google-button';
 import { AppStateType } from '../../store/store';
 import {
   loginAndSetUserData,
   resendVerifyEmail,
-  actions,
+  authActions,
 } from '../../store/action-creators/auth-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { useLoginStyles } from './style';
@@ -125,7 +126,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
         >
           {isLoading ? <AuthPreloader /> : 'Go!'}
         </Button>
-        <Grid container>
+        <Grid container className={classes.buttons}>
           <Grid item xs>
             <Button size="small" onClick={() => setModalType('restorePass')}>
               Forgot pass?
@@ -137,6 +138,13 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
             </Button>
           </Grid>
         </Grid>
+        <GoogleButton
+          className={classes.google}
+          onClick={() => {
+            window.location.href =
+              'https://arkanoid-rss-be.herokuapp.com/auth/google';
+          }}
+        />
       </form>
     </>
   );
@@ -157,7 +165,7 @@ const mapStateToProps = (state: AppStateType) => {
 const LoginW = connect(mapStateToProps, {
   loginAndSetUserData,
   resendVerifyEmail,
-  ...actions,
+  ...authActions,
 })(Login);
 
 export default LoginW;

@@ -1,9 +1,10 @@
 import {
+  RESET,
   SET_USER_SCORE,
   SET_USER_SCORE_ERROR,
   SET_USER_SCORE_LOADING,
 } from '../actions/settingsActions';
-import { actions } from '../action-creators/settings-ac';
+import { settingsActions } from '../action-creators/settings-ac';
 import { ScoreType } from '../../types/types';
 
 const initialState = {
@@ -16,7 +17,7 @@ type InitialStateType = typeof initialState;
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
-type ActionTypes = ReturnType<InferValueTypes<typeof actions>>;
+type ActionTypes = ReturnType<InferValueTypes<typeof settingsActions>>;
 
 const settingsReducer = (
   state = initialState,
@@ -30,6 +31,8 @@ const settingsReducer = (
         ...state,
         ...action.payload,
       };
+    case RESET:
+      return initialState;
     default:
       return state;
   }

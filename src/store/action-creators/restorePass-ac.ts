@@ -6,8 +6,9 @@ import {
   SET_RESTORE_STATUS,
 } from '../actions/restorePassActions';
 import restorePassApi from '../../api/restorePass-api';
+import { RESET } from '../actions/settingsActions';
 
-export const actions = {
+export const restoreActions = {
   setRestoreEmail: (restoreEmail: string) =>
     ({
       type: SET_RESTORE_EMAIL,
@@ -28,18 +29,19 @@ export const actions = {
       type: SET_RESTORE_LOADING,
       payload: { isLoading },
     } as const),
+  reset: () => ({ type: RESET } as const),
 };
 
 export const restore = (email: string) => async (dispatch: Dispatch) => {
-  dispatch(actions.setLoading(true));
+  dispatch(restoreActions.setLoading(true));
   try {
     const data = await restorePassApi.restore(email);
     if (data.data.success) {
-      dispatch(actions.setIsRestored(true));
-      dispatch(actions.setRestoreEmail(''));
+      dispatch(restoreActions.setIsRestored(true));
+      dispatch(restoreActions.setRestoreEmail(''));
     }
   } catch (e) {
-    dispatch(actions.setRestoreError(e.message));
+    dispatch(restoreActions.setRestoreError(e.message));
   }
-  dispatch(actions.setLoading(false));
+  dispatch(restoreActions.setLoading(false));
 };

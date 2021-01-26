@@ -16,8 +16,9 @@ import {
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
 import { del, set } from '../../helpers/storage';
+import { RESET } from '../actions/settingsActions';
 
-export const actions = {
+export const authActions = {
   setEmail: (email: string) =>
     ({
       type: SET_LOGIN_EMAIL,
@@ -83,69 +84,70 @@ export const actions = {
       type: SET_SHOW_RESEND_BUTTON,
       payload: { isResendButtonShow },
     } as const),
+  reset: () => ({ type: RESET } as const),
 };
 
 export const authMe = (key: string) => async (dispatch: Dispatch) => {
   try {
     const data = await authApi.me(key);
     if (data.data.success) {
-      dispatch(actions.setAuthUserEmail(data.data.payload.email));
-      dispatch(actions.setTotalUserScore(data.data.payload.totalScore));
-      dispatch(actions.setUserAvatar(data.data.payload.avatar));
-      dispatch(actions.setAuthStatus(true));
+      dispatch(authActions.setAuthUserEmail(data.data.payload.email));
+      dispatch(authActions.setTotalUserScore(data.data.payload.totalScore));
+      dispatch(authActions.setUserAvatar(data.data.payload.avatar));
+      dispatch(authActions.setAuthStatus(true));
     }
   } catch (e) {
     del('authKey');
-    dispatch(actions.setAuthStatus(false));
+    dispatch(authActions.setAuthStatus(false));
   }
-  dispatch(actions.setInitializeStatus(true));
+  dispatch(authActions.setInitializeStatus(true));
 };
 
 export const loginAndSetUserData = (email: string, password: string) => async (
   dispatch: Dispatch,
 ) => {
-  dispatch(actions.setLoading(true));
-  dispatch(actions.setShowResendButton(false));
-  dispatch(actions.setLoginError(''));
+  dispatch(authActions.setLoading(true));
+  dispatch(authActions.setShowResendButton(false));
+  dispatch(authActions.setLoginError(''));
   try {
     const data = await authApi.login(email, password);
     if (data.data.success) {
       const authKey = data.data.payload;
       set('authKey', authKey);
-      dispatch(actions.setInitializeStatus(false));
-      dispatch(actions.setLoginError(''));
-      dispatch(actions.setPassword(''));
-      dispatch(actions.setEmail(''));
+      dispatch(authActions.setInitializeStatus(false));
+      dispatch(authActions.setLoginError(''));
+      dispatch(authActions.setPassword(''));
+      dispatch(authActions.setEmail(''));
     }
   } catch (e) {
     const errorMessage = e.message;
     if (errorMessage.includes(409) || errorMessage.includes(422)) {
-      dispatch(actions.setLoginError('Incorrect email or password.'));
+      dispatch(authActions.setLoginError('Incorrect email or password.'));
     } else if (errorMessage.includes(401)) {
-      dispatch(actions.setLoginError('Account not verified.'));
-      dispatch(actions.setShowResendButton(true));
+      dispatch(authActions.setLoginError('Account not verified.'));
+      dispatch(authActions.setShowResendButton(true));
     } else {
-      dispatch(actions.setLoginError(errorMessage));
+      dispatch(authActions.setLoginError(errorMessage));
     }
   }
-  dispatch(actions.setLoading(false));
+  dispatch(authActions.setLoading(false));
 };
 
 export const loadAvatar = (
   photoFile: string | ArrayBuffer | null | undefined,
   key: string,
 ) => async (dispatch: Dispatch) => {
-  dispatch(actions.setAvatarError(''));
+  dispatch(authActions.setAvatarError(''));
   try {
     const data = await authApi.savePhoto(photoFile, key);
     if (data.data.success) {
-      dispatch(actions.setUserAvatar(data.data.payload.avatar));
+      dispatch(authActions.setUserAvatar(data.data.payload.avatar));
     }
     if (data.data.statusCode === 404) {
-      dispatch(actions.setAvatarError('File should be < 76 kilobytes.'));
+      dispatch(authActions.setAvatarError('File should be < 76 kilobytes.'));
     }
   } catch (e) {
-    dispatch(actions.setAvatarError(e.message));
+    dispatch(authActions.setAvatarError(e.message));
   }
 };
 
@@ -154,8 +156,13 @@ export const resendVerifyEmail = (email: string) => async (
 ) => {
   try {
     const data = await authApi.sendVerifyEmail(email);
-    console.log(data);
+    if (data.data.success) {
+      dispatch(authActions.setShowResendButton(false));
+      dispatch(
+        authActions.setLoginError('Verification email sent, check your mail.'),
+      );
+    }
   } catch (e) {
-    dispatch(actions.setLoginError(e.message));
+    dispatch(authActions.setLoginError(e.message));
   }
 };

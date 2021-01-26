@@ -5,7 +5,8 @@ import {
   SET_NEW_PASS_STATUS,
   SET_NEW_PASS_LOADING,
 } from '../actions/newPassActions';
-import { actions } from '../action-creators/newPass-ac';
+import { newPassActions } from '../action-creators/newPass-ac';
+import { RESET } from '../actions/settingsActions';
 
 const initialState = {
   newPass: '',
@@ -19,7 +20,7 @@ type InitialStateType = typeof initialState;
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
-type ActionTypes = ReturnType<InferValueTypes<typeof actions>>;
+type ActionTypes = ReturnType<InferValueTypes<typeof newPassActions>>;
 
 const newPassReducer = (
   state = initialState,
@@ -35,6 +36,8 @@ const newPassReducer = (
         ...state,
         ...action.payload,
       };
+    case RESET:
+      return initialState;
     default:
       return state;
   }

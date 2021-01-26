@@ -13,7 +13,8 @@ import {
   SET_AVATAR_ERROR,
   SET_SHOW_RESEND_BUTTON,
 } from '../actions/authActions';
-import { actions } from '../action-creators/auth-ac';
+import { authActions } from '../action-creators/auth-ac';
+import { RESET } from '../actions/settingsActions';
 
 const initialState = {
   email: '',
@@ -35,7 +36,7 @@ type InitialStateType = typeof initialState;
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
-type ActionTypes = ReturnType<InferValueTypes<typeof actions>>;
+type ActionTypes = ReturnType<InferValueTypes<typeof authActions>>;
 
 const authReducer = (
   state = initialState,
@@ -59,6 +60,8 @@ const authReducer = (
         ...state,
         ...action.payload,
       };
+    case RESET:
+      return initialState;
     default:
       return state;
   }

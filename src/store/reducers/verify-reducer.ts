@@ -3,7 +3,8 @@ import {
   SET_VERIFY_STATUS,
   SET_VERIFY_ERROR,
 } from '../actions/verifyActions';
-import { actions } from '../action-creators/verify-ac';
+import { verifyActions } from '../action-creators/verify-ac';
+import { RESET } from '../actions/settingsActions';
 
 const initialState = {
   isLoading: false,
@@ -15,7 +16,7 @@ type InitialStateType = typeof initialState;
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
-type ActionTypes = ReturnType<InferValueTypes<typeof actions>>;
+type ActionTypes = ReturnType<InferValueTypes<typeof verifyActions>>;
 
 const verifyReducer = (
   state = initialState,
@@ -29,6 +30,8 @@ const verifyReducer = (
         ...state,
         ...action.payload,
       };
+    case RESET:
+      return initialState;
     default:
       return state;
   }

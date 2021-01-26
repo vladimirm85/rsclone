@@ -4,7 +4,8 @@ import {
   SET_RESTORE_ERROR,
   SET_RESTORE_STATUS,
 } from '../actions/restorePassActions';
-import { actions } from '../action-creators/restorePass-ac';
+import { restoreActions } from '../action-creators/restorePass-ac';
+import { RESET } from '../actions/settingsActions';
 
 const initialState = {
   restoreEmail: '',
@@ -17,7 +18,7 @@ type InitialStateType = typeof initialState;
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
-type ActionTypes = ReturnType<InferValueTypes<typeof actions>>;
+type ActionTypes = ReturnType<InferValueTypes<typeof restoreActions>>;
 
 const restoreReducer = (
   state = initialState,
@@ -32,6 +33,8 @@ const restoreReducer = (
         ...state,
         ...action.payload,
       };
+    case RESET:
+      return initialState;
     default:
       return state;
   }

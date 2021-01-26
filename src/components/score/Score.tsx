@@ -19,7 +19,7 @@ import {
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
 import {
-  actions,
+  scoreActions,
   getAndSetTotalScore,
   getAndSetLevelScore,
 } from '../../store/action-creators/score-ac';
@@ -150,7 +150,7 @@ const MapStateToProps = (state: AppStateType) => ({
 
 const ScoreW = compose<React.ComponentType>(
   connect(MapStateToProps, {
-    ...actions,
+    ...scoreActions,
     getAndSetTotalScore,
     getAndSetLevelScore,
   }),

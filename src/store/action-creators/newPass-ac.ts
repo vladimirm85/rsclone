@@ -8,9 +8,10 @@ import {
 } from '../actions/newPassActions';
 import newPassApi from '../../api/newPass-api';
 import { set } from '../../helpers/storage';
-import { actions as authActions } from './auth-ac';
+import { authActions } from './auth-ac';
+import { RESET } from '../actions/settingsActions';
 
-export const actions = {
+export const newPassActions = {
   setNewPass: (newPass: string) =>
     ({
       type: SET_NEW_PASSWORD,
@@ -36,6 +37,7 @@ export const actions = {
       type: SET_NEW_PASS_LOADING,
       payload: { newPassLoading },
     } as const),
+  reset: () => ({ type: RESET } as const),
 };
 
 export const changeOldPassword = (
@@ -43,20 +45,20 @@ export const changeOldPassword = (
   repeatPassword: string,
   key: string,
 ) => async (dispatch: Dispatch) => {
-  dispatch(actions.setNewPassLoading(true));
+  dispatch(newPassActions.setNewPassLoading(true));
   try {
     const data = await newPassApi.changePass(password, repeatPassword, key);
     if (data.data.success) {
-      dispatch(actions.setNewPassStatus(true));
+      dispatch(newPassActions.setNewPassStatus(true));
       set('authKey', data.data.payload);
-      dispatch(actions.setNewPass(''));
-      dispatch(actions.setNewRepeatPass(''));
+      dispatch(newPassActions.setNewPass(''));
+      dispatch(newPassActions.setNewRepeatPass(''));
       setTimeout(() => {
         dispatch(authActions.setInitializeStatus(false));
       }, 5000);
     }
   } catch (e) {
-    dispatch(actions.setNewPassError(e.message));
+    dispatch(newPassActions.setNewPassError(e.message));
   }
-  dispatch(actions.setNewPassLoading(false));
+  dispatch(newPassActions.setNewPassLoading(false));
 };

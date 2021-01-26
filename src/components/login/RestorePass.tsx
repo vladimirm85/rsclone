@@ -6,7 +6,10 @@ import { connect } from 'react-redux';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { useRegisterStyles } from './style';
 import { AppStateType } from '../../store/store';
-import { actions, restore } from '../../store/action-creators/restorePass-ac';
+import {
+  restoreActions,
+  restore,
+} from '../../store/action-creators/restorePass-ac';
 
 type MapStatePropsType = {
   restoreEmail: string;
@@ -136,7 +139,7 @@ const mapStateToProps = (state: AppStateType) => ({
   isLoading: state.restoreData.isLoading,
 });
 
-const RestorePassW = connect(mapStateToProps, { restore, ...actions })(
+const RestorePassW = connect(mapStateToProps, { restore, ...restoreActions })(
   RestorePass,
 );
 

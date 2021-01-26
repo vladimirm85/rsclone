@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { AppStateType } from '../../store/store';
 import {
   registration,
-  actions,
+  registerActions,
 } from '../../store/action-creators/registration-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { useRegisterStyles } from './style';
@@ -211,8 +211,9 @@ const mapStateToProps = (state: AppStateType) => ({
   isRegistered: state.regData.isRegistered,
 });
 
-const RegisterW = connect(mapStateToProps, { registration, ...actions })(
-  Register,
-);
+const RegisterW = connect(mapStateToProps, {
+  registration,
+  ...registerActions,
+})(Register);
 
 export default RegisterW;

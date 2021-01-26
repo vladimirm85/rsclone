@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import './settings.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
-import { actions, loadAvatar } from '../../store/action-creators/auth-ac';
+import { authActions, loadAvatar } from '../../store/action-creators/auth-ac';
 import { del, get } from '../../helpers/storage';
 import useStyles from './style';
 import { ScoreType } from '../../types/types';
@@ -39,14 +39,12 @@ type MapStateProps = {
 };
 
 type MapDispatchToProps = {
-  setAuthStatus: (arg: boolean) => void;
-  setAuthUserEmail: (authEmail: string) => void;
-  setTotalUserScore: (totalScore: number) => void;
   loadUserScore: (key: string, lvl: number, forUser: number) => void;
   loadAvatar: (
     photoFile: string | ArrayBuffer | null | undefined,
     key: string,
   ) => void;
+  reset: () => void;
 };
 
 type PropsType = MapStateProps & MapDispatchToProps;
@@ -56,24 +54,26 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
   const [scoreType, setScoreType] = React.useState('1');
   const {
     authEmail,
-    setAuthStatus,
     userTotalScore,
-    setAuthUserEmail,
-    setTotalUserScore,
     avatar,
     userScore,
     userScoreLoading,
     userScoreError,
     avatarError,
+    reset,
   } = props;
   const name = authEmail.split('@')[0];
   const authKey = get('authKey');
 
+  useEffect(() => {
+    if (userScore.length === 0 && !userScoreError) {
+      props.loadUserScore(authKey, 1, 1);
+    }
+  });
+
   const logout = () => {
     del('authKey');
-    setAuthStatus(false);
-    setAuthUserEmail('');
-    setTotalUserScore(0);
+    reset();
   };
 
   const removeAvatar = () => {
@@ -208,7 +208,7 @@ const MapStateToProps = (state: AppStateType) => ({
 });
 
 const SettingsW = compose<React.ComponentType>(
-  connect(MapStateToProps, { ...actions, loadAvatar, loadUserScore }),
+  connect(MapStateToProps, { ...authActions, loadAvatar, loadUserScore }),
   withAuthRedirect,
 )(Settings);
 

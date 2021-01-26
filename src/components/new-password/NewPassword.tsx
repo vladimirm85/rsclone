@@ -6,7 +6,7 @@ import useStyles from './style';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { AppStateType } from '../../store/store';
 import {
-  actions,
+  newPassActions,
   changeOldPassword,
 } from '../../store/action-creators/newPass-ac';
 import { passValidator } from '../../helpers/validator';
@@ -181,7 +181,7 @@ const mapStateToProps = (state: AppStateType) => ({
 
 const NewPasswordW = connect(mapStateToProps, {
   changeOldPassword,
-  ...actions,
+  ...newPassActions,
 })(NewPassword);
 
 export default NewPasswordW;

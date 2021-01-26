@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import logo from '../../assets/img/logo.png';
 import AuthModal from '../login/AuthModal';
 import { AppStateType } from '../../store/store';
-import { actions } from '../../store/action-creators/auth-ac';
+import { authActions } from '../../store/action-creators/auth-ac';
 
 type MapStatePropsType = {
   isAuth: boolean;
@@ -81,6 +81,6 @@ const mapStateToProps = (state: AppStateType) => ({
   isModalOpen: state.authData.isModalOpen,
 });
 
-const HeaderW = connect(mapStateToProps, { ...actions })(Header);
+const HeaderW = connect(mapStateToProps, { ...authActions })(Header);
 
 export default HeaderW;

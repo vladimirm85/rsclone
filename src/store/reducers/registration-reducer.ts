@@ -6,7 +6,8 @@ import {
   SET_REG_STATUS,
   SET_REG_LOADING,
 } from '../actions/registrationActions';
-import { actions } from '../action-creators/registration-ac';
+import { registerActions } from '../action-creators/registration-ac';
+import { RESET } from '../actions/settingsActions';
 
 const initialState = {
   regEmail: '',
@@ -21,7 +22,7 @@ type InitialStateType = typeof initialState;
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
-type ActionTypes = ReturnType<InferValueTypes<typeof actions>>;
+type ActionTypes = ReturnType<InferValueTypes<typeof registerActions>>;
 
 const regReducer = (
   state = initialState,
@@ -38,6 +39,8 @@ const regReducer = (
         ...state,
         ...action.payload,
       };
+    case RESET:
+      return initialState;
     default:
       return state;
   }

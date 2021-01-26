@@ -11,6 +11,9 @@ export const useModalStyles = makeStyles((theme) => ({
     borderRadius: '20px',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    '& > main': {
+      margin: '10px 0 30px',
+    },
   },
   paperForm: {
     marginTop: theme.spacing(2),
@@ -35,6 +38,12 @@ export const useLoginStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  buttons: {
+    marginBottom: '25px',
+  },
+  google: {
+    margin: '0 auto',
   },
 }));
 
