@@ -1,5 +1,5 @@
 import { gameHeight, gameWidth, KEYS } from './constants';
-import { sounds, sprites } from './utils/preload';
+import { sounds } from './utils/preload';
 import Ball from './Ball';
 import Platform from './Platform';
 import Block from './Block';
@@ -15,6 +15,8 @@ import {
   GameInterface,
   PlatformInterface,
 } from './interfaces';
+import blocksLevelsData from './blocksLevelsData';
+import bgLevelsGradientsData from './bgLevelsGradientsData';
 
 export default class Game implements GameInterface {
   currentLevel: number;
@@ -36,16 +38,16 @@ export default class Game implements GameInterface {
     this.numberOfLives = props.numberOfLives;
     this.score = props.score;
     this.numberOfMisses = props.numberOfMisses;
-    this.ball = new Ball(props.ballData);
-    this.platform = new Platform(props.platformData);
+    this.ctx = ctx;
+    this.ball = new Ball(props.ballData, this.ctx);
+    this.platform = new Platform(props.platformData, this.ctx);
     // this.blocksInAllLevels = blocksInAllLevels;
     this.blocksData = props.blocksData;
-    this.blocks = props.blocksData.map(
-      (block: BlockDataInterface) => new Block(block),
+    this.blocks = blocksLevelsData[this.currentLevel].map(
+      (block: BlockDataInterface, i: number) => new Block(block, this.ctx),
     );
     this.bonuses = [];
     this.isPause = false;
-    this.ctx = ctx;
   }
 
   addListeners = (): void => {
@@ -71,34 +73,52 @@ export default class Game implements GameInterface {
     });
   };
 
-  draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.clearRect(0, 0, gameWidth, gameHeight);
-    ctx.drawImage(sprites.bg!, 0, 0);
+  draw = (): void => {
+    this.ctx.clearRect(0, 0, gameWidth, gameHeight);
 
-    this.ball.draw(ctx);
-    this.platform.draw(ctx);
+    const bgGradient = this.ctx.createLinearGradient(
+      33,
+      0,
+      gameWidth,
+      gameHeight,
+    );
+
+    bgGradient.addColorStop(
+      0,
+      bgLevelsGradientsData[this.currentLevel].colorLeft,
+    );
+    bgGradient.addColorStop(
+      1,
+      bgLevelsGradientsData[this.currentLevel].colorRight,
+    );
+
+    this.ctx.fillStyle = bgGradient;
+    this.ctx.fillRect(0, 0, gameWidth, gameHeight);
+
+    this.ball.draw();
+    this.platform.draw();
 
     this.blocks.forEach((block) => {
       if (block.isActive()) {
-        block.draw(ctx);
+        block.draw(this.ctx);
       }
     });
 
     if (this.bonuses) {
       this.bonuses.forEach((bonus) => {
-        bonus.draw(ctx);
+        bonus.draw(this.ctx);
       });
     }
 
-    ctx.font = 'normal 20px sans-serif';
-    ctx.fillStyle = '#1C03FF';
-    ctx.fillText(`Score: ${this.score}`, 10, gameHeight - 10);
+    this.ctx.font = 'normal 20px sans-serif';
+    this.ctx.fillStyle = '#1C03FF';
+    this.ctx.fillText(`Score: ${this.score}`, 10, gameHeight - 10);
 
     for (let i = 0; i < this.numberOfLives; i += 1) {
-      ctx.beginPath();
-      ctx.fillStyle = '#FFFB00';
-      ctx.arc(gameWidth - 60 + 20 * i, gameHeight - 20, 5, 0, 2 * Math.PI);
-      ctx.fill();
+      this.ctx.beginPath();
+      this.ctx.fillStyle = '#FFFB00';
+      this.ctx.arc(gameWidth - 60 + 20 * i, gameHeight - 20, 5, 0, 2 * Math.PI);
+      this.ctx.fill();
     }
   };
 
@@ -195,7 +215,7 @@ export default class Game implements GameInterface {
 
   updateCurrentStateGame = (): void => {
     this.checkLifeLost();
-    this.checkHitOnBlocks(); // TODO:
+    this.checkHitOnBlocks();
     this.bonusIsCollide();
     this.collidePlatformWithBall();
     if (this.ball.collideBounds()) {
@@ -213,6 +233,7 @@ export default class Game implements GameInterface {
         bonus.move();
       });
     }
+    // this.checkGameIsEnd(); // TODO !!
   };
 
   addScorePoint = (): void => {

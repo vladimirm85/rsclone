@@ -16,7 +16,7 @@ export const KEYS = {
 };
 
 export const gameWidth = 768;
-export const gameHeight = 494;
+export const gameHeight = 600;
 
 export const typesOfBonuses: TypesOfBonuses[] = [
   {
@@ -44,7 +44,7 @@ export const ballStartData: BallConstructor = {
   dx: 0,
   dy: 0,
   x: 374,
-  y: 430,
+  y: 530,
   frame: 0,
   width: 20,
   height: 20,
@@ -57,7 +57,7 @@ export const platformStartData: PlatformConstructor = {
   velocity: 12,
   dx: 0,
   x: 334,
-  y: 450,
+  y: 550,
   width: 100,
   height: 15,
   size: 2,

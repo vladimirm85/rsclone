@@ -56,7 +56,7 @@ export interface BallConstructor extends GameData {
 }
 
 export interface BallInterface extends BallConstructor {
-  draw: (ctx: CanvasRenderingContext2D) => void;
+  draw: () => void;
   start: () => void;
   // stop: () => void;
   setStartPosition: () => void;
@@ -82,10 +82,12 @@ export interface BallInterface extends BallConstructor {
 // *** Block ***
 
 export interface BlockDataInterface {
-  // TODO: NAMING???
   x: number;
   y: number;
   lives: number;
+  colorLeft: string;
+  colorRight: string;
+  isIndestructible: boolean;
 }
 
 export type BlocksData = Array<BlockDataInterface>;
@@ -148,7 +150,7 @@ export interface PlatformConstructor extends GameData {
 }
 
 export interface PlatformInterface extends PlatformConstructor {
-  draw: (ctx: CanvasRenderingContext2D) => void;
+  draw: () => void;
   start: (code: string) => void;
   stop: () => void;
   setStartPosition: () => void;
@@ -164,3 +166,12 @@ export interface PlatformInterface extends PlatformConstructor {
   getWidth: () => number;
   getHeight: () => number;
 }
+
+// *** Levels ***
+
+export interface LevelGradientInterface {
+  colorLeft: string;
+  colorRight: string;
+}
+
+export type LevelsGradients = Array<LevelGradientInterface>;

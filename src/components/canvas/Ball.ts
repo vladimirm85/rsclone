@@ -14,8 +14,9 @@ export default class Ball implements BallInterface {
   height: number;
   isRun: boolean;
   animation: ReturnType<typeof setInterval> | null;
+  ctx: CanvasRenderingContext2D;
 
-  constructor(props: BallConstructor) {
+  constructor(props: BallConstructor, ctx: CanvasRenderingContext2D) {
     ({
       velocity: this.velocity,
       dx: this.dx,
@@ -27,11 +28,12 @@ export default class Ball implements BallInterface {
       height: this.height,
       isRun: this.isRun,
     } = props);
+    this.ctx = ctx;
     this.animation = null;
   }
 
-  draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.drawImage(
+  draw = (): void => {
+    this.ctx.drawImage(
       sprites.ball!,
       this.frame * this.width,
       0,
@@ -116,20 +118,16 @@ export default class Ball implements BallInterface {
 
     const worldLeft = 0;
     const worldTop = 0;
-
     if (ballLeft < worldLeft) {
-      this.x = 0;
-      this.dx = this.velocity;
+      this.dx *= -1;
       return true;
     }
     if (ballRight > gameWidth) {
-      this.x = gameWidth - this.width;
-      this.dx = -this.velocity;
+      this.dx *= -1;
       return true;
     }
     if (ballTop < worldTop) {
-      this.y = 0;
-      this.dy = this.velocity;
+      this.dy *= -1;
       return true;
     }
     return false;
@@ -149,14 +147,14 @@ export default class Ball implements BallInterface {
       this.dx /= 1.2;
       this.dy /= 1.2;
     }
-    console.log(
-      'this.ball.velocity',
-      this.velocity,
-      'this.ball.dx:',
-      this.dx,
-      'this.ball.dy:',
-      this.dy,
-    );
+    // console.log(
+    //   'this.ball.velocity',
+    //   this.velocity,
+    //   'this.ball.dx:',
+    //   this.dx,
+    //   'this.ball.dy:',
+    //   this.dy,
+    // );
   };
 
   getCurrentBallData = (): BallConstructor => ({

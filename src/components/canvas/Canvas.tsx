@@ -22,7 +22,7 @@ const Canvas: React.FC = (): JSX.Element => {
     const render = (timestamp: number) => {
       if (timestamp > start! + fpsDivider) {
         if (context && !game.getIsPause()) {
-          game.draw(context);
+          game.draw();
           game.updateCurrentStateGame();
           start = timestamp;
         }
