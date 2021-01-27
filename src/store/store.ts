@@ -7,6 +7,7 @@ import scoreReducer from './reducers/score-reducer';
 import restoreReducer from './reducers/restorePass-reducer';
 import newPassReducer from './reducers/newPass-reducer';
 import settingsReducer from './reducers/settings-reducer';
+import gameReducer from './reducers/game-reducer';
 
 const rootReducer = combineReducers({
   verifyData: verifyReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   scoreData: scoreReducer,
   newPassData: newPassReducer,
   settingsData: settingsReducer,
+  gameData: gameReducer,
 });
 
 type RootReducerType = typeof rootReducer;

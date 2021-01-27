@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { notification } from 'antd';
-import Canvas from './components/canvas/Canvas';
+import CanvasW from './components/canvas/Canvas';
 import HeaderW from './components/header/Header';
 import Footer from './components/footer/Footer';
 import ScoreW from './components/score/Score';
@@ -73,7 +73,7 @@ const App: React.FC<PropsType> = (props): JSX.Element => {
             <Route path="/about" render={() => <About />} />
             <Route path="/saves" render={() => <SavesW />} />
             <Route path="/score" render={() => <ScoreW />} />
-            <Route path="/game" render={() => <Canvas />} />
+            <Route path="/game" render={() => <CanvasW />} />
             <Route path="/settings" render={() => <SettingsW />} />
             <Route path="/verify/*" component={VerificationW} />
             <Route path="/social-login-success/*" component={SocialLoginW} />

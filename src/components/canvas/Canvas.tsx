@@ -1,12 +1,28 @@
 import React, { useRef, useEffect } from 'react';
 import './canvas.scss';
+import { connect } from 'react-redux';
+import { CSSTransition } from 'react-transition-group';
+import { AppStateType } from '../../store/store';
+import gameActions from '../../store/action-creators/game-ac';
+import './game.scss';
 
 // Import constants
 import { gameWidth, gameHeight, initialGameData } from './constants';
 import { preload } from './utils/preload';
 import Game from './Game';
 
-const Canvas: React.FC = (): JSX.Element => {
+type MapStatePropsType = {
+  isGameStarted: boolean;
+};
+
+type MapDispatchPropsType = {
+  startGame: (isGameStarted: boolean) => void;
+};
+
+type PropsType = MapStatePropsType & MapDispatchPropsType;
+
+const Canvas: React.FC<PropsType> = (props): JSX.Element => {
+  const { isGameStarted, startGame } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -41,15 +57,41 @@ const Canvas: React.FC = (): JSX.Element => {
     };
   });
 
+  const gameLauncher = () => {
+    startGame(true);
+  };
+
   return (
     <main>
       <div className="container-inner">
         <div className="game-content">
-          <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />
+          <CSSTransition
+            in={isGameStarted}
+            timeout={500}
+            classNames="canvas"
+            unmountOnExit
+          >
+            <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />
+          </CSSTransition>
+          {!isGameStarted && (
+            <button
+              className="start-button"
+              type="button"
+              onClick={gameLauncher}
+            >
+              Start game
+            </button>
+          )}
         </div>
       </div>
     </main>
   );
 };
 
-export default Canvas;
+const mapStateToProps = (state: AppStateType) => ({
+  isGameStarted: state.gameData.isGameStarted,
+});
+
+const CanvasW = connect(mapStateToProps, { ...gameActions })(Canvas);
+
+export default CanvasW;
