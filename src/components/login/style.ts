@@ -1,5 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
+export const antIcons = { fontSize: '1.85rem' };
+
 export const useModalStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -12,7 +14,7 @@ export const useModalStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     '& > main': {
-      margin: '10px 0 30px',
+      margin: '10px 0 10px',
     },
   },
   paperForm: {
@@ -40,10 +42,13 @@ export const useLoginStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
   buttons: {
-    marginBottom: '25px',
+    marginBottom: '15px',
   },
-  google: {
-    margin: '0 auto',
+  socialButtons: {
+    textAlign: 'left',
+  },
+  icons: {
+    fontSize: '2rem',
   },
 }));
 

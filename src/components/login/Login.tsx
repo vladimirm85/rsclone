@@ -1,7 +1,17 @@
 import React, { useEffect } from 'react';
-import { Typography, Grid, Button, TextField } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  Button,
+  TextField,
+  IconButton,
+} from '@material-ui/core';
 import { connect } from 'react-redux';
-import GoogleButton from 'react-google-button';
+import {
+  FacebookFilled,
+  GithubOutlined,
+  GoogleOutlined,
+} from '@ant-design/icons';
 import { AppStateType } from '../../store/store';
 import {
   loginAndSetUserData,
@@ -9,7 +19,7 @@ import {
   authActions,
 } from '../../store/action-creators/auth-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
-import { useLoginStyles } from './style';
+import { useLoginStyles, antIcons } from './style';
 
 type MapStatePropsType = {
   email: string;
@@ -138,13 +148,38 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
             </Button>
           </Grid>
         </Grid>
-        <GoogleButton
-          className={classes.google}
-          onClick={() => {
-            window.location.href =
-              'https://arkanoid-rss-be.herokuapp.com/auth/google';
-          }}
-        />
+        <div className={classes.socialButtons}>
+          <Typography component="span" variant="body2">
+            Login via:&nbsp;
+          </Typography>
+          <IconButton
+            style={antIcons}
+            onClick={() => {
+              window.location.href =
+                'https://arkanoid-rss-be.herokuapp.com/auth/google';
+            }}
+          >
+            <GoogleOutlined />
+          </IconButton>
+          <IconButton
+            style={antIcons}
+            onClick={() => {
+              window.location.href =
+                'https://arkanoid-rss-be.herokuapp.com/auth/github';
+            }}
+          >
+            <GithubOutlined />
+          </IconButton>
+          <IconButton
+            style={antIcons}
+            onClick={() => {
+              window.location.href =
+                'https://arkanoid-rss-be.herokuapp.com/auth/facebook';
+            }}
+          >
+            <FacebookFilled />
+          </IconButton>
+        </div>
       </form>
     </>
   );
