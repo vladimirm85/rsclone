@@ -97,6 +97,7 @@ export interface BlockInterface extends BlockDataInterface {
   reduceLives: () => void;
   getCurrentBlockData: () => BlockDataInterface;
   isActive: () => boolean;
+  isIndestructibleBlock: () => boolean;
   getX: () => number;
   getY: () => number;
   getWidth: () => number;

@@ -62,6 +62,8 @@ export default class Block implements BlockInterface {
 
   isActive = (): boolean => !!this.lives;
 
+  isIndestructibleBlock = (): boolean => this.isIndestructible;
+
   getX = (): number => this.x;
 
   getY = (): number => this.y;
