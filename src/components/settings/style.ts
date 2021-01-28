@@ -18,13 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1rem',
     },
     table: {
-      minWidth: 650,
-      '& th': {
-        fontSize: '1.3rem',
-      },
-      '& td': {
-        fontSize: '1.1rem',
-      },
+      minWidth: 500,
     },
     formControl: {
       marginBottom: theme.spacing(3),

@@ -144,7 +144,7 @@ export const loadAvatar = (
       dispatch(authActions.setUserAvatar(data.data.payload.avatar));
     }
     if (data.data.statusCode === 404) {
-      dispatch(authActions.setAvatarError('File should be < 76 kilobytes.'));
+      dispatch(authActions.setAvatarError('File is too big!'));
     }
   } catch (e) {
     dispatch(authActions.setAvatarError(e.message));

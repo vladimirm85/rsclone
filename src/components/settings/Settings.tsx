@@ -27,6 +27,7 @@ import useStyles from './style';
 import { ScoreType } from '../../types/types';
 import Preloader from '../common/Preloader/Preloader';
 import { loadUserScore } from '../../store/action-creators/settings-ac';
+import TableFooterActions from '../table/TableFooter';
 
 type MapStateProps = {
   authEmail: string;
@@ -51,6 +52,8 @@ type PropsType = MapStateProps & MapDispatchToProps;
 
 const Settings: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useStyles();
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [scoreType, setScoreType] = React.useState('1');
   const {
     authEmail,
@@ -64,6 +67,8 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
   } = props;
   const name = authEmail.split('@')[0];
   const authKey = get('authKey');
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, userScore.length - page * rowsPerPage);
 
   useEffect(() => {
     if (userScore.length === 0 && !userScoreError) {
@@ -93,6 +98,7 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setScoreType(event.target.value as string);
+    setPage(0);
     props.loadUserScore(authKey, event.target.value as number, 1);
   };
 
@@ -176,17 +182,41 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
                 {userScoreLoading ? (
                   <Preloader />
                 ) : (
-                  <TableBody>
-                    {userScore.map((row: ScoreType) => (
-                      <TableRow key={row.createdAt}>
-                        <TableCell>{row.nickname}</TableCell>
-                        <TableCell align="center">{row.score}</TableCell>
-                        <TableCell align="center">
-                          {row.createdAt.split('T')[0]}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
+                  <>
+                    <TableBody>
+                      {(rowsPerPage > 0
+                        ? userScore.slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
+                        : userScore
+                      ).map((row: ScoreType) => (
+                        <TableRow key={row.createdAt}>
+                          <TableCell component="th" scope="row">
+                            {row.nickname}
+                          </TableCell>
+                          <TableCell style={{ width: 160 }} align="center">
+                            {row.score}
+                          </TableCell>
+                          <TableCell style={{ width: 160 }} align="center">
+                            {row.createdAt.split('T')[0]}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                    <TableFooterActions
+                      setPage={setPage}
+                      setRowsPerPage={setRowsPerPage}
+                      dataArray={userScore}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                    />
+                  </>
                 )}
               </Table>
             </TableContainer>
