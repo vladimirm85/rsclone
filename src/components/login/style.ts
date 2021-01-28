@@ -46,9 +46,18 @@ export const useLoginStyles = makeStyles((theme) => ({
   },
   socialButtons: {
     textAlign: 'left',
-  },
-  icons: {
-    fontSize: '2rem',
+    '& svg': {
+      transition: '.3s',
+    },
+    '& > button:nth-child(2):hover svg': {
+      color: '#4285F4',
+    },
+    '& > button:nth-child(3):hover svg': {
+      color: '#24292E',
+    },
+    '& > button:nth-child(4):hover svg': {
+      color: '#0574E7',
+    },
   },
 }));
 

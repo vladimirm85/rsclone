@@ -10,6 +10,7 @@ import './game.scss';
 import { gameWidth, gameHeight, initialGameData } from './constants';
 import { preload } from './utils/preload';
 import Game from './Game';
+import { GameConstructor } from './interfaces';
 
 type MapStatePropsType = {
   isGameStarted: boolean;
@@ -24,13 +25,13 @@ type PropsType = MapStatePropsType & MapDispatchPropsType;
 const Canvas: React.FC<PropsType> = (props): JSX.Element => {
   const { isGameStarted, startGame } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  let animationFrameId: number;
 
-  useEffect(() => {
+  const newGame = (gameData: GameConstructor) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
-    let animationFrameId: number;
 
-    const game = new Game(initialGameData, context!);
+    const game = new Game(gameData, context!);
     game.addListeners();
 
     let start: number | null = null;
@@ -51,7 +52,12 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
       // @ts-ignore
       render();
     });
+  };
 
+  useEffect(() => {
+    if (isGameStarted) {
+      newGame(initialGameData);
+    }
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     };
