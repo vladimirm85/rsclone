@@ -2,9 +2,16 @@ import React, { useRef, useEffect } from 'react';
 import './canvas.scss';
 import { connect } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
+import { Button, ButtonGroup } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
+import PublishIcon from '@material-ui/icons/Publish';
+import PauseIcon from '@material-ui/icons/Pause';
+import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
+import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 import { AppStateType } from '../../store/store';
 import gameActions from '../../store/action-creators/game-ac';
-import './game.scss';
+import useStyles from './style';
+import Saves from './Saves';
 
 // Import constants
 import { gameWidth, gameHeight, initialGameData } from './constants';
@@ -25,6 +32,8 @@ type PropsType = MapStatePropsType & MapDispatchPropsType;
 const Canvas: React.FC<PropsType> = (props): JSX.Element => {
   const { isGameStarted, startGame } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
   let animationFrameId: number;
 
   const newGame = (gameData: GameConstructor) => {
@@ -67,6 +76,14 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
     startGame(true);
   };
 
+  const handleOpenSaves = () => {
+    setOpen(true);
+  };
+
+  const handleCloseSaves = () => {
+    setOpen(false);
+  };
+
   return (
     <main>
       <div className="container-inner">
@@ -77,7 +94,24 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
             classNames="canvas"
             unmountOnExit
           >
-            <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />
+            <div className="game-content__canvas-container">
+              <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />
+              <ButtonGroup
+                variant="text"
+                aria-label="button group"
+                color="inherit"
+                size="large"
+                className={classes.buttons}
+              >
+                <Button startIcon={<SaveIcon />}>Save</Button>
+                <Button startIcon={<PublishIcon />} onClick={handleOpenSaves}>
+                  Load
+                </Button>
+                <Button startIcon={<PauseIcon />}>Pause</Button>
+                <Button startIcon={<VolumeOffIcon />}>Mute</Button>
+                <Button startIcon={<VideogameAssetIcon />}>New game</Button>
+              </ButtonGroup>
+            </div>
           </CSSTransition>
           {!isGameStarted && (
             <button
@@ -90,6 +124,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
           )}
         </div>
       </div>
+      <Saves open={open} handleClose={handleCloseSaves} />
     </main>
   );
 };

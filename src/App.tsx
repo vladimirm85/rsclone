@@ -8,7 +8,6 @@ import Footer from './components/footer/Footer';
 import ScoreW from './components/score/Score';
 import About from './components/about/About';
 import VerificationW from './components/verification/Verification';
-import SavesW from './components/saves/Saves';
 import SettingsW from './components/settings/Settings';
 import { get } from './helpers/storage';
 import { AppStateType } from './store/store';
@@ -71,7 +70,6 @@ const App: React.FC<PropsType> = (props): JSX.Element => {
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/game" />} />
             <Route path="/about" render={() => <About />} />
-            <Route path="/saves" render={() => <SavesW />} />
             <Route path="/score" render={() => <ScoreW />} />
             <Route path="/game" render={() => <CanvasW />} />
             <Route path="/settings" render={() => <SettingsW />} />
