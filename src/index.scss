@@ -1,9 +1,17 @@
 @import 'assets/stylesheets/common/reset';
 @import '../node_modules/antd/dist/antd.css';
+@import 'assets/stylesheets/start-button';
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 body {
@@ -11,8 +19,12 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+body, html {
+  height: 100%;
+}
+
 main {
-  margin: 10px 0 50px;
+  margin: 10px 0 40px;
 }
 
 .container-inner {

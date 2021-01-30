@@ -2,18 +2,19 @@ import React, { useEffect } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { notification } from 'antd';
-import Canvas from './components/canvas/Canvas';
+import CanvasW from './components/canvas/Canvas';
 import HeaderW from './components/header/Header';
 import Footer from './components/footer/Footer';
 import ScoreW from './components/score/Score';
 import About from './components/about/About';
 import VerificationW from './components/verification/Verification';
-import SavesW from './components/saves/Saves';
 import SettingsW from './components/settings/Settings';
 import { get } from './helpers/storage';
 import { AppStateType } from './store/store';
-import { authMe, actions } from './store/action-creators/auth-ac';
+import { authMe, authActions } from './store/action-creators/auth-ac';
 import Preloader from './components/common/Preloader/Preloader';
+import NewPasswordW from './components/new-password/NewPassword';
+import SocialLoginW from './components/social-login/socialLogin';
 
 type MapStatePropsType = {
   isAuth: boolean;
@@ -69,11 +70,12 @@ const App: React.FC<PropsType> = (props): JSX.Element => {
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/game" />} />
             <Route path="/about" render={() => <About />} />
-            <Route path="/saves" render={() => <SavesW />} />
             <Route path="/score" render={() => <ScoreW />} />
-            <Route path="/game" render={() => <Canvas />} />
+            <Route path="/game" render={() => <CanvasW />} />
             <Route path="/settings" render={() => <SettingsW />} />
-            <Route path="/verify" component={VerificationW} />
+            <Route path="/verify/*" component={VerificationW} />
+            <Route path="/social-login-success/*" component={SocialLoginW} />
+            <Route path="/forgot-password/*" component={NewPasswordW} />
             <Route path="*" render={() => <Redirect to="/game" />} />
           </Switch>
           <Footer />
@@ -91,6 +93,6 @@ const mapStateToProps = (state: AppStateType) => {
   };
 };
 
-const AppW = connect(mapStateToProps, { ...actions, authMe })(App);
+const AppW = connect(mapStateToProps, { ...authActions, authMe })(App);
 
 export default AppW;

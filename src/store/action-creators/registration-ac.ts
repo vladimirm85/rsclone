@@ -8,8 +8,9 @@ import {
   SET_REG_LOADING,
 } from '../actions/registrationActions';
 import regApi from '../../api/reg-api';
+import { RESET } from '../actions/settingsActions';
 
-export const actions = {
+export const registerActions = {
   setRegEmail: (regEmail: string) =>
     ({
       type: SET_REG_EMAIL,
@@ -40,6 +41,7 @@ export const actions = {
       type: SET_REG_LOADING,
       payload: { isLoading },
     } as const),
+  reset: () => ({ type: RESET } as const),
 };
 
 export const registration = (
@@ -47,19 +49,17 @@ export const registration = (
   password: string,
   repeatPassword: string,
 ) => async (dispatch: Dispatch) => {
-  dispatch(actions.setLoading(true));
+  dispatch(registerActions.setLoading(true));
   try {
     const data = await regApi.register(email, password, repeatPassword);
     if (data.data.success) {
-      dispatch(actions.setIsRegistered(true));
-      dispatch(actions.setRegEmail(''));
-      dispatch(actions.setRegPassword(''));
-      dispatch(actions.setRegRepeatPassword(''));
-    } else {
-      dispatch(actions.setIsRegistered(false));
+      dispatch(registerActions.setIsRegistered(true));
+      dispatch(registerActions.setRegEmail(''));
+      dispatch(registerActions.setRegPassword(''));
+      dispatch(registerActions.setRegRepeatPassword(''));
     }
   } catch (e) {
-    dispatch(actions.setRegError(e.message));
+    dispatch(registerActions.setRegError(e.message));
   }
-  dispatch(actions.setLoading(false));
+  dispatch(registerActions.setLoading(false));
 };

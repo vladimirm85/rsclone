@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import './settings.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -14,56 +14,107 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
 } from '@material-ui/core';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
-import { actions } from '../../store/action-creators/auth-ac';
-import { del } from '../../helpers/storage';
-import ava from '../../assets/img/8biticon.jpg';
+import { authActions, loadAvatar } from '../../store/action-creators/auth-ac';
+import { del, get } from '../../helpers/storage';
 import useStyles from './style';
+import { ScoreType } from '../../types/types';
+import Preloader from '../common/Preloader/Preloader';
+import { loadUserScore } from '../../store/action-creators/settings-ac';
+import TableFooterActions from '../table/TableFooter';
 
 type MapStateProps = {
   authEmail: string;
-  userScore: number;
+  userTotalScore: number;
+  avatar: string;
+  userScore: Array<ScoreType>;
+  userScoreLoading: boolean;
+  userScoreError: string;
+  avatarError: string;
 };
 
 type MapDispatchToProps = {
-  setAuthStatus: (arg: boolean) => void;
-  setAuthUserData: (email: string, userScore: number) => void;
+  loadUserScore: (key: string, lvl: number, forUser: number) => void;
+  loadAvatar: (
+    photoFile: string | ArrayBuffer | null | undefined,
+    key: string,
+  ) => void;
+  reset: () => void;
 };
 
 type PropsType = MapStateProps & MapDispatchToProps;
 
 const Settings: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useStyles();
-  const { authEmail, setAuthStatus, setAuthUserData, userScore } = props;
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [scoreType, setScoreType] = React.useState('1');
+  const {
+    authEmail,
+    userTotalScore,
+    avatar,
+    userScore,
+    userScoreLoading,
+    userScoreError,
+    avatarError,
+    reset,
+  } = props;
   const name = authEmail.split('@')[0];
+  const authKey = get('authKey');
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, userScore.length - page * rowsPerPage);
+
+  useEffect(() => {
+    if (userScore.length === 0 && !userScoreError) {
+      props.loadUserScore(authKey, 1, 1);
+    }
+  });
 
   const logout = () => {
     del('authKey');
-    setAuthUserData('', 0);
-    setAuthStatus(false);
+    reset();
   };
 
-  // const photoSelect = (e: ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files?.length) {
-  //     let file = e.target.files[0];
-  //   }
-  // };
+  const removeAvatar = () => {
+    props.loadAvatar(null, authKey);
+  };
+
+  const photoSelect = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.length) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        props.loadAvatar(e.target?.result, authKey);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setScoreType(event.target.value as string);
+    setPage(0);
+    props.loadUserScore(authKey, event.target.value as number, 1);
+  };
 
   return (
     <main>
       <div className="container-inner">
         <div className="saves-content">
           <div className="main-title">Hello, {name}</div>
-          <Avatar alt="Avatar" src={ava} className={classes.large} />
+          <Avatar alt="Avatar" src={avatar} className={classes.large} />
           <Typography
             variant="overline"
             component="p"
             align="center"
             className={classes.score}
           >
-            Total score: {userScore}
+            Total score: {userTotalScore}
           </Typography>
           <ButtonGroup
             variant="text"
@@ -73,32 +124,103 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
             size="large"
           >
             <Button onClick={logout}>Logout</Button>
-            <Button>Change pass</Button>
             <Button>
               <label htmlFor="avatar-input">
-                <input id="avatar-input" type="file" />
+                <input id="avatar-input" type="file" onChange={photoSelect} />
                 Change avatar
               </label>
             </Button>
+            <Button onClick={removeAvatar}>Remove avatar</Button>
           </ButtonGroup>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Level</TableCell>
-                  <TableCell align="center">Score</TableCell>
-                  <TableCell align="center">Screen</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>test</TableCell>
-                  <TableCell align="center">test</TableCell>
-                  <TableCell align="center">test</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {avatarError && (
+            <Typography
+              component="p"
+              align="center"
+              variant="subtitle1"
+              color="error"
+              paragraph
+            >
+              {avatarError}
+            </Typography>
+          )}
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Score for:</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={scoreType}
+              onChange={handleChange}
+            >
+              <MenuItem value={1}>Level 1</MenuItem>
+              <MenuItem value={2}>Level 2</MenuItem>
+              <MenuItem value={3}>Level 3</MenuItem>
+              <MenuItem value={4}>Level 4</MenuItem>
+              <MenuItem value={5}>Level 5</MenuItem>
+              <MenuItem value={6}>Level 6</MenuItem>
+            </Select>
+          </FormControl>
+          {userScoreError ? (
+            <Typography
+              variant="h5"
+              component="h5"
+              align="center"
+              className={classes.error}
+              paragraph
+            >
+              {userScoreError}
+            </Typography>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell align="center">Score</TableCell>
+                    <TableCell align="center">Date</TableCell>
+                  </TableRow>
+                </TableHead>
+                {userScoreLoading ? (
+                  <Preloader />
+                ) : (
+                  <>
+                    <TableBody>
+                      {(rowsPerPage > 0
+                        ? userScore.slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
+                        : userScore
+                      ).map((row: ScoreType) => (
+                        <TableRow key={row.createdAt}>
+                          <TableCell component="th" scope="row">
+                            {row.nickname}
+                          </TableCell>
+                          <TableCell style={{ width: 160 }} align="center">
+                            {row.score}
+                          </TableCell>
+                          <TableCell style={{ width: 160 }} align="center">
+                            {row.createdAt.split('T')[0]}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                    <TableFooterActions
+                      setPage={setPage}
+                      setRowsPerPage={setRowsPerPage}
+                      dataArray={userScore}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                    />
+                  </>
+                )}
+              </Table>
+            </TableContainer>
+          )}
         </div>
       </div>
     </main>
@@ -107,11 +229,16 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
 
 const MapStateToProps = (state: AppStateType) => ({
   authEmail: state.authData.authEmail,
-  userScore: state.authData.userScore,
+  userTotalScore: state.authData.userTotalScore,
+  avatar: state.authData.avatar,
+  userScore: state.settingsData.userScore,
+  userScoreLoading: state.settingsData.userScoreLoading,
+  userScoreError: state.settingsData.userScoreError,
+  avatarError: state.authData.avatarError,
 });
 
 const SettingsW = compose<React.ComponentType>(
-  connect(MapStateToProps, { ...actions }),
+  connect(MapStateToProps, { ...authActions, loadAvatar, loadUserScore }),
   withAuthRedirect,
 )(Settings);
 

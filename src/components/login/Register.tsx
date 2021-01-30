@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Typography } from '@material-ui/core';
@@ -6,13 +6,14 @@ import { connect } from 'react-redux';
 import { AppStateType } from '../../store/store';
 import {
   registration,
-  actions,
+  registerActions,
 } from '../../store/action-creators/registration-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { useRegisterStyles } from './style';
+import { emailValidator, passValidator } from '../../helpers/validator';
 
 type InputPropsType = {
-  setIsLoginModal: (arg: boolean) => void;
+  setModalType: (arg: 'login' | 'register' | 'restorePass') => void;
   setModal: (arg: boolean) => void;
 };
 
@@ -42,7 +43,7 @@ type PropsType = InputPropsType & MapStatePropsType & MapDispatchPropsType;
 const Register: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useRegisterStyles();
   const {
-    setIsLoginModal,
+    setModalType,
     regEmail,
     regPassword,
     regRepeatPassword,
@@ -56,28 +57,44 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
     setIsRegistered,
   } = props;
 
+  const [emailValidatorError, setEmailValidatorError] = useState('');
+  const [passValidatorError, setPassValidatorError] = useState('');
+  const [repeatPassValidatorError, setRepeatPassValidatorError] = useState('');
+
   const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailValidatorError('');
     setRegEmail(e.target.value);
   };
 
   const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassValidatorError('');
     setRegPassword(e.target.value);
   };
 
   const repeatPasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRepeatPassValidatorError('');
     setRegRepeatPassword(e.target.value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    props.registration(regEmail, regPassword, regRepeatPassword);
+    const emailValidate = emailValidator(regEmail, setEmailValidatorError);
+    const passValidate = passValidator(
+      regPassword,
+      regRepeatPassword,
+      setPassValidatorError,
+      setRepeatPassValidatorError,
+    );
+    if (emailValidate && passValidate) {
+      props.registration(regEmail, regPassword, regRepeatPassword);
+    }
   };
 
   const handleSubmitVerify = () => {
     setModal(false);
     setTimeout(() => {
       setIsRegistered(false);
-      setIsLoginModal(true);
+      setModalType('login');
     }, 500);
   };
 
@@ -90,6 +107,7 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField
+              error={!!emailValidatorError}
               variant="outlined"
               margin="normal"
               required
@@ -101,8 +119,10 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
               value={regEmail}
               onChange={emailHandler}
               autoFocus
+              helperText={emailValidatorError}
             />
             <TextField
+              error={!!passValidatorError}
               variant="outlined"
               margin="normal"
               required
@@ -114,8 +134,10 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
               value={regPassword}
               onChange={passwordHandler}
               autoComplete="off"
+              helperText={passValidatorError}
             />
             <TextField
+              error={!!repeatPassValidatorError}
               variant="outlined"
               margin="normal"
               required
@@ -127,6 +149,7 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
               value={regRepeatPassword}
               onChange={repeatPasswordHandler}
               autoComplete="off"
+              helperText={repeatPassValidatorError}
             />
             {regError && (
               <Typography component="p" variant="subtitle1" color="error">
@@ -143,8 +166,8 @@ const Register: React.FC<PropsType> = (props): JSX.Element => {
             >
               {isLoading ? <AuthPreloader /> : 'Register!'}
             </Button>
-            <Button size="small" onClick={() => setIsLoginModal(true)}>
-              &lt;- Return to login page
+            <Button size="small" onClick={() => setModalType('login')}>
+              Return to login page
             </Button>
           </form>
         </>
@@ -188,8 +211,9 @@ const mapStateToProps = (state: AppStateType) => ({
   isRegistered: state.regData.isRegistered,
 });
 
-const RegisterW = connect(mapStateToProps, { registration, ...actions })(
-  Register,
-);
+const RegisterW = connect(mapStateToProps, {
+  registration,
+  ...registerActions,
+})(Register);
 
 export default RegisterW;

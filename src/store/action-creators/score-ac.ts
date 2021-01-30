@@ -7,8 +7,9 @@ import {
 } from '../actions/scoreActions';
 import scoreApi from '../../api/score-api';
 import { ScoreType } from '../../types/types';
+import { RESET } from '../actions/settingsActions';
 
-export const actions = {
+export const scoreActions = {
   setTotalScore: (totalScore: Array<ScoreType>) =>
     ({
       type: SET_TOTAL_SCORE,
@@ -29,32 +30,41 @@ export const actions = {
       type: SET_SCORE_LOADING,
       payload: { isScoreLoading },
     } as const),
+  reset: () => ({ type: RESET } as const),
 };
 
 export const getAndSetTotalScore = (key: string) => async (
   dispatch: Dispatch,
 ) => {
-  dispatch(actions.setScoreLoading(true));
+  dispatch(scoreActions.setScoreLoading(true));
   try {
-    dispatch(actions.setScoreError(''));
+    dispatch(scoreActions.setScoreError(''));
     const data = await scoreApi.getTotalScore(key, 10);
-    dispatch(actions.setTotalScore(data.data.payload));
+    if (data.data.payload.length === 0) {
+      dispatch(scoreActions.setScoreError('No results yet'));
+    } else {
+      dispatch(scoreActions.setTotalScore(data.data.payload));
+    }
   } catch (e) {
-    dispatch(actions.setScoreError(e.message));
+    dispatch(scoreActions.setScoreError(e.message));
   }
-  dispatch(actions.setScoreLoading(false));
+  dispatch(scoreActions.setScoreLoading(false));
 };
 
 export const getAndSetLevelScore = (key: string, lvl: number) => async (
   dispatch: Dispatch,
 ) => {
-  dispatch(actions.setScoreLoading(true));
+  dispatch(scoreActions.setScoreLoading(true));
   try {
-    dispatch(actions.setScoreError(''));
+    dispatch(scoreActions.setScoreError(''));
     const data = await scoreApi.getLevelScore(key, lvl, 10);
-    dispatch(actions.setLevelScore(data.data.payload));
+    if (data.data.payload.length === 0) {
+      dispatch(scoreActions.setScoreError('No results yet'));
+    } else {
+      dispatch(scoreActions.setLevelScore(data.data.payload));
+    }
   } catch (e) {
-    dispatch(actions.setScoreError(e.message));
+    dispatch(scoreActions.setScoreError(e.message));
   }
-  dispatch(actions.setScoreLoading(false));
+  dispatch(scoreActions.setScoreLoading(false));
 };

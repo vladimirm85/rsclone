@@ -4,8 +4,9 @@ import {
   SET_SCORE_ERROR,
   SET_SCORE_LOADING,
 } from '../actions/scoreActions';
-import { actions } from '../action-creators/score-ac';
+import { scoreActions } from '../action-creators/score-ac';
 import { ScoreType } from '../../types/types';
+import { RESET } from '../actions/settingsActions';
 
 const initialState = {
   totalScore: [] as Array<ScoreType>,
@@ -18,7 +19,7 @@ type InitialStateType = typeof initialState;
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
-type ActionTypes = ReturnType<InferValueTypes<typeof actions>>;
+type ActionTypes = ReturnType<InferValueTypes<typeof scoreActions>>;
 
 const scoreReducer = (
   state = initialState,
@@ -41,6 +42,8 @@ const scoreReducer = (
         ...state,
         ...action.payload,
       };
+    case RESET:
+      return initialState;
     default:
       return state;
   }

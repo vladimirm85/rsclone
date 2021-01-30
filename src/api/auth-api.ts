@@ -14,6 +14,26 @@ const authApi = {
       .get('account', { headers: { Authorization: key } })
       .then((res) => res);
   },
+  savePhoto(photoFile: string | ArrayBuffer | null | undefined, key: string) {
+    return api
+      .post(
+        'account/set-avatar',
+        { avatar: photoFile },
+        {
+          headers: {
+            Authorization: key,
+          },
+        },
+      )
+      .then((res) => res);
+  },
+  sendVerifyEmail(email: string) {
+    return api
+      .post('account/resend-verify', {
+        email,
+      })
+      .then((res) => res);
+  },
 };
 
 export default authApi;

@@ -1,31 +1,23 @@
-import {
-  SET_VERIFY_LOADING_STATUS,
-  SET_VERIFY_STATUS,
-  SET_VERIFY_ERROR,
-} from '../actions/verifyActions';
-import { verifyActions } from '../action-creators/verify-ac';
+import { START_GAME } from '../actions/gameActions';
+import gameActions from '../action-creators/game-ac';
 import { RESET } from '../actions/settingsActions';
 
 const initialState = {
-  isLoading: false,
-  isVerify: false,
-  verifyError: '',
+  isGameStarted: false,
 };
 
 type InitialStateType = typeof initialState;
 
 type InferValueTypes<T> = T extends { [key: string]: infer U } ? U : never;
 
-type ActionTypes = ReturnType<InferValueTypes<typeof verifyActions>>;
+type ActionTypes = ReturnType<InferValueTypes<typeof gameActions>>;
 
-const verifyReducer = (
+const gameReducer = (
   state = initialState,
   action: ActionTypes,
 ): InitialStateType => {
   switch (action.type) {
-    case SET_VERIFY_LOADING_STATUS:
-    case SET_VERIFY_STATUS:
-    case SET_VERIFY_ERROR:
+    case START_GAME:
       return {
         ...state,
         ...action.payload,
@@ -37,4 +29,4 @@ const verifyReducer = (
   }
 };
 
-export default verifyReducer;
+export default gameReducer;

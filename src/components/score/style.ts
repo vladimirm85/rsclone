@@ -1,7 +1,10 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles2 = makeStyles((theme: Theme) =>
   createStyles({
+    table: {
+      minWidth: 500,
+    },
     error: {
       color: 'red',
     },
@@ -9,16 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(3),
       minWidth: 120,
     },
-    table: {
-      minWidth: 650,
-      '& th': {
-        fontSize: '1.3rem',
-      },
-      '& td': {
-        fontSize: '1.1rem',
-      },
-    },
   }),
 );
 
-export default useStyles;
+export default useStyles2;

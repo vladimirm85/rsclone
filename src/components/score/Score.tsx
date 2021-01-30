@@ -19,14 +19,15 @@ import {
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
 import {
-  actions,
+  scoreActions,
   getAndSetTotalScore,
   getAndSetLevelScore,
 } from '../../store/action-creators/score-ac';
 import { get } from '../../helpers/storage';
 import { ScoreType } from '../../types/types';
 import Preloader from '../common/Preloader/Preloader';
-import useStyles from './style';
+import useStyles2 from './style';
+import TableFooterActions from '../table/TableFooter';
 
 type MapStateToPropsType = {
   totalScore: Array<ScoreType>;
@@ -44,9 +45,14 @@ type PropsType = MapStateToPropsType & MapDispatchToPropsType;
 
 const Score: React.FC<PropsType> = (props): JSX.Element => {
   const { totalScore, levelScore, scoreError, isScoreLoading } = props;
-  const classes = useStyles();
+  const classes = useStyles2();
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [scoreType, setScoreType] = React.useState('0');
   const authKey = get('authKey');
+  const dataArray = !+scoreType ? totalScore : levelScore;
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, dataArray.length - page * rowsPerPage);
 
   useEffect(() => {
     if (totalScore.length === 0 && !scoreError) {
@@ -56,6 +62,7 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setScoreType(event.target.value as string);
+    setPage(0);
     if (event.target.value === 0) {
       props.getAndSetTotalScore(authKey);
     } else {
@@ -97,9 +104,13 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
             </Typography>
           ) : (
             <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="simple table">
+              <Table
+                className={classes.table}
+                aria-label="custom pagination table"
+              >
                 <TableHead>
                   <TableRow>
+                    <TableCell>Rank</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell align="center">Score</TableCell>
                     <TableCell align="center">Date</TableCell>
@@ -108,29 +119,44 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
                 {isScoreLoading ? (
                   <Preloader />
                 ) : (
-                  <TableBody>
-                    {!+scoreType
-                      ? totalScore.map((row: ScoreType) => (
-                          <TableRow key={row.createdAt}>
-                            <TableCell>{row.nickname}</TableCell>
-                            <TableCell align="center">
-                              {row.totalScore}
-                            </TableCell>
-                            <TableCell align="center">
-                              {row.createdAt.split('T')[0]}
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      : levelScore.map((row: ScoreType) => (
-                          <TableRow key={row.createdAt}>
-                            <TableCell>{row.nickname}</TableCell>
-                            <TableCell align="center">{row.score}</TableCell>
-                            <TableCell align="center">
-                              {row.createdAt.split('T')[0]}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                  </TableBody>
+                  <>
+                    <TableBody>
+                      {(rowsPerPage > 0
+                        ? dataArray.slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
+                        : dataArray
+                      ).map((row: ScoreType, index) => (
+                        <TableRow key={row.createdAt}>
+                          <TableCell component="th" scope="row">
+                            {page * rowsPerPage + index + 1}
+                          </TableCell>
+                          <TableCell component="th" scope="row">
+                            {row.nickname}
+                          </TableCell>
+                          <TableCell style={{ width: 160 }} align="center">
+                            {!+scoreType ? row.totalScore : row.score}
+                          </TableCell>
+                          <TableCell style={{ width: 160 }} align="center">
+                            {row.createdAt.split('T')[0]}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                          <TableCell colSpan={4} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                    <TableFooterActions
+                      setPage={setPage}
+                      setRowsPerPage={setRowsPerPage}
+                      dataArray={dataArray}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                    />
+                  </>
                 )}
               </Table>
             </TableContainer>
@@ -150,7 +176,7 @@ const MapStateToProps = (state: AppStateType) => ({
 
 const ScoreW = compose<React.ComponentType>(
   connect(MapStateToProps, {
-    ...actions,
+    ...scoreActions,
     getAndSetTotalScore,
     getAndSetLevelScore,
   }),

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import logo from '../../assets/img/logo.png';
 import AuthModal from '../login/AuthModal';
 import { AppStateType } from '../../store/store';
-import { actions } from '../../store/action-creators/auth-ac';
+import { authActions } from '../../store/action-creators/auth-ac';
 
 type MapStatePropsType = {
   isAuth: boolean;
@@ -35,31 +35,24 @@ const Header: React.FC<PropsType> = (props): JSX.Element => {
                   Ab<span className="red-letter">o</span>ut
                 </NavLink>
               </li>
-              {isAuth && (
-                <>
-                  <li>
-                    <NavLink to="/saves" activeClassName="active-menu-item">
-                      S<span className="red-letter">a</span>ves
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/score" activeClassName="active-menu-item">
-                      Sc<span className="red-letter">o</span>re
-                    </NavLink>
-                  </li>
-                </>
-              )}
               <li>
                 <NavLink to="/game" activeClassName="active-menu-item">
                   G<span className="red-letter">a</span>me
                 </NavLink>
               </li>
               {isAuth ? (
-                <li>
-                  <NavLink to="/settings" activeClassName="active-menu-item">
-                    S<span className="red-letter">e</span>ttings
-                  </NavLink>
-                </li>
+                <>
+                  <li>
+                    <NavLink to="/score" activeClassName="active-menu-item">
+                      Sc<span className="red-letter">o</span>re
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/settings" activeClassName="active-menu-item">
+                      S<span className="red-letter">e</span>ttings
+                    </NavLink>
+                  </li>
+                </>
               ) : (
                 <li>
                   <button type="button" onClick={() => setModal(true)}>
@@ -81,6 +74,6 @@ const mapStateToProps = (state: AppStateType) => ({
   isModalOpen: state.authData.isModalOpen,
 });
 
-const HeaderW = connect(mapStateToProps, { ...actions })(Header);
+const HeaderW = connect(mapStateToProps, { ...authActions })(Header);
 
 export default HeaderW;

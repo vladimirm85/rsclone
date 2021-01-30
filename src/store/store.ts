@@ -4,12 +4,20 @@ import verifyReducer from './reducers/verify-reducer';
 import authReducer from './reducers/auth-reducer';
 import regReducer from './reducers/registration-reducer';
 import scoreReducer from './reducers/score-reducer';
+import restoreReducer from './reducers/restorePass-reducer';
+import newPassReducer from './reducers/newPass-reducer';
+import settingsReducer from './reducers/settings-reducer';
+import gameReducer from './reducers/game-reducer';
 
 const rootReducer = combineReducers({
   verifyData: verifyReducer,
   authData: authReducer,
   regData: regReducer,
+  restoreData: restoreReducer,
   scoreData: scoreReducer,
+  newPassData: newPassReducer,
+  settingsData: settingsReducer,
+  gameData: gameReducer,
 });
 
 type RootReducerType = typeof rootReducer;

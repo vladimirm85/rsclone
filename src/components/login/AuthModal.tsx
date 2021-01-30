@@ -4,8 +4,9 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Container from '@material-ui/core/Container';
 import logo from '../../assets/img/logo.png';
-import Register from './Register';
+import RegisterW from './Register';
 import LoginW from './Login';
+import RestorePassW from './RestorePass';
 import { useModalStyles } from './style';
 
 export type PropsType = {
@@ -18,7 +19,9 @@ const AuthModal: React.FC<PropsType> = ({
   setModal,
 }): JSX.Element => {
   const classes = useModalStyles();
-  const [isLoginModal, setIsLoginModal] = useState(true);
+  const [modalType, setModalType] = useState<
+    'login' | 'register' | 'restorePass'
+  >('login');
 
   return (
     <div>
@@ -43,11 +46,15 @@ const AuthModal: React.FC<PropsType> = ({
                 <div className={classes.logo}>
                   <img src={logo} alt="logo" />
                 </div>
-                {isLoginModal ? (
-                  <LoginW setIsLoginModal={setIsLoginModal} />
-                ) : (
-                  <Register
-                    setIsLoginModal={setIsLoginModal}
+                {modalType === 'login' && (
+                  <LoginW setModalType={setModalType} />
+                )}
+                {modalType === 'register' && (
+                  <RegisterW setModalType={setModalType} setModal={setModal} />
+                )}
+                {modalType === 'restorePass' && (
+                  <RestorePassW
+                    setModalType={setModalType}
                     setModal={setModal}
                   />
                 )}

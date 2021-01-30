@@ -1,15 +1,25 @@
 import React, { useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  Button,
+  TextField,
+  IconButton,
+} from '@material-ui/core';
 import { connect } from 'react-redux';
+import {
+  FacebookFilled,
+  GithubOutlined,
+  GoogleOutlined,
+} from '@ant-design/icons';
 import { AppStateType } from '../../store/store';
 import {
   loginAndSetUserData,
-  actions,
+  resendVerifyEmail,
+  authActions,
 } from '../../store/action-creators/auth-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
-import { useLoginStyles } from './style';
+import { useLoginStyles, antIcons } from './style';
 
 type MapStatePropsType = {
   email: string;
@@ -17,6 +27,7 @@ type MapStatePropsType = {
   isAuth: boolean;
   loginError: string;
   isLoading: boolean;
+  isResendButtonShow: boolean;
 };
 
 type MapDispatchPropsType = {
@@ -24,10 +35,11 @@ type MapDispatchPropsType = {
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
   setModal: (isModalOpen: boolean) => void;
+  resendVerifyEmail: (email: string) => void;
 };
 
 type InputPropsType = {
-  setIsLoginModal: (isLoginModal: boolean) => void;
+  setModalType: (arg: 'login' | 'register' | 'restorePass') => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType & InputPropsType;
@@ -35,7 +47,7 @@ type PropsType = MapStatePropsType & MapDispatchPropsType & InputPropsType;
 const Login: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useLoginStyles();
   const {
-    setIsLoginModal,
+    setModalType,
     email,
     password,
     setEmail,
@@ -44,6 +56,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
     isAuth,
     loginError,
     isLoading,
+    isResendButtonShow,
   } = props;
 
   useEffect(() => {
@@ -65,6 +78,10 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
     props.loginAndSetUserData(email, password);
   };
 
+  const resendEmail = () => {
+    props.resendVerifyEmail(email);
+  };
+
   return (
     <>
       <Typography component="h1" variant="h5">
@@ -79,7 +96,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           id="email"
           label="Email Address"
           name="email"
-          autoComplete="email"
+          autoComplete="on"
           value={email}
           onChange={emailHandler}
           autoFocus
@@ -95,12 +112,19 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           id="password"
           value={password}
           onChange={passwordHandler}
-          autoComplete="current-password"
+          autoComplete="on"
         />
         {loginError && (
-          <Typography component="p" variant="subtitle1" color="error">
-            Incorrect email or password.
-          </Typography>
+          <>
+            <Typography component="p" variant="subtitle1" color="error">
+              {loginError}
+              {isResendButtonShow && (
+                <Button size="small" onClick={resendEmail}>
+                  Resend verify email
+                </Button>
+              )}
+            </Typography>
+          </>
         )}
         <Button
           type="submit"
@@ -112,9 +136,50 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
         >
           {isLoading ? <AuthPreloader /> : 'Go!'}
         </Button>
-        <Button size="small" onClick={() => setIsLoginModal(false)}>
-          Dont have an account? Register -&gt;
-        </Button>
+        <Grid container className={classes.buttons}>
+          <Grid item xs>
+            <Button size="small" onClick={() => setModalType('restorePass')}>
+              Forgot pass?
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button size="small" onClick={() => setModalType('register')}>
+              Dont have an account? Register
+            </Button>
+          </Grid>
+        </Grid>
+        <div className={classes.socialButtons}>
+          <Typography component="span" variant="body2">
+            Login via:&nbsp;
+          </Typography>
+          <IconButton
+            style={antIcons}
+            onClick={() => {
+              window.location.href =
+                'https://arkanoid-rss-be.herokuapp.com/auth/google';
+            }}
+          >
+            <GoogleOutlined />
+          </IconButton>
+          <IconButton
+            style={antIcons}
+            onClick={() => {
+              window.location.href =
+                'https://arkanoid-rss-be.herokuapp.com/auth/github';
+            }}
+          >
+            <GithubOutlined />
+          </IconButton>
+          <IconButton
+            style={antIcons}
+            onClick={() => {
+              window.location.href =
+                'https://arkanoid-rss-be.herokuapp.com/auth/facebook';
+            }}
+          >
+            <FacebookFilled />
+          </IconButton>
+        </div>
       </form>
     </>
   );
@@ -128,11 +193,14 @@ const mapStateToProps = (state: AppStateType) => {
     loginError: state.authData.loginError,
     isLoading: state.authData.isLoading,
     isModalOpen: state.authData.isModalOpen,
+    isResendButtonShow: state.authData.isResendButtonShow,
   };
 };
 
-const LoginW = connect(mapStateToProps, { loginAndSetUserData, ...actions })(
-  Login,
-);
+const LoginW = connect(mapStateToProps, {
+  loginAndSetUserData,
+  resendVerifyEmail,
+  ...authActions,
+})(Login);
 
 export default LoginW;
