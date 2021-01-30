@@ -11,7 +11,7 @@ import {
 export const KEYS = {
   LEFT: 'ArrowLeft',
   RIGHT: 'ArrowRight',
-  SPACE: 'Space',
+  ARROW_UP: 'ArrowUp',
   Z: 'KeyZ',
 };
 

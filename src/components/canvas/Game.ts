@@ -53,7 +53,7 @@ export default class Game implements GameInterface {
   addListeners = (): void => {
     window.addEventListener('keydown', (e) => {
       switch (e.code) {
-        case KEYS.SPACE:
+        case KEYS.ARROW_UP:
           this.ball.start();
           break;
         case KEYS.LEFT:
