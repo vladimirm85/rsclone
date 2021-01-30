@@ -1,12 +1,12 @@
 import React from 'react';
 import { TableFooter, TablePagination, TableRow } from '@material-ui/core';
 import TablePaginationActions from './TablePaginationActions';
-import { ScoreType } from '../../types/types';
+import { SavesType, ScoreType } from '../../types/types';
 
 type PropsType = {
   setPage: (page: number) => void;
   setRowsPerPage: (rows: number) => void;
-  dataArray: Array<ScoreType>;
+  dataArray: Array<ScoreType> | Array<SavesType>;
   rowsPerPage: number;
   page: number;
 };

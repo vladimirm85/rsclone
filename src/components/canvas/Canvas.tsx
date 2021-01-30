@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import './canvas.scss';
 import { connect } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import { Button, ButtonGroup } from '@material-ui/core';
@@ -9,31 +8,38 @@ import PauseIcon from '@material-ui/icons/Pause';
 import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 import { AppStateType } from '../../store/store';
-import gameActions from '../../store/action-creators/game-ac';
+import {
+  gameActions,
+  loadUserSaves,
+} from '../../store/action-creators/game-ac';
 import useStyles from './style';
-import Saves from './Saves';
+import SavesW from './Saves';
 
 // Import constants
 import { gameWidth, gameHeight, initialGameData } from './constants';
 import { preload } from './utils/preload';
 import Game from './Game';
 import { GameConstructor } from './interfaces';
+import { get } from '../../helpers/storage';
 
 type MapStatePropsType = {
   isGameStarted: boolean;
+  isAuth: boolean;
 };
 
 type MapDispatchPropsType = {
   startGame: (isGameStarted: boolean) => void;
+  loadUserSaves: (key: string) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
 
 const Canvas: React.FC<PropsType> = (props): JSX.Element => {
-  const { isGameStarted, startGame } = props;
+  const { isGameStarted, startGame, isAuth } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const authKey = get('authKey');
   let animationFrameId: number;
 
   const newGame = (gameData: GameConstructor) => {
@@ -78,6 +84,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
 
   const handleOpenSaves = () => {
     setOpen(true);
+    props.loadUserSaves(authKey);
   };
 
   const handleCloseSaves = () => {
@@ -87,14 +94,14 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
   return (
     <main>
       <div className="container-inner">
-        <div className="game-content">
+        <div className={classes.gameContent}>
           <CSSTransition
             in={isGameStarted}
             timeout={500}
-            classNames="canvas"
+            classNames={classes.canvas}
             unmountOnExit
           >
-            <div className="game-content__canvas-container">
+            <div className={classes.canvasContainer}>
               <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />
               <ButtonGroup
                 variant="text"
@@ -103,13 +110,22 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                 size="large"
                 className={classes.buttons}
               >
-                <Button startIcon={<SaveIcon />}>Save</Button>
-                <Button startIcon={<PublishIcon />} onClick={handleOpenSaves}>
-                  Load
-                </Button>
+                {isAuth && <Button startIcon={<SaveIcon />}>Save</Button>}
+                {isAuth && (
+                  <Button startIcon={<PublishIcon />} onClick={handleOpenSaves}>
+                    Load
+                  </Button>
+                )}
                 <Button startIcon={<PauseIcon />}>Pause</Button>
                 <Button startIcon={<VolumeOffIcon />}>Mute</Button>
-                <Button startIcon={<VideogameAssetIcon />}>New game</Button>
+                <Button
+                  startIcon={<VideogameAssetIcon />}
+                  onClick={() => {
+                    window.cancelAnimationFrame(animationFrameId);
+                  }}
+                >
+                  New game
+                </Button>
               </ButtonGroup>
             </div>
           </CSSTransition>
@@ -124,15 +140,18 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
           )}
         </div>
       </div>
-      <Saves open={open} handleClose={handleCloseSaves} />
+      {isAuth && <SavesW open={open} handleClose={handleCloseSaves} />}
     </main>
   );
 };
 
 const mapStateToProps = (state: AppStateType) => ({
   isGameStarted: state.gameData.isGameStarted,
+  isAuth: state.authData.isAuth,
 });
 
-const CanvasW = connect(mapStateToProps, { ...gameActions })(Canvas);
+const CanvasW = connect(mapStateToProps, { ...gameActions, loadUserSaves })(
+  Canvas,
+);
 
 export default CanvasW;
