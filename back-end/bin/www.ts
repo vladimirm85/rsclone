@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-import { app } from '../app';
+import { app } from 'home/vladimir/WebstormProjects/rsclone/back-end/app';
 import debug0 from 'debug';
 import * as http from 'http';
 

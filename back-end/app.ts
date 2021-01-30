@@ -11,13 +11,13 @@ import {
   accountRouter,
   levelsStatsRouter,
   totalScoreRouter,
-} from './routes';
+} from 'home/vladimir/WebstormProjects/rsclone/back-end/routes';
 import {
   jwtRouteProtector,
   googleRouteProtector,
   githubRouteProtector,
   facebookRouteProtector,
-} from './middlewares';
+} from 'home/vladimir/WebstormProjects/rsclone/back-end/middlewares';
 const swaggerDocs = YAML.load('./documentation-api/swagger.yaml');
 
 export const app = express();

@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import { UserLoginData } from './userLoginSchema';
-import { UserRegisterData } from './userRegisterSchema';
-import { RestorePasswordInterface } from './restorePasswordSchema';
+import { UserLoginData } from '../validation';
+import { UserRegisterData } from '../validation';
+import { RestorePasswordInterface } from '../validation';
 import { errorHandler } from '../utils';
 import * as Joi from 'joi';
 

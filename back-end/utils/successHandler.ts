@@ -4,7 +4,7 @@ import {
   SaveDocumentInterface,
   LevelStatInterface,
   TotalScoreDocumentInterface,
-} from '../models';
+} from 'home/vladimir/WebstormProjects/rsclone/back-end/models';
 
 type DocumentTime =
   | UserDocumentInterface

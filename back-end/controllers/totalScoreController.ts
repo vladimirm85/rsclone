@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { TotalScoreModel, TotalScoreInterface, UserModel } from '../models/';
+import { TotalScoreModel, TotalScoreInterface, UserModel } from '../models';
 import { errorHandler, successHandler, TokenUserData } from '../utils';
 
 export const getAllTotalScores = async (req: Request, res: Response): Promise<Response> => {

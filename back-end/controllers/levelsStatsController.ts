@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { LevelStatModel, LevelStatInterface, UserModel } from '../models/';
+import { LevelStatModel, LevelStatInterface, UserModel } from '../models';
 import { errorHandler, successHandler, TokenUserData } from '../utils';
 
 interface FilterOptions {

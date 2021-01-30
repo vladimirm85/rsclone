@@ -6,8 +6,8 @@ import {
   TokenUserData,
   generateHash,
   createToken,
-} from '../../utils';
-import { dataValidation, restorePasswordSchema } from '../../validation';
+} from 'home/vladimir/WebstormProjects/rsclone/back-end/utils';
+import { dataValidation, restorePasswordSchema } from 'home/vladimir/WebstormProjects/rsclone/back-end/validation';
 import { pick } from 'lodash';
 
 export const restorePassword = async (req: Request, res: Response): Promise<Response> => {

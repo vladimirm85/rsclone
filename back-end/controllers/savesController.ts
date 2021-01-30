@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { SaveModel, SaveInterface } from '../models/';
+import { SaveModel, SaveInterface } from '../models';
 import { errorHandler, successHandler, TokenUserData } from '../utils';
 
 export const getAllSaves = async (req: Request, res: Response): Promise<Response> => {
