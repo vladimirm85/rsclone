@@ -122,6 +122,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   startIcon={<VideogameAssetIcon />}
                   onClick={() => {
                     window.cancelAnimationFrame(animationFrameId);
+                    newGame(initialGameData);
                   }}
                 >
                   New game
