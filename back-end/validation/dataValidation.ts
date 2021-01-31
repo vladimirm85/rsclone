@@ -1,0 +1,22 @@
+import { Response } from 'express';
+import * as Joi from 'joi';
+import { UserLoginData } from '../validation';
+import { UserRegisterData } from '../validation';
+import { RestorePasswordInterface } from '../validation';
+import { errorHandler } from '../utils';
+
+type Schema =
+  | Joi.ObjectSchema<UserLoginData>
+  | Joi.ObjectSchema<UserRegisterData>
+  | Joi.ObjectSchema<RestorePasswordInterface>;
+
+type UserData = UserLoginData | UserRegisterData | RestorePasswordInterface;
+
+export const dataValidation = (res: Response, schema: Schema, data: UserData) => {
+  const userValidateCandidate = schema.validate(data);
+  if (userValidateCandidate.error) {
+    errorHandler(res, 409, `${userValidateCandidate.error.details[0].path[0]} validation error`);
+    return false;
+  }
+  return true;
+};
