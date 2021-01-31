@@ -26,6 +26,8 @@ import {
   deleteUserSave,
 } from '../../store/action-creators/game-ac';
 import { get } from '../../helpers/storage';
+import { GameInterface } from './interfaces';
+import dateCreator from '../../helpers/dateCreator';
 
 type MapStatePropsType = {
   userSaves: Array<SavesType>;
@@ -40,7 +42,10 @@ type MapDispatchPropsType = {
 
 type InputPropsType = {
   open: boolean;
-  handleClose: (isOpen: boolean) => void;
+  handleClose: () => void;
+  gameData: GameInterface | undefined;
+  isPause: boolean;
+  setIsPause: (isPause: boolean) => void;
 };
 
 type PropsType = MapStatePropsType & InputPropsType & MapDispatchPropsType;
@@ -52,6 +57,9 @@ const Saves: React.FC<PropsType> = (props): JSX.Element => {
     userSaves,
     userSavesError,
     userSavesLoading,
+    gameData,
+    isPause,
+    setIsPause,
   } = props;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -112,38 +120,46 @@ const Saves: React.FC<PropsType> = (props): JSX.Element => {
                               page * rowsPerPage + rowsPerPage,
                             )
                           : userSaves
-                        ).map((row: SavesType) => (
-                          <TableRow key={row.createdAt}>
-                            <TableCell style={{ width: '50%' }}>
-                              {row.createdAt.split('T')[0]}
-                            </TableCell>
-                            <TableCell align="right">
-                              <Button
-                                variant="contained"
-                                color="secondary"
-                                startIcon={<DeleteIcon />}
-                                size="small"
-                                onClick={() => {
-                                  props.deleteUserSave(authKey, row._id);
-                                }}
-                              >
-                                Delete
-                              </Button>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                size="small"
-                                startIcon={<PublishIcon />}
-                              >
-                                Load
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                        )
+                          .reverse()
+                          .map((row: SavesType) => (
+                            <TableRow key={row.createdAt}>
+                              <TableCell style={{ width: '50%' }}>
+                                {dateCreator(row.createdAt)}
+                              </TableCell>
+                              <TableCell align="right">
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  startIcon={<DeleteIcon />}
+                                  size="small"
+                                  onClick={() => {
+                                    props.deleteUserSave(authKey, row._id);
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </TableCell>
+                              <TableCell align="right">
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  size="small"
+                                  startIcon={<PublishIcon />}
+                                  onClick={() => {
+                                    setIsPause(!isPause);
+                                    gameData!.setIsPause(!isPause);
+                                    handleClose();
+                                    gameData?.load(row.saveData);
+                                  }}
+                                >
+                                  Load
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         {emptyRows > 0 && (
-                          <TableRow style={{ height: 53 * emptyRows }}>
+                          <TableRow style={{ height: 76 * emptyRows }}>
                             <TableCell colSpan={3} />
                           </TableRow>
                         )}

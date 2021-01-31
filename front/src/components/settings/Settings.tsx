@@ -174,9 +174,10 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
               <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell align="center">Score</TableCell>
+                    <TableCell>#</TableCell>
                     <TableCell align="center">Date</TableCell>
+                    <TableCell align="center">Time</TableCell>
+                    <TableCell align="center">Score</TableCell>
                   </TableRow>
                 </TableHead>
                 {userScoreLoading ? (
@@ -190,22 +191,23 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
                             page * rowsPerPage + rowsPerPage,
                           )
                         : userScore
-                      ).map((row: ScoreType) => (
+                      ).map((row: ScoreType, index) => (
                         <TableRow key={row.createdAt}>
-                          <TableCell component="th" scope="row">
-                            {row.nickname}
+                          <TableCell>
+                            {page * rowsPerPage + index + 1}
                           </TableCell>
-                          <TableCell style={{ width: 160 }} align="center">
-                            {row.score}
-                          </TableCell>
-                          <TableCell style={{ width: 160 }} align="center">
+                          <TableCell align="center">
                             {row.createdAt.split('T')[0]}
                           </TableCell>
+                          <TableCell align="center">
+                            {row.createdAt.split('T')[1].split('.')[0]}
+                          </TableCell>
+                          <TableCell align="center">{row.score}</TableCell>
                         </TableRow>
                       ))}
                       {emptyRows > 0 && (
                         <TableRow style={{ height: 53 * emptyRows }}>
-                          <TableCell colSpan={6} />
+                          <TableCell colSpan={4} />
                         </TableRow>
                       )}
                     </TableBody>

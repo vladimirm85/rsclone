@@ -27,25 +27,24 @@ import { get } from '../../helpers/storage';
 type MapStatePropsType = {
   isGameStarted: boolean;
   isAuth: boolean;
-  gameData: GameInterface;
 };
 
 type MapDispatchPropsType = {
   startGame: (isGameStarted: boolean) => void;
   loadUserSaves: (key: string) => void;
   createUserSave: (key: string, save: GameConstructor) => void;
-  setGameData: (gameData: GameInterface) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
 
 const Canvas: React.FC<PropsType> = (props): JSX.Element => {
-  const { isGameStarted, startGame, isAuth, setGameData, gameData } = props;
+  const { isGameStarted, startGame, isAuth } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [isPause, setIsPause] = React.useState(false);
   const [sounds, setSounds] = React.useState(true);
+  const [gameData, setGameData] = React.useState<GameInterface>();
   const authKey = get('authKey');
 
   const newGame = (gameSettings: GameConstructor) => {
@@ -58,7 +57,6 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
 
   useEffect(() => {
     if (isGameStarted && !gameData) {
-      console.log(1);
       newGame(initialGameData);
     }
   });
@@ -163,7 +161,15 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
           )}
         </div>
       </div>
-      {isAuth && <SavesW open={open} handleClose={handleCloseSaves} />}
+      {isAuth && (
+        <SavesW
+          gameData={gameData}
+          open={open}
+          handleClose={handleCloseSaves}
+          isPause={isPause}
+          setIsPause={setIsPause}
+        />
+      )}
     </main>
   );
 };
@@ -171,7 +177,6 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
 const mapStateToProps = (state: AppStateType) => ({
   isGameStarted: state.gameData.isGameStarted,
   isAuth: state.authData.isAuth,
-  gameData: state.gameData.gameData,
 });
 
 const CanvasW = connect(mapStateToProps, {

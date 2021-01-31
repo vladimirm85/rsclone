@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       backgroundColor: theme.palette.background.paper,
       boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
+      padding: theme.spacing(4, 4, 4),
     },
     buttons: {
       display: 'flex',
