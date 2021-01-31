@@ -135,14 +135,6 @@ export default class Ball implements BallInterface {
       this.dx /= 1.2;
       this.dy /= 1.2;
     }
-    console.log(
-      'this.ball.velocity',
-      this.velocity,
-      'this.ball.dx:',
-      this.dx,
-      'this.ball.dy:',
-      this.dy,
-    );
   };
 
   getCurrentBallData = (): BallConstructor => ({

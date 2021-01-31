@@ -26,6 +26,8 @@ export interface GameInterface extends GameInit {
   ball: BallInterface;
   platform: PlatformInterface;
   addListeners: () => void;
+  init: () => void;
+  stop: () => void;
   draw: (ctx: CanvasRenderingContext2D) => void;
   ballIsCollide: (element: BlockInterface | PlatformInterface) => boolean;
   bonusIsCollide: () => void;

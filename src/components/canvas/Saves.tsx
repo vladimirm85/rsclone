@@ -124,7 +124,6 @@ const Saves: React.FC<PropsType> = (props): JSX.Element => {
                                 startIcon={<DeleteIcon />}
                                 size="small"
                                 onClick={() => {
-                                  // eslint-disable-next-line no-underscore-dangle
                                   props.deleteUserSave(authKey, row._id);
                                 }}
                               >
