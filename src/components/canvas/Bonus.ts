@@ -3,7 +3,6 @@ import getRandomValue from './helpers/getRandomValue';
 import { sprites } from './utils/preload';
 import {
   BallInterface,
-  BlockInterface,
   BonusConstructor,
   BonusInterface,
   BonusTypesMethods,
@@ -18,24 +17,29 @@ export default class Bonus implements BonusInterface {
   height: number;
   ball: BallInterface;
   platform: PlatformInterface;
-  block: BlockInterface;
   spriteNumber: number;
-  typeOfBonus: string;
-  isUsed: boolean;
-  isActive: boolean;
+  typeOfBonus?: string;
+  isUsed?: boolean;
+  isActive?: boolean;
 
   constructor(props: BonusConstructor) {
-    ({ ball: this.ball, platform: this.platform, block: this.block } = props);
+    ({
+      ball: this.ball,
+      platform: this.platform,
+      x: this.x,
+      y: this.y,
+      typeOfBonus: this.typeOfBonus = '',
+      // isUsed: this.isUsed = false,
+      // isActive: this.isActive = true,
+    } = props);
     this.dy = 1;
     this.width = 20;
     this.height = 20;
-    this.x = this.block.getX() + this.width / 2;
-    this.y = this.block.getY() + this.block.getHeight();
-    this.spriteNumber = 0;
-    this.typeOfBonus = '';
+    this.spriteNumber = 0; // TODO:  m.b. delete?!
+    // this.typeOfBonus = '';
     this.initBonus();
-    this.isUsed = false;
-    this.isActive = true;
+    this.isUsed = props.isUsed || false;
+    this.isActive = props.isActive || true;
   }
 
   initBonus = () => {
@@ -94,7 +98,17 @@ export default class Bonus implements BonusInterface {
     this.isActive = false;
   };
 
-  getActiveStatus = (): boolean => this.isActive;
+  getCurrentBonusData = (): BonusConstructor => ({
+    ball: this.ball,
+    platform: this.platform,
+    x: this.x,
+    y: this.y,
+    typeOfBonus: this.typeOfBonus,
+    isUsed: this.isUsed,
+    isActive: this.isActive,
+  });
+
+  getActiveStatus = (): boolean => this.isActive!;
 
   getX = (): number => this.x;
 

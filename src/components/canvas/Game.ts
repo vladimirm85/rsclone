@@ -1,4 +1,4 @@
-import { gameHeight, gameWidth, KEYS } from './constants';
+import { bonusWidth, gameHeight, gameWidth, KEYS } from './constants';
 import { preload, sounds } from './utils/preload';
 import Ball from './Ball';
 import Platform from './Platform';
@@ -7,9 +7,10 @@ import isBonusGenerated from './helpers/isBonusGenerated';
 import Bonus from './Bonus';
 import {
   BallInterface,
-  BlockDataInterface,
+  BlockConstructor,
   BlockInterface,
   BlocksData,
+  BonusConstructor,
   BonusInterface,
   GameConstructor,
   GameInterface,
@@ -25,11 +26,11 @@ export default class Game implements GameInterface {
   numberOfMisses: number;
   ball: BallInterface;
   platform: PlatformInterface;
-  // blocksInAllLevels: BlocksData[];
   blocksData: BlocksData;
   blocks: BlockInterface[];
   isPause: boolean;
   bonuses: BonusInterface[];
+  isSoundOn: boolean;
   ctx: CanvasRenderingContext2D;
   animationFrameId: number;
 
@@ -42,13 +43,13 @@ export default class Game implements GameInterface {
     this.ctx = ctx;
     this.ball = new Ball(props.ballData, this.ctx);
     this.platform = new Platform(props.platformData, this.ctx);
-    // this.blocksInAllLevels = blocksInAllLevels;
     this.blocksData = props.blocksData;
     this.blocks = blocksLevelsData[this.currentLevel].map(
-      (block: BlockDataInterface) => new Block(block, this.ctx),
+      (block: BlockConstructor) => new Block(block, this.ctx),
     );
-    this.bonuses = [];
+    this.bonuses = props.bonusesData!.map((bonusData) => new Bonus(bonusData));
     this.isPause = false;
+    this.isSoundOn = props.isSound;
     this.ctx = ctx;
     this.animationFrameId = 0;
   }
@@ -76,7 +77,7 @@ export default class Game implements GameInterface {
     });
   };
 
-  init = () => {
+  init = (): void => {
     this.addListeners();
 
     let start: number | null = null;
@@ -99,7 +100,23 @@ export default class Game implements GameInterface {
     });
   };
 
-  stop = () => {
+  load = (props: GameConstructor): void => {
+    this.currentLevel = props.initLevel;
+    this.numberOfLives = props.numberOfLives;
+    this.score = props.score;
+    this.numberOfMisses = props.numberOfMisses;
+    this.ball = new Ball(props.ballData, this.ctx);
+    this.platform = new Platform(props.platformData, this.ctx);
+    this.blocksData = props.blocksData;
+    this.blocks = this.blocksData.map(
+      (block: BlockConstructor) => new Block(block, this.ctx),
+    );
+    this.bonuses = [];
+    this.isSoundOn = true;
+    this.animationFrameId = 0;
+  };
+
+  stop = (): void => {
     window.cancelAnimationFrame(this.animationFrameId);
   };
 
@@ -198,10 +215,11 @@ export default class Game implements GameInterface {
   };
 
   spawnNewBonus = (block: BlockInterface): void => {
-    const initBonus = {
+    const initBonus: BonusConstructor = {
       ball: this.ball,
       platform: this.platform,
-      block,
+      x: block.getX() + bonusWidth / 2,
+      y: block.getY() + block.getHeight(),
     };
     const bonus = new Bonus(initBonus);
     this.bonuses.push(bonus);
@@ -217,8 +235,10 @@ export default class Game implements GameInterface {
         if (!block.isIndestructibleBlock()) block.reduceLives();
         this.ball.changeDirection(block.getX(), block.getWidth());
         this.addScorePoint();
-        sounds.pim!.currentTime = 0;
-        sounds.pim!.play();
+        if (this.getIsSound()) {
+          sounds.pim!.currentTime = 0;
+          sounds.pim!.play();
+        }
       }
     });
   };
@@ -286,11 +306,19 @@ export default class Game implements GameInterface {
   };
 
   getCurrentGameState = () => ({
+    initLevel: this.currentLevel,
     numberOfLives: this.numberOfLives,
+    numberOfMisses: this.numberOfMisses,
     score: this.score,
     ballData: this.ball.getCurrentBallData(),
     platformData: this.platform.getCurrentPlatformData(),
-    blocksData: this.blocks.map((block) => block.getCurrentBlockData()),
+    blocksData: this.blocks.map((block: BlockInterface) =>
+      block.getCurrentBlockData(),
+    ),
+    bonusesData: this.bonuses.map((bonus: BonusInterface) =>
+      bonus.getCurrentBonusData(),
+    ),
+    isSound: this.isSoundOn,
   });
 
   deleteNoActiveBlocks = (): void => {
@@ -310,4 +338,10 @@ export default class Game implements GameInterface {
   };
 
   getIsPause = (): boolean => this.isPause;
+
+  setIsSound = (option: boolean): void => {
+    this.isSoundOn = option;
+  };
+
+  getIsSound = (): boolean => this.isSoundOn;
 }

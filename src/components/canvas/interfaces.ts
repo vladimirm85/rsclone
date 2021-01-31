@@ -20,6 +20,8 @@ export interface GameConstructor extends GameInit {
   initLevel: number;
   ballData: BallConstructor;
   platformData: PlatformConstructor;
+  isSound: boolean;
+  bonusesData?: BonusConstructor[];
 }
 
 export interface GameInterface extends GameInit {
@@ -42,11 +44,13 @@ export interface GameInterface extends GameInit {
   getScoreRatio: () => number;
   increaseBlockMiss: () => void;
   resetBlockMisses: () => void;
-  getCurrentGameState: () => void;
+  getCurrentGameState: () => GameConstructor;
   reduceLives: () => void;
   clearBonuses: () => void;
   setIsPause: (option: boolean) => void;
   getIsPause: () => boolean;
+  setIsSound: (option: boolean) => void;
+  getIsSound: () => boolean;
 }
 
 // *** Ball ***
@@ -83,7 +87,7 @@ export interface BallInterface extends BallConstructor {
 
 // *** Block ***
 
-export interface BlockDataInterface {
+export interface BlockConstructor {
   x: number;
   y: number;
   lives: number;
@@ -92,12 +96,12 @@ export interface BlockDataInterface {
   isIndestructible: boolean;
 }
 
-export type BlocksData = Array<BlockDataInterface>;
+export type BlocksData = Array<BlockConstructor>;
 
-export interface BlockInterface extends BlockDataInterface {
+export interface BlockInterface extends BlockConstructor {
   draw: (ctx: CanvasRenderingContext2D) => void;
   reduceLives: () => void;
-  getCurrentBlockData: () => BlockDataInterface;
+  getCurrentBlockData: () => BlockConstructor;
   isActive: () => boolean;
   isIndestructibleBlock: () => boolean;
   getX: () => number;
@@ -118,18 +122,18 @@ export type BonusTypesMethods = 'ballSpeedDecrease' | 'ballSpeedIncrease';
 export interface BonusConstructor {
   ball: BallInterface;
   platform: PlatformInterface;
-  block: BlockInterface;
+  x: number;
+  y: number;
+  typeOfBonus?: string;
+  isUsed?: boolean;
+  isActive?: boolean;
 }
 
 export interface BonusInterface extends BonusConstructor {
   dy: number;
-  x: number;
-  y: number;
   width: number;
   height: number;
   spriteNumber: number;
-  typeOfBonus: string;
-  isUsed: boolean;
   initBonus: () => void;
   draw: (ctx: CanvasRenderingContext2D) => void;
   move: () => void;
@@ -139,6 +143,7 @@ export interface BonusInterface extends BonusConstructor {
   ballSpeedIncrease: () => void;
   bonusTurnOff: () => void;
   apply: () => void;
+  getCurrentBonusData: () => BonusConstructor;
   getActiveStatus: () => boolean;
   getX: () => number;
   getY: () => number;
