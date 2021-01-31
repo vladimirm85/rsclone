@@ -11,7 +11,7 @@ import {
   accountRouter,
   levelsStatsRouter,
   totalScoreRouter,
-} from 'home/vladimir/WebstormProjects/rsclone/back-end/routes';
+} from './routes';
 import {
   jwtRouteProtector,
   googleRouteProtector,
