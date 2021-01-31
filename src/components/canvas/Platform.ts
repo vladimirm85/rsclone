@@ -1,4 +1,4 @@
-import { KEYS, gameWidth } from './constants';
+import { KEYS, gameWidth, ballStartData, platformStartData } from './constants';
 import { sprites } from './utils/preload';
 import { PlatformConstructor, PlatformInterface } from './interfaces';
 
@@ -10,7 +10,9 @@ export default class Platform implements PlatformInterface {
   width: number;
   height: number;
   size: number;
-  constructor(props: PlatformConstructor) {
+  ctx: CanvasRenderingContext2D;
+
+  constructor(props: PlatformConstructor, ctx: CanvasRenderingContext2D) {
     ({
       velocity: this.velocity,
       dx: this.dx,
@@ -18,12 +20,13 @@ export default class Platform implements PlatformInterface {
       y: this.y,
       width: this.width,
       height: this.height,
-      size: this.size, // TODO: RENAME?
+      size: this.size,
     } = props);
+    this.ctx = ctx;
   }
 
-  draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.drawImage(
+  draw = (): void => {
+    this.ctx.drawImage(
       sprites.platform!,
       0,
       this.size * this.height,
@@ -46,6 +49,15 @@ export default class Platform implements PlatformInterface {
 
   stop = (): void => {
     this.dx = 0;
+  };
+
+  setStartPosition = (): void => {
+    this.velocity = platformStartData.velocity;
+    this.dx = platformStartData.dx;
+    this.x = platformStartData.x;
+    this.y = platformStartData.y;
+    this.width = platformStartData.width;
+    this.size = platformStartData.size;
   };
 
   move = (): void => {

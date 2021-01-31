@@ -1,4 +1,4 @@
-import { gameWidth, gameHeight } from './constants';
+import { gameWidth, ballStartData } from './constants';
 import getRandomValue from './helpers/getRandomValue';
 import { sprites } from './utils/preload';
 import { BallConstructor, BallInterface } from './interfaces';
@@ -13,8 +13,10 @@ export default class Ball implements BallInterface {
   width: number;
   height: number;
   isRun: boolean;
+  animation: ReturnType<typeof setInterval> | null;
+  ctx: CanvasRenderingContext2D;
 
-  constructor(props: BallConstructor) {
+  constructor(props: BallConstructor, ctx: CanvasRenderingContext2D) {
     ({
       velocity: this.velocity,
       dx: this.dx,
@@ -26,10 +28,12 @@ export default class Ball implements BallInterface {
       height: this.height,
       isRun: this.isRun,
     } = props);
+    this.ctx = ctx;
+    this.animation = null;
   }
 
-  draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.drawImage(
+  draw = (): void => {
+    this.ctx.drawImage(
       sprites.ball!,
       this.frame * this.width,
       0,
@@ -47,15 +51,26 @@ export default class Ball implements BallInterface {
       this.isRun = true;
       this.dy = -this.velocity;
       this.dx = getRandomValue(-this.velocity, this.velocity);
-
-      this.animate();
     }
+
+    this.animate();
   };
 
-  stop = (): void => {
-    this.isRun = false;
-    this.dx = 0;
-    this.dy = 0;
+  // stop = (): void => {
+  //   this.isRun = false;
+  //   this.dx = 0;
+  //   this.dy = 0;
+  // };
+
+  setStartPosition = (): void => {
+    this.velocity = ballStartData.velocity;
+    this.dx = ballStartData.dx;
+    this.dy = ballStartData.dy;
+    this.x = ballStartData.x;
+    this.y = ballStartData.y;
+    this.frame = ballStartData.frame;
+    this.isRun = ballStartData.isRun;
+    this.stopAnimation();
   };
 
   move = (): void => {
@@ -96,29 +111,26 @@ export default class Ball implements BallInterface {
     }
   };
 
-  collideBounds = (): void => {
+  collideBounds = (): boolean => {
     const ballLeft = this.x + this.dx;
     const ballRight = ballLeft + this.width;
     const ballTop = this.y + this.dy;
-    const ballBottom = ballTop + this.height;
 
     const worldLeft = 0;
     const worldTop = 0;
-
     if (ballLeft < worldLeft) {
-      this.x = 0;
-      this.dx = this.velocity;
-    } else if (ballRight > gameWidth) {
-      this.x = gameWidth - this.width;
-      this.dx = -this.velocity;
-    } else if (ballTop < worldTop) {
-      this.y = 0;
-      this.dy = this.velocity;
-    } else if (ballBottom > gameHeight) {
-      this.dy *= -1;
-      // this.stop();
-      // window.location.reload();
+      this.dx *= -1;
+      return true;
     }
+    if (ballRight > gameWidth) {
+      this.dx *= -1;
+      return true;
+    }
+    if (ballTop < worldTop) {
+      this.dy *= -1;
+      return true;
+    }
+    return false;
   };
 
   getRunStatus = (): boolean => {
@@ -135,6 +147,14 @@ export default class Ball implements BallInterface {
       this.dx /= 1.2;
       this.dy /= 1.2;
     }
+    // console.log(
+    //   'this.ball.velocity',
+    //   this.velocity,
+    //   'this.ball.dx:',
+    //   this.dx,
+    //   'this.ball.dy:',
+    //   this.dy,
+    // );
   };
 
   getCurrentBallData = (): BallConstructor => ({
@@ -150,12 +170,16 @@ export default class Ball implements BallInterface {
   });
 
   animate = (): void => {
-    setInterval(() => {
+    this.animation = setInterval(() => {
       this.frame += 1;
       if (this.frame > 3) {
         this.frame = 0;
       }
     }, 100);
+  };
+
+  stopAnimation = (): void => {
+    clearInterval(this.animation!);
   };
 
   getTouchX = (): number => {

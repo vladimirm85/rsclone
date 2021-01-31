@@ -15,11 +15,14 @@ import {
   GameInterface,
   PlatformInterface,
 } from './interfaces';
+import blocksLevelsData from './blocksLevelsData';
+import bgLevelsGradientsData from './bgLevelsGradientsData';
 
 export default class Game implements GameInterface {
   currentLevel: number;
   numberOfLives: number;
   score: number;
+  numberOfMisses: number;
   ball: BallInterface;
   platform: PlatformInterface;
   // blocksInAllLevels: BlocksData[];
@@ -35,12 +38,14 @@ export default class Game implements GameInterface {
     this.currentLevel = props.initLevel;
     this.numberOfLives = props.numberOfLives;
     this.score = props.score;
-    this.ball = new Ball(props.ballData);
-    this.platform = new Platform(props.platformData);
+    this.numberOfMisses = props.numberOfMisses;
+    this.ctx = ctx;
+    this.ball = new Ball(props.ballData, this.ctx);
+    this.platform = new Platform(props.platformData, this.ctx);
     // this.blocksInAllLevels = blocksInAllLevels;
     this.blocksData = props.blocksData;
-    this.blocks = props.blocksData.map(
-      (block: BlockDataInterface) => new Block(block),
+    this.blocks = blocksLevelsData[this.currentLevel].map(
+      (block: BlockDataInterface, i: number) => new Block(block, this.ctx),
     );
     this.bonuses = [];
     this.isPause = false;
@@ -51,7 +56,7 @@ export default class Game implements GameInterface {
   addListeners = (): void => {
     window.addEventListener('keydown', (e) => {
       switch (e.code) {
-        case KEYS.SPACE:
+        case KEYS.ARROW_UP:
           this.ball.start();
           break;
         case KEYS.LEFT:
@@ -98,24 +103,60 @@ export default class Game implements GameInterface {
     window.cancelAnimationFrame(this.animationFrameId);
   };
 
-  draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.clearRect(0, 0, gameWidth, gameHeight);
-    ctx.drawImage(sprites.bg!, 0, 0);
+  draw = (): void => {
+    this.ctx.clearRect(0, 0, gameWidth, gameHeight);
 
-    this.ball.draw(ctx);
-    this.platform.draw(ctx);
+    const bgGradient = this.ctx.createLinearGradient(
+      33,
+      0,
+      gameWidth,
+      gameHeight,
+    );
+
+    bgGradient.addColorStop(
+      0,
+      bgLevelsGradientsData[this.currentLevel].colorLeft,
+    );
+    bgGradient.addColorStop(
+      1,
+      bgLevelsGradientsData[this.currentLevel].colorRight,
+    );
+
+    this.ctx.fillStyle = bgGradient;
+    this.ctx.fillRect(0, 0, gameWidth, gameHeight);
+
+    this.ball.draw();
+    this.platform.draw();
 
     this.blocks.forEach((block) => {
       if (block.isActive()) {
-        block.draw(ctx);
+        block.draw(this.ctx);
       }
     });
 
     if (this.bonuses) {
       this.bonuses.forEach((bonus) => {
-        bonus.draw(ctx);
+        bonus.draw(this.ctx);
       });
     }
+
+    this.ctx.fillStyle = 'rgba(255,255,255,.3)';
+    this.ctx.fillRect(0, gameHeight - 35, 150, 40);
+    this.ctx.fillRect(gameWidth - 200, gameHeight - 35, 200, 40);
+
+    this.ctx.font = 'normal 20px sans-serif';
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(`Score: ${this.score}`, 10, gameHeight - 10);
+    this.ctx.fillText(
+      `Lives: ${this.numberOfLives}`,
+      gameWidth - 190,
+      gameHeight - 10,
+    );
+    this.ctx.fillText(
+      `Level: ${this.currentLevel + 1}`,
+      gameWidth - 90,
+      gameHeight - 10,
+    );
   };
 
   ballIsCollide = (elem: BlockInterface | PlatformInterface): boolean => {
@@ -166,15 +207,16 @@ export default class Game implements GameInterface {
     this.bonuses.push(bonus);
   };
 
-  checkHitsOnBlocks = (): void => {
+  checkHitOnBlocks = (): void => {
     this.deleteNoActiveBlocks();
     this.blocks.forEach((block: BlockInterface) => {
       if (block.isActive() && this.ballIsCollide(block)) {
-        if (isBonusGenerated()) {
+        if (!block.isIndestructibleBlock() && isBonusGenerated()) {
           this.spawnNewBonus(block);
         }
-        block.reduceLives();
+        if (!block.isIndestructibleBlock()) block.reduceLives();
         this.ball.changeDirection(block.getX(), block.getWidth());
+        this.addScorePoint();
         sounds.pim!.currentTime = 0;
         sounds.pim!.play();
       }
@@ -187,15 +229,32 @@ export default class Game implements GameInterface {
         this.ball.getTouchX(),
       );
       this.ball.platformBounce(this.platform.getDx(), platformTouchOffset);
+      this.increaseBlockMiss();
+    }
+  };
+
+  checkLifeLost = (): void => {
+    if (this.ball.getY() > gameHeight && this.numberOfLives > 0) {
+      console.log('Reduce life!');
+      this.reduceLives();
+      this.ball.setStartPosition();
+      this.platform.setStartPosition();
+      this.clearBonuses();
+      if (this.numberOfLives === 0) {
+        console.log('GAME OVER');
+      }
     }
   };
 
   updateCurrentStateGame = (): void => {
-    this.checkHitsOnBlocks();
+    this.checkLifeLost();
+    this.checkHitOnBlocks();
     this.bonusIsCollide();
     this.collidePlatformWithBall();
-    this.ball.collideBounds(); // TODO: BORDER!
-    this.platform.collideBounds(); // TODO: BORDER!
+    if (this.ball.collideBounds()) {
+      this.increaseBlockMiss();
+    }
+    this.platform.collideBounds();
     this.platform.move();
     if (!this.ball.getRunStatus()) {
       this.ball.moveWithPlatform(this.platform.getMiddlePlatformPosition());
@@ -207,6 +266,24 @@ export default class Game implements GameInterface {
         bonus.move();
       });
     }
+    // this.checkGameIsEnd(); // TODO !! and implement game end with Indestructible blocks
+  };
+
+  addScorePoint = (): void => {
+    this.score += 100 * this.getScoreRatio();
+    this.resetBlockMisses();
+  };
+
+  getScoreRatio = (): number => {
+    return +(1 / this.numberOfMisses).toFixed(1);
+  };
+
+  increaseBlockMiss = (): void => {
+    this.numberOfMisses += 1;
+  };
+
+  resetBlockMisses = (): void => {
+    this.numberOfMisses = 1;
   };
 
   getCurrentGameState = () => ({
@@ -219,6 +296,14 @@ export default class Game implements GameInterface {
 
   deleteNoActiveBlocks = (): void => {
     this.blocks = this.blocks.filter((block) => block.isActive());
+  };
+
+  reduceLives = (): void => {
+    this.numberOfLives -= 1;
+  };
+
+  clearBonuses = (): void => {
+    this.bonuses = [];
   };
 
   setIsPause = (option: boolean): void => {

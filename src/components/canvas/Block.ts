@@ -1,32 +1,50 @@
 import { blockHeight, blockWidth } from './constants';
-import { sprites } from './utils/preload';
 import { BlockDataInterface, BlockInterface } from './interfaces';
 
 export default class Block implements BlockInterface {
   x: number;
   y: number;
   lives: number;
-  // width: number;
-  // height: number;
+  colorLeft: string;
+  colorRight: string;
+  ctx: CanvasRenderingContext2D;
+  opacityRatio: number;
+  isIndestructible: boolean;
 
-  constructor(props: BlockDataInterface) {
-    ({ x: this.x, y: this.y, lives: this.lives } = props);
-    // this.width = blockWidth; // TODO: Go constant ?
-    // this.height = blockHeight; // TODO: Go constant ?
+  constructor(props: BlockDataInterface, ctx: CanvasRenderingContext2D) {
+    ({
+      x: this.x,
+      y: this.y,
+      lives: this.lives,
+      colorLeft: this.colorLeft,
+      colorRight: this.colorRight,
+      isIndestructible: this.isIndestructible,
+    } = props);
+    this.ctx = ctx;
+    this.opacityRatio = 1 / this.lives;
   }
 
-  draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.drawImage(
-      sprites.block!,
-      (this.lives - 1) * blockWidth,
-      0,
-      blockWidth,
-      blockHeight,
+  draw = (): void => {
+    // TODO: Delete ctx
+
+    const gradient = this.ctx.createLinearGradient(
       this.x,
       this.y,
-      blockWidth,
-      blockHeight,
+      blockWidth + this.x,
+      blockHeight + this.y,
     );
+
+    gradient.addColorStop(
+      0,
+      `rgba(${this.colorLeft},${this.lives * this.opacityRatio})`,
+    );
+    gradient.addColorStop(
+      1,
+      `rgba(${this.colorRight},${this.lives * this.opacityRatio})`,
+    );
+
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(this.x, this.y, blockWidth, blockHeight);
   };
 
   reduceLives = (): void => {
@@ -37,9 +55,14 @@ export default class Block implements BlockInterface {
     x: this.x,
     y: this.y,
     lives: this.lives,
+    colorLeft: this.colorLeft,
+    colorRight: this.colorRight,
+    isIndestructible: this.isIndestructible,
   });
 
   isActive = (): boolean => !!this.lives;
+
+  isIndestructibleBlock = (): boolean => this.isIndestructible;
 
   getX = (): number => this.x;
 

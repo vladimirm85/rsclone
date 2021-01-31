@@ -12,6 +12,7 @@ export interface GameData {
 export interface GameInit {
   numberOfLives: number;
   score: number;
+  numberOfMisses: number;
   blocksData: BlocksData;
 }
 
@@ -33,10 +34,17 @@ export interface GameInterface extends GameInit {
   bonusIsCollide: () => void;
   bonusDelete: (bonus: BonusInterface) => void;
   spawnNewBonus: (bonus: BlockInterface) => void;
-  checkHitsOnBlocks: () => void;
+  checkHitOnBlocks: () => void;
   collidePlatformWithBall: () => void;
+  checkLifeLost: () => void;
   updateCurrentStateGame: () => void;
+  addScorePoint: () => void;
+  getScoreRatio: () => number;
+  increaseBlockMiss: () => void;
+  resetBlockMisses: () => void;
   getCurrentGameState: () => void;
+  reduceLives: () => void;
+  clearBonuses: () => void;
   setIsPause: (option: boolean) => void;
   getIsPause: () => boolean;
 }
@@ -50,18 +58,20 @@ export interface BallConstructor extends GameData {
 }
 
 export interface BallInterface extends BallConstructor {
-  draw: (ctx: CanvasRenderingContext2D) => void;
+  draw: () => void;
   start: () => void;
-  stop: () => void;
+  // stop: () => void;
+  setStartPosition: () => void;
   move: () => void;
   moveWithPlatform: (platformMiddlePosition: number) => void;
   changeDirection: (blockX: number, blockWide: number) => void;
   platformBounce: (platformDx: number, platformTouchOffset: number) => void;
-  collideBounds: () => void;
+  collideBounds: () => boolean;
   getRunStatus: () => boolean;
-  getCurrentBallData: () => BallConstructor;
   changeSpeed: (option: string) => void;
+  getCurrentBallData: () => BallConstructor;
   animate: () => void;
+  stopAnimation: () => void;
   getTouchX: () => number;
   getDx: () => number;
   getDy: () => number;
@@ -74,10 +84,12 @@ export interface BallInterface extends BallConstructor {
 // *** Block ***
 
 export interface BlockDataInterface {
-  // TODO: NAMING???
   x: number;
   y: number;
   lives: number;
+  colorLeft: string;
+  colorRight: string;
+  isIndestructible: boolean;
 }
 
 export type BlocksData = Array<BlockDataInterface>;
@@ -87,6 +99,7 @@ export interface BlockInterface extends BlockDataInterface {
   reduceLives: () => void;
   getCurrentBlockData: () => BlockDataInterface;
   isActive: () => boolean;
+  isIndestructibleBlock: () => boolean;
   getX: () => number;
   getY: () => number;
   getWidth: () => number;
@@ -140,9 +153,10 @@ export interface PlatformConstructor extends GameData {
 }
 
 export interface PlatformInterface extends PlatformConstructor {
-  draw: (ctx: CanvasRenderingContext2D) => void;
+  draw: () => void;
   start: (code: string) => void;
   stop: () => void;
+  setStartPosition: () => void;
   move: () => void;
   collideBounds: () => void;
   changeSize: (option: string) => void;
@@ -155,3 +169,12 @@ export interface PlatformInterface extends PlatformConstructor {
   getWidth: () => number;
   getHeight: () => number;
 }
+
+// *** Levels ***
+
+export interface LevelGradientInterface {
+  colorLeft: string;
+  colorRight: string;
+}
+
+export type LevelsGradients = Array<LevelGradientInterface>;
