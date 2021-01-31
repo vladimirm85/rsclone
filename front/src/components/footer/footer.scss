@@ -1,0 +1,63 @@
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0 15px;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+
+  &__contacts {
+    display: flex;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    padding: 15px 0;
+
+    li {
+      padding: 0 10px;
+      cursor: pointer;
+
+      &:not(:last-child) {
+        border-right: 1px solid rgba(0, 0, 0, 0.3);
+      }
+
+      a {
+        color: #565656;
+        text-decoration: none;
+
+        span {
+          transition: color .3s;
+        }
+
+        &:hover span:not(:first-child) {
+          color: #F41C1C;
+        }
+
+        &:hover span:first-child {
+          color: #00ACAE;
+        }
+      }
+    }
+  }
+
+  &__img {
+    line-height: 0;
+    padding: 0 30px;
+
+    img {
+      width: 90px;
+    }
+  }
+}
+
+.footer-year {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+  padding-bottom: 40px;
+
+  img {
+    width: 20px;
+    margin: 0 5px 0 10px;
+  }
+}
