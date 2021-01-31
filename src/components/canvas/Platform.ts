@@ -1,4 +1,4 @@
-import { KEYS, gameWidth, ballStartData, platformStartData } from './constants';
+import { KEYS, gameWidth, platformStartData } from './constants';
 import { sprites } from './utils/preload';
 import { PlatformConstructor, PlatformInterface } from './interfaces';
 

@@ -1,5 +1,5 @@
 import { gameHeight, gameWidth, KEYS } from './constants';
-import { preload, sounds, sprites } from './utils/preload';
+import { preload, sounds } from './utils/preload';
 import Ball from './Ball';
 import Platform from './Platform';
 import Block from './Block';
@@ -45,7 +45,7 @@ export default class Game implements GameInterface {
     // this.blocksInAllLevels = blocksInAllLevels;
     this.blocksData = props.blocksData;
     this.blocks = blocksLevelsData[this.currentLevel].map(
-      (block: BlockDataInterface, i: number) => new Block(block, this.ctx),
+      (block: BlockDataInterface) => new Block(block, this.ctx),
     );
     this.bonuses = [];
     this.isPause = false;
@@ -84,7 +84,7 @@ export default class Game implements GameInterface {
     const render = (timestamp: number) => {
       if (timestamp > start! + fpsDivider) {
         if (this.ctx && !this.getIsPause()) {
-          this.draw(this.ctx);
+          this.draw();
           this.updateCurrentStateGame();
           start = timestamp;
         }
@@ -235,7 +235,6 @@ export default class Game implements GameInterface {
 
   checkLifeLost = (): void => {
     if (this.ball.getY() > gameHeight && this.numberOfLives > 0) {
-      console.log('Reduce life!');
       this.reduceLives();
       this.ball.setStartPosition();
       this.platform.setStartPosition();
