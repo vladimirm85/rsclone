@@ -71,7 +71,7 @@ export const blockHeight = 18;
 // *** GameInit ***
 
 export const initialGameData: GameConstructor = {
-  initLevel: 0,
+  initLevel: 3,
   numberOfLives: 3,
   score: 0,
   numberOfMisses: 1,

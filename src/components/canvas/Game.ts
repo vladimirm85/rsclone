@@ -112,18 +112,21 @@ export default class Game implements GameInterface {
 
     this.ctx.fillStyle = 'rgba(255,255,255,.3)';
     this.ctx.fillRect(0, gameHeight - 35, 150, 40);
-    this.ctx.fillRect(gameWidth - 80, gameHeight - 35, 80, 40);
+    this.ctx.fillRect(gameWidth - 200, gameHeight - 35, 200, 40);
 
     this.ctx.font = 'normal 20px sans-serif';
     this.ctx.fillStyle = 'white';
     this.ctx.fillText(`Score: ${this.score}`, 10, gameHeight - 10);
-
-    for (let i = 0; i < this.numberOfLives; i += 1) {
-      this.ctx.beginPath();
-      this.ctx.fillStyle = '#FFFB00';
-      this.ctx.arc(gameWidth - 60 + 20 * i, gameHeight - 17, 5, 0, 2 * Math.PI);
-      this.ctx.fill();
-    }
+    this.ctx.fillText(
+      `Lives: ${this.numberOfLives}`,
+      gameWidth - 190,
+      gameHeight - 10,
+    );
+    this.ctx.fillText(
+      `Level: ${this.currentLevel + 1}`,
+      gameWidth - 90,
+      gameHeight - 10,
+    );
   };
 
   ballIsCollide = (elem: BlockInterface | PlatformInterface): boolean => {
