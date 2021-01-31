@@ -68,6 +68,11 @@ export const platformStartData: PlatformConstructor = {
 export const blockWidth = 50;
 export const blockHeight = 18;
 
+// *** Bonus ***
+
+export const bonusWidth = 20;
+export const bonusHeight = 20;
+
 // *** GameInit ***
 
 export const initialGameData: GameConstructor = {
@@ -78,4 +83,6 @@ export const initialGameData: GameConstructor = {
   ballData: ballStartData,
   platformData: platformStartData,
   blocksData: blocksLevelsData[0], // TODO: REFACTOR!
+  bonusesData: [],
+  isSound: true,
 };

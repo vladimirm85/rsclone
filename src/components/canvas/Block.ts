@@ -1,5 +1,5 @@
 import { blockHeight, blockWidth } from './constants';
-import { BlockDataInterface, BlockInterface } from './interfaces';
+import { BlockConstructor, BlockInterface } from './interfaces';
 
 export default class Block implements BlockInterface {
   x: number;
@@ -11,7 +11,7 @@ export default class Block implements BlockInterface {
   opacityRatio: number;
   isIndestructible: boolean;
 
-  constructor(props: BlockDataInterface, ctx: CanvasRenderingContext2D) {
+  constructor(props: BlockConstructor, ctx: CanvasRenderingContext2D) {
     ({
       x: this.x,
       y: this.y,
@@ -51,7 +51,7 @@ export default class Block implements BlockInterface {
     this.lives -= 1;
   };
 
-  getCurrentBlockData = (): BlockDataInterface => ({
+  getCurrentBlockData = (): BlockConstructor => ({
     x: this.x,
     y: this.y,
     lives: this.lives,
