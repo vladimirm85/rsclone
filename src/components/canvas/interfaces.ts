@@ -42,11 +42,13 @@ export interface GameInterface extends GameInit {
   getScoreRatio: () => number;
   increaseBlockMiss: () => void;
   resetBlockMisses: () => void;
-  getCurrentGameState: () => void;
+  getCurrentGameState: () => GameConstructor;
   reduceLives: () => void;
   clearBonuses: () => void;
   setIsPause: (option: boolean) => void;
   getIsPause: () => boolean;
+  setIsSound: (option: boolean) => void;
+  getIsSound: () => boolean;
 }
 
 // *** Ball ***

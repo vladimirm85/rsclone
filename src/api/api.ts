@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://arkanoid-rss-be.herokuapp.com/',
+  baseURL: 'https://arkanoid-rsclone-be.herokuapp.com',
 });
 
 export default api;

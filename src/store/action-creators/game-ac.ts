@@ -9,6 +9,7 @@ import {
 import { RESET } from '../actions/settingsActions';
 import { SavesType } from '../../types/types';
 import savesApi from '../../api/saves-api';
+import { GameConstructor } from '../../components/canvas/interfaces';
 
 export const gameActions = {
   startGame: (isGameStarted: boolean) =>
@@ -40,6 +41,7 @@ export const gameActions = {
 };
 
 export const loadUserSaves = (key: string) => async (dispatch: Dispatch) => {
+  dispatch(gameActions.setUserSavesError(''));
   dispatch(gameActions.setUserSavesLoading(true));
   try {
     const data = await savesApi.getAllSaves(key);
@@ -64,6 +66,16 @@ export const deleteUserSave = (key: string, id: string) => async (
     if (data.data.success) {
       dispatch(gameActions.delUserSave(id));
     }
+  } catch (e) {
+    dispatch(gameActions.setUserSavesError(e.message));
+  }
+};
+
+export const createUserSave = (key: string, save: GameConstructor) => async (
+  dispatch: Dispatch,
+) => {
+  try {
+    await savesApi.createSave(key, save);
   } catch (e) {
     dispatch(gameActions.setUserSavesError(e.message));
   }
