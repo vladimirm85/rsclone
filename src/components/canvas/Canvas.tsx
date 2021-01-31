@@ -5,6 +5,7 @@ import { Button, ButtonGroup } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import PublishIcon from '@material-ui/icons/Publish';
 import PauseIcon from '@material-ui/icons/Pause';
+import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
@@ -12,6 +13,7 @@ import { AppStateType } from '../../store/store';
 import {
   gameActions,
   loadUserSaves,
+  createUserSave,
 } from '../../store/action-creators/game-ac';
 import useStyles from './style';
 import SavesW from './Saves';
@@ -30,6 +32,7 @@ type MapStatePropsType = {
 type MapDispatchPropsType = {
   startGame: (isGameStarted: boolean) => void;
   loadUserSaves: (key: string) => void;
+  createUserSave: (key: string, save: GameConstructor) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
@@ -40,6 +43,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [isPause, setIsPause] = React.useState(false);
+  const [sounds, setSounds] = React.useState(true);
   const [gameData, setGameData] = React.useState<GameInterface>();
   const authKey = get('authKey');
 
@@ -89,9 +93,28 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                 size="large"
                 className={classes.buttons}
               >
-                {isAuth && <Button startIcon={<SaveIcon />}>Save</Button>}
                 {isAuth && (
-                  <Button startIcon={<PublishIcon />} onClick={handleOpenSaves}>
+                  <Button
+                    startIcon={<SaveIcon />}
+                    onClick={() => {
+                      const save = gameData!.getCurrentGameState();
+                      props.createUserSave(authKey, save);
+                    }}
+                  >
+                    Save
+                  </Button>
+                )}
+                {isAuth && (
+                  <Button
+                    startIcon={<PublishIcon />}
+                    onClick={() => {
+                      handleOpenSaves();
+                      if (!isPause) {
+                        setIsPause(true);
+                        gameData!.setIsPause(true);
+                      }
+                    }}
+                  >
                     Load
                   </Button>
                 )}
@@ -105,7 +128,16 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                 >
                   {isPause ? 'Play' : 'Pause'}
                 </Button>
-                <Button startIcon={<VolumeOffIcon />}>Mute</Button>
+                <Button
+                  startIcon={sounds ? <VolumeUpIcon /> : <VolumeOffIcon />}
+                  style={{ width: '120px' }}
+                  onClick={() => {
+                    setSounds(!sounds);
+                    gameData!.setIsSound(!sounds);
+                  }}
+                >
+                  {sounds ? 'Mute' : 'Unmute'}
+                </Button>
                 <Button
                   startIcon={<VideogameAssetIcon />}
                   onClick={() => {
@@ -139,8 +171,10 @@ const mapStateToProps = (state: AppStateType) => ({
   isAuth: state.authData.isAuth,
 });
 
-const CanvasW = connect(mapStateToProps, { ...gameActions, loadUserSaves })(
-  Canvas,
-);
+const CanvasW = connect(mapStateToProps, {
+  ...gameActions,
+  loadUserSaves,
+  createUserSave,
+})(Canvas);
 
 export default CanvasW;
