@@ -51,7 +51,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
     const game = new Game(gameSettings, context!);
-    game.init();
+    game.start();
     setGameData(game);
   };
 

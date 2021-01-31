@@ -1,4 +1,11 @@
-import { bonusWidth, gameHeight, gameWidth, KEYS } from './constants';
+import {
+  blockHeight,
+  blockWidth,
+  bonusWidth,
+  gameHeight,
+  gameWidth,
+  KEYS,
+} from './constants';
 import { preload, sounds } from './utils/preload';
 import Ball from './Ball';
 import Platform from './Platform';
@@ -9,7 +16,6 @@ import {
   BallInterface,
   BlockConstructor,
   BlockInterface,
-  BlocksData,
   BonusConstructor,
   BonusInterface,
   GameConstructor,
@@ -26,7 +32,6 @@ export default class Game implements GameInterface {
   numberOfMisses: number;
   ball: BallInterface;
   platform: PlatformInterface;
-  blocksData: BlocksData;
   blocks: BlockInterface[];
   isPause: boolean;
   bonuses: BonusInterface[];
@@ -36,21 +41,20 @@ export default class Game implements GameInterface {
 
   // TODO: add TOTAL SCORE
   constructor(props: GameConstructor, ctx: CanvasRenderingContext2D) {
+    // TODO: REFACTOR!
+    this.ctx = ctx;
     this.currentLevel = props.initLevel;
     this.numberOfLives = props.numberOfLives;
     this.score = props.score;
     this.numberOfMisses = props.numberOfMisses;
-    this.ctx = ctx;
     this.ball = new Ball(props.ballData, this.ctx);
     this.platform = new Platform(props.platformData, this.ctx);
-    this.blocksData = props.blocksData;
     this.blocks = blocksLevelsData[this.currentLevel].map(
       (block: BlockConstructor) => new Block(block, this.ctx),
     );
-    this.bonuses = props.bonusesData!.map((bonusData) => new Bonus(bonusData));
-    this.isPause = false;
+    this.bonuses = [];
     this.isSoundOn = props.isSound;
-    this.ctx = ctx;
+    this.isPause = false;
     this.animationFrameId = 0;
   }
 
@@ -77,7 +81,7 @@ export default class Game implements GameInterface {
     });
   };
 
-  init = (): void => {
+  start = (): void => {
     this.addListeners();
 
     let start: number | null = null;
@@ -101,19 +105,29 @@ export default class Game implements GameInterface {
   };
 
   load = (props: GameConstructor): void => {
+    this.bonuses = [];
     this.currentLevel = props.initLevel;
     this.numberOfLives = props.numberOfLives;
     this.score = props.score;
     this.numberOfMisses = props.numberOfMisses;
     this.ball = new Ball(props.ballData, this.ctx);
     this.platform = new Platform(props.platformData, this.ctx);
-    this.blocksData = props.blocksData;
-    this.blocks = this.blocksData.map(
+    this.blocks = props.blocksData.map(
       (block: BlockConstructor) => new Block(block, this.ctx),
     );
-    this.bonuses = [];
+    props.bonusesData!.map((bonus: BonusConstructor) => {
+      return this.createBonus(
+        bonus.x,
+        bonus.y,
+        bonus.spriteNumber,
+        bonus.typeOfBonus,
+        bonus.isUsed,
+        bonus.isActive,
+      );
+    });
     this.isSoundOn = true;
     this.animationFrameId = 0;
+    console.log(this.bonuses);
   };
 
   stop = (): void => {
@@ -176,15 +190,20 @@ export default class Game implements GameInterface {
     );
   };
 
-  ballIsCollide = (elem: BlockInterface | PlatformInterface): boolean => {
+  ballIsCollide = (
+    elemX: number,
+    elemY: number,
+    elemWidth: number,
+    elemHeight: number,
+  ): boolean => {
     const ballX = this.ball.getX() + this.ball.getDx();
     const ballY = this.ball.getY() + this.ball.getDy();
 
     return (
-      ballX + this.ball.getWidth() > elem.getX() &&
-      ballX < elem.getX() + elem.getWidth() &&
-      ballY + this.ball.getHeight() > elem.getY() &&
-      ballY < elem.getY() + elem.getHeight()
+      ballX + this.ball.getWidth() > elemX &&
+      ballX < elemX + elemWidth &&
+      ballY + this.ball.getHeight() > elemY &&
+      ballY < elemY + elemHeight
     );
   };
 
@@ -214,12 +233,23 @@ export default class Game implements GameInterface {
     this.bonuses.splice(bonusIndex, 1);
   };
 
-  spawnNewBonus = (block: BlockInterface): void => {
+  createBonus = (
+    bonusInitX: number,
+    bonusInitY: number,
+    spriteNumber = 0,
+    typeOfBonus = '',
+    isUsed = false,
+    isActive = true,
+  ): void => {
     const initBonus: BonusConstructor = {
       ball: this.ball,
       platform: this.platform,
-      x: block.getX() + bonusWidth / 2,
-      y: block.getY() + block.getHeight(),
+      x: bonusInitX,
+      y: bonusInitY,
+      spriteNumber,
+      typeOfBonus,
+      isUsed,
+      isActive,
     };
     const bonus = new Bonus(initBonus);
     this.bonuses.push(bonus);
@@ -228,9 +258,14 @@ export default class Game implements GameInterface {
   checkHitOnBlocks = (): void => {
     this.deleteNoActiveBlocks();
     this.blocks.forEach((block: BlockInterface) => {
-      if (block.isActive() && this.ballIsCollide(block)) {
+      if (
+        block.isActive() &&
+        this.ballIsCollide(block.getX(), block.getY(), blockWidth, blockHeight)
+      ) {
         if (!block.isIndestructibleBlock() && isBonusGenerated()) {
-          this.spawnNewBonus(block);
+          const bonusInitX = block.getX() + bonusWidth / 2;
+          const bonusInitY = block.getY() + block.getHeight();
+          this.createBonus(bonusInitX, bonusInitY);
         }
         if (!block.isIndestructibleBlock()) block.reduceLives();
         this.ball.changeDirection(block.getX(), block.getWidth());
@@ -244,7 +279,14 @@ export default class Game implements GameInterface {
   };
 
   collidePlatformWithBall = (): void => {
-    if (this.ballIsCollide(this.platform)) {
+    if (
+      this.ballIsCollide(
+        this.platform.getX(),
+        this.platform.getY(),
+        this.platform.getWidth(),
+        this.platform.getHeight(),
+      )
+    ) {
       const platformTouchOffset = this.platform.getTouchOffset(
         this.ball.getTouchX(),
       );
