@@ -1,5 +1,6 @@
 export const START_GAME = 'START_GAME';
 export const SET_USER_SAVES = 'SET_USER_SAVES';
+export const SET_GAME_DATA = 'SET_GAME_DATA';
 export const DEL_USER_SAVE = 'DEL_USER_SAVE';
 export const SET_USER_SAVES_ERROR = 'SET_USER_SAVES_ERROR';
 export const SET_USER_SAVES_LOADING = 'SET_USER_SAVES_LOADING';

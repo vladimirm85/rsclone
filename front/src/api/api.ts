@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { apiURL } from './constants';
 
 const api = axios.create({
-  baseURL: 'https://arkanoid-rsclone-be.herokuapp.com',
+  baseURL: apiURL,
 });
 
 export default api;

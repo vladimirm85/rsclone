@@ -20,6 +20,7 @@ import {
 } from '../../store/action-creators/auth-ac';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { useLoginStyles, antIcons } from './style';
+import { google, facebook, github } from '../../api/constants';
 
 type MapStatePropsType = {
   email: string;
@@ -155,8 +156,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           <IconButton
             style={antIcons}
             onClick={() => {
-              window.location.href =
-                'https://arkanoid-rss-be.herokuapp.com/auth/google';
+              window.location.href = google;
             }}
           >
             <GoogleOutlined />
@@ -164,8 +164,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           <IconButton
             style={antIcons}
             onClick={() => {
-              window.location.href =
-                'https://arkanoid-rss-be.herokuapp.com/auth/github';
+              window.location.href = github;
             }}
           >
             <GithubOutlined />
@@ -173,8 +172,7 @@ const Login: React.FC<PropsType> = (props): JSX.Element => {
           <IconButton
             style={antIcons}
             onClick={() => {
-              window.location.href =
-                'https://arkanoid-rss-be.herokuapp.com/auth/facebook';
+              window.location.href = facebook;
             }}
           >
             <FacebookFilled />

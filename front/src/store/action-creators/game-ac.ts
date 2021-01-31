@@ -5,11 +5,15 @@ import {
   SET_USER_SAVES_ERROR,
   SET_USER_SAVES_LOADING,
   DEL_USER_SAVE,
+  SET_GAME_DATA,
 } from '../actions/gameActions';
 import { RESET } from '../actions/settingsActions';
 import { SavesType } from '../../types/types';
 import savesApi from '../../api/saves-api';
-import { GameConstructor } from '../../components/canvas/interfaces';
+import {
+  GameConstructor,
+  GameInterface,
+} from '../../components/canvas/interfaces';
 
 export const gameActions = {
   startGame: (isGameStarted: boolean) =>
@@ -36,6 +40,11 @@ export const gameActions = {
     ({
       type: DEL_USER_SAVE,
       payload: { id },
+    } as const),
+  setGameData: (gameData: GameInterface) =>
+    ({
+      type: SET_GAME_DATA,
+      payload: { gameData },
     } as const),
   reset: () => ({ type: RESET } as const),
 };
