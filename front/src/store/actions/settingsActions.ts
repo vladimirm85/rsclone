@@ -1,0 +1,4 @@
+export const SET_USER_SCORE = 'SET_USER_SCORE';
+export const SET_USER_SCORE_ERROR = 'SET_USER_SCORE_ERROR';
+export const SET_USER_SCORE_LOADING = 'SET_USER_SCORE_LOADING';
+export const RESET = 'RESET';
