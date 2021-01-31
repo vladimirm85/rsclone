@@ -1,7 +1,7 @@
 import * as passportGithub from 'passport-github2';
 import { PassportStatic } from 'passport';
-import { UserInterface, UserModel, VerKeyInterface, VerKeyModel } from '../models';
 import { v4 as uuid } from 'uuid';
+import { UserInterface, UserModel, VerKeyInterface, VerKeyModel } from '../models';
 
 const { Strategy } = passportGithub;
 

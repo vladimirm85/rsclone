@@ -9,7 +9,7 @@ info:
     email: vladimirm85@gmail.com
 servers:
   - description: Production server
-    url: https://arkanoid-rss-be.herokuapp.com
+    url: https://arkanoid-rsclone-be.herokuapp.com
 
 
 

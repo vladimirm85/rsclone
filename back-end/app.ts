@@ -17,7 +17,7 @@ import {
   googleRouteProtector,
   githubRouteProtector,
   facebookRouteProtector,
-} from 'home/vladimir/WebstormProjects/rsclone/back-end/middlewares';
+} from './middlewares';
 const swaggerDocs = YAML.load('./documentation-api/swagger.yaml');
 
 export const app = express();

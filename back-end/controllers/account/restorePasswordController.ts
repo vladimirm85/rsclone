@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { pick } from 'lodash';
 import { UserModel, RecoveryPasswordKeyModel } from '../../models';
 import {
   errorHandler,
@@ -6,9 +7,8 @@ import {
   TokenUserData,
   generateHash,
   createToken,
-} from 'home/vladimir/WebstormProjects/rsclone/back-end/utils';
-import { dataValidation, restorePasswordSchema } from 'home/vladimir/WebstormProjects/rsclone/back-end/validation';
-import { pick } from 'lodash';
+} from '../../utils';
+import { dataValidation, restorePasswordSchema } from '../../validation';
 
 export const restorePassword = async (req: Request, res: Response): Promise<Response> => {
   const { password } = req.body;

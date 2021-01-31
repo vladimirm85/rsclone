@@ -1,9 +1,9 @@
 import { Response } from 'express';
+import * as Joi from 'joi';
 import { UserLoginData } from '../validation';
 import { UserRegisterData } from '../validation';
 import { RestorePasswordInterface } from '../validation';
 import { errorHandler } from '../utils';
-import * as Joi from 'joi';
 
 type Schema =
   | Joi.ObjectSchema<UserLoginData>
