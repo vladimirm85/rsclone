@@ -1,5 +1,5 @@
 import { gameHeight, gameWidth, KEYS } from './constants';
-import { sounds } from './utils/preload';
+import { preload, sounds, sprites } from './utils/preload';
 import Ball from './Ball';
 import Platform from './Platform';
 import Block from './Block';
@@ -31,6 +31,7 @@ export default class Game implements GameInterface {
   isPause: boolean;
   bonuses: BonusInterface[];
   ctx: CanvasRenderingContext2D;
+  animationFrameId: number;
 
   // TODO: add TOTAL SCORE
   constructor(props: GameConstructor, ctx: CanvasRenderingContext2D) {
@@ -48,6 +49,8 @@ export default class Game implements GameInterface {
     );
     this.bonuses = [];
     this.isPause = false;
+    this.ctx = ctx;
+    this.animationFrameId = 0;
   }
 
   addListeners = (): void => {
@@ -71,6 +74,33 @@ export default class Game implements GameInterface {
     window.addEventListener('keyup', () => {
       this.platform.stop();
     });
+  };
+
+  init = () => {
+    this.addListeners();
+
+    let start: number | null = null;
+    const fpsDivider = 16;
+    const render = (timestamp: number) => {
+      if (timestamp > start! + fpsDivider) {
+        if (this.ctx && !this.getIsPause()) {
+          this.draw(this.ctx);
+          this.updateCurrentStateGame();
+          start = timestamp;
+        }
+      }
+      // @ts-ignore
+      this.animationFrameId = window.requestAnimationFrame(render);
+    };
+
+    preload(() => {
+      // @ts-ignore
+      render();
+    });
+  };
+
+  stop = () => {
+    window.cancelAnimationFrame(this.animationFrameId);
   };
 
   draw = (): void => {
@@ -133,15 +163,12 @@ export default class Game implements GameInterface {
     const ballX = this.ball.getX() + this.ball.getDx();
     const ballY = this.ball.getY() + this.ball.getDy();
 
-    if (
+    return (
       ballX + this.ball.getWidth() > elem.getX() &&
       ballX < elem.getX() + elem.getWidth() &&
       ballY + this.ball.getHeight() > elem.getY() &&
       ballY < elem.getY() + elem.getHeight()
-    ) {
-      return true;
-    }
-    return false;
+    );
   };
 
   bonusIsCollide = (): void => {

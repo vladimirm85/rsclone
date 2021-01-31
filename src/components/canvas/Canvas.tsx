@@ -5,6 +5,7 @@ import { Button, ButtonGroup } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import PublishIcon from '@material-ui/icons/Publish';
 import PauseIcon from '@material-ui/icons/Pause';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 import { AppStateType } from '../../store/store';
@@ -17,9 +18,8 @@ import SavesW from './Saves';
 
 // Import constants
 import { gameWidth, gameHeight, initialGameData } from './constants';
-import { preload } from './utils/preload';
 import Game from './Game';
-import { GameConstructor } from './interfaces';
+import { GameConstructor, GameInterface } from './interfaces';
 import { get } from '../../helpers/storage';
 
 type MapStatePropsType = {
@@ -39,43 +39,22 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [isPause, setIsPause] = React.useState(false);
+  const [gameData, setGameData] = React.useState<GameInterface>();
   const authKey = get('authKey');
-  let animationFrameId: number;
 
-  const newGame = (gameData: GameConstructor) => {
+  const newGame = (gameSettings: GameConstructor) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
-
-    const game = new Game(gameData, context!);
-    game.addListeners();
-
-    let start: number | null = null;
-    const fpsDivider = 16;
-    const render = (timestamp: number) => {
-      if (timestamp > start! + fpsDivider) {
-        if (context && !game.getIsPause()) {
-          game.draw();
-          game.updateCurrentStateGame();
-          start = timestamp;
-        }
-      }
-      // @ts-ignore
-      animationFrameId = window.requestAnimationFrame(render);
-    };
-
-    preload(() => {
-      // @ts-ignore
-      render();
-    });
+    const game = new Game(gameSettings, context!);
+    game.init();
+    setGameData(game);
   };
 
   useEffect(() => {
-    if (isGameStarted) {
+    if (isGameStarted && !gameData) {
       newGame(initialGameData);
     }
-    return () => {
-      window.cancelAnimationFrame(animationFrameId);
-    };
   });
 
   const gameLauncher = () => {
@@ -116,12 +95,21 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                     Load
                   </Button>
                 )}
-                <Button startIcon={<PauseIcon />}>Pause</Button>
+                <Button
+                  startIcon={isPause ? <PlayArrowIcon /> : <PauseIcon />}
+                  style={{ width: '100px' }}
+                  onClick={() => {
+                    setIsPause(!isPause);
+                    gameData!.setIsPause(!isPause);
+                  }}
+                >
+                  {isPause ? 'Play' : 'Pause'}
+                </Button>
                 <Button startIcon={<VolumeOffIcon />}>Mute</Button>
                 <Button
                   startIcon={<VideogameAssetIcon />}
                   onClick={() => {
-                    window.cancelAnimationFrame(animationFrameId);
+                    gameData!.stop();
                     newGame(initialGameData);
                   }}
                 >
