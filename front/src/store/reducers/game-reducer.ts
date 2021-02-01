@@ -4,16 +4,19 @@ import {
   SET_USER_SAVES_ERROR,
   SET_USER_SAVES_LOADING,
   DEL_USER_SAVE,
+  SET_GAME_OBJ,
 } from '../actions/gameActions';
 import { gameActions } from '../action-creators/game-ac';
 import { RESET } from '../actions/settingsActions';
 import { SavesType } from '../../types/types';
+import { GameInterface } from '../../components/canvas/interfaces';
 
 const initialState = {
   isGameStarted: false,
   userSaves: [] as Array<SavesType>,
   userSavesError: '',
   userSavesLoading: false,
+  gameObj: (null as unknown) as GameInterface | null,
 };
 
 type InitialStateType = typeof initialState;
@@ -31,6 +34,7 @@ const gameReducer = (
     case SET_USER_SAVES:
     case SET_USER_SAVES_ERROR:
     case SET_USER_SAVES_LOADING:
+    case SET_GAME_OBJ:
       return {
         ...state,
         ...action.payload,

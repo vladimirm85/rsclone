@@ -43,7 +43,7 @@ type MapDispatchPropsType = {
 type InputPropsType = {
   open: boolean;
   handleClose: () => void;
-  gameData: GameInterface | undefined;
+  gameObj: GameInterface | null;
   isPause: boolean;
   setIsPause: (isPause: boolean) => void;
 };
@@ -57,7 +57,7 @@ const Saves: React.FC<PropsType> = (props): JSX.Element => {
     userSaves,
     userSavesError,
     userSavesLoading,
-    gameData,
+    gameObj,
     isPause,
     setIsPause,
   } = props;
@@ -148,9 +148,9 @@ const Saves: React.FC<PropsType> = (props): JSX.Element => {
                                   startIcon={<PublishIcon />}
                                   onClick={() => {
                                     setIsPause(!isPause);
-                                    gameData!.setIsPause(!isPause);
+                                    gameObj!.setIsPause(!isPause);
                                     handleClose();
-                                    gameData?.load(row.saveData);
+                                    gameObj?.load(row.saveData);
                                   }}
                                 >
                                   Load

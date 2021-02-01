@@ -28,6 +28,7 @@ import { ScoreType } from '../../types/types';
 import Preloader from '../common/Preloader/Preloader';
 import useStyles2 from './style';
 import TableFooterActions from '../table/TableFooter';
+import unmountCanvas from '../../hoc/unmomuntCanvas';
 
 type MapStateToPropsType = {
   totalScore: Array<ScoreType>;
@@ -181,6 +182,7 @@ const ScoreW = compose<React.ComponentType>(
     getAndSetLevelScore,
   }),
   withAuthRedirect,
+  unmountCanvas,
 )(Score);
 
 export default ScoreW;

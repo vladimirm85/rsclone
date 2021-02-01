@@ -1,4 +1,5 @@
 import React from 'react';
+import unmountCanvas from '../../hoc/unmomuntCanvas';
 
 const About: React.FC = (): JSX.Element => {
   return (
@@ -12,4 +13,6 @@ const About: React.FC = (): JSX.Element => {
   );
 };
 
-export default About;
+const AboutW = unmountCanvas(About);
+
+export default AboutW;

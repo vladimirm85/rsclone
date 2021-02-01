@@ -27,24 +27,25 @@ import { get } from '../../helpers/storage';
 type MapStatePropsType = {
   isGameStarted: boolean;
   isAuth: boolean;
+  gameObj: GameInterface | null;
 };
 
 type MapDispatchPropsType = {
   startGame: (isGameStarted: boolean) => void;
   loadUserSaves: (key: string) => void;
   createUserSave: (key: string, save: GameConstructor) => void;
+  setGameObj: (gameObj: GameInterface | null) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
 
 const Canvas: React.FC<PropsType> = (props): JSX.Element => {
-  const { isGameStarted, startGame, isAuth } = props;
+  const { isGameStarted, startGame, isAuth, gameObj, setGameObj } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [isPause, setIsPause] = React.useState(false);
   const [sounds, setSounds] = React.useState(true);
-  const [gameData, setGameData] = React.useState<GameInterface>();
   const authKey = get('authKey');
 
   const newGame = (gameSettings: GameConstructor) => {
@@ -52,11 +53,11 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
     const context = canvas?.getContext('2d');
     const game = new Game(gameSettings, canvas!, context!);
     game.start();
-    setGameData(game);
+    setGameObj(game);
   };
 
   useEffect(() => {
-    if (isGameStarted && !gameData) {
+    if (isGameStarted && !gameObj) {
       newGame(initialGameData);
     }
   });
@@ -85,6 +86,21 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
             unmountOnExit
           >
             <div className={classes.canvasContainer}>
+              <CSSTransition
+                in={isPause}
+                timeout={500}
+                classNames={classes.paused}
+                unmountOnExit
+              >
+                <div className={classes.pause}>
+                  <p>
+                    G<span className="ocean-letter">A</span>ME
+                  </p>
+                  <p>
+                    P<span className="ocean-letter">A</span>USED
+                  </p>
+                </div>
+              </CSSTransition>
               <canvas
                 className={classes.canvasElement}
                 ref={canvasRef}
@@ -102,7 +118,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   <Button
                     startIcon={<SaveIcon />}
                     onClick={() => {
-                      const save = gameData!.getCurrentGameState();
+                      const save = gameObj!.getCurrentGameState();
                       props.createUserSave(authKey, save);
                     }}
                   >
@@ -116,7 +132,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                       handleOpenSaves();
                       if (!isPause) {
                         setIsPause(true);
-                        gameData!.setIsPause(true);
+                        gameObj!.setIsPause(true);
                       }
                     }}
                   >
@@ -128,7 +144,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   style={{ width: '100px' }}
                   onClick={() => {
                     setIsPause(!isPause);
-                    gameData!.setIsPause(!isPause);
+                    gameObj!.setIsPause(!isPause);
                   }}
                 >
                   {isPause ? 'Play' : 'Pause'}
@@ -138,7 +154,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   style={{ width: '120px' }}
                   onClick={() => {
                     setSounds(!sounds);
-                    gameData!.setIsSound(!sounds);
+                    gameObj!.setIsSound(!sounds);
                   }}
                 >
                   {sounds ? 'Mute' : 'Unmute'}
@@ -146,7 +162,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                 <Button
                   startIcon={<VideogameAssetIcon />}
                   onClick={() => {
-                    gameData!.stop();
+                    gameObj!.stop();
                     newGame(initialGameData);
                   }}
                 >
@@ -168,7 +184,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
       </div>
       {isAuth && (
         <SavesW
-          gameData={gameData}
+          gameObj={gameObj}
           open={open}
           handleClose={handleCloseSaves}
           isPause={isPause}
@@ -182,6 +198,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
 const mapStateToProps = (state: AppStateType) => ({
   isGameStarted: state.gameData.isGameStarted,
   isAuth: state.authData.isAuth,
+  gameObj: state.gameData.gameObj,
 });
 
 const CanvasW = connect(mapStateToProps, {

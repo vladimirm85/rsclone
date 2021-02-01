@@ -28,6 +28,7 @@ import { ScoreType } from '../../types/types';
 import Preloader from '../common/Preloader/Preloader';
 import { loadUserScore } from '../../store/action-creators/settings-ac';
 import TableFooterActions from '../table/TableFooter';
+import unmountCanvas from '../../hoc/unmomuntCanvas';
 
 type MapStateProps = {
   authEmail: string;
@@ -242,6 +243,7 @@ const MapStateToProps = (state: AppStateType) => ({
 const SettingsW = compose<React.ComponentType>(
   connect(MapStateToProps, { ...authActions, loadAvatar, loadUserScore }),
   withAuthRedirect,
+  unmountCanvas,
 )(Settings);
 
 export default SettingsW;

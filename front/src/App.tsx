@@ -6,7 +6,7 @@ import CanvasW from './components/canvas/Canvas';
 import HeaderW from './components/header/Header';
 import Footer from './components/footer/Footer';
 import ScoreW from './components/score/Score';
-import About from './components/about/About';
+import AboutW from './components/about/About';
 import VerificationW from './components/verification/Verification';
 import SettingsW from './components/settings/Settings';
 import { get } from './helpers/storage';
@@ -69,7 +69,7 @@ const App: React.FC<PropsType> = (props): JSX.Element => {
           <HeaderW />
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/game" />} />
-            <Route path="/about" render={() => <About />} />
+            <Route path="/about" render={() => <AboutW />} />
             <Route path="/score" render={() => <ScoreW />} />
             <Route path="/game" render={() => <CanvasW />} />
             <Route path="/settings" render={() => <SettingsW />} />

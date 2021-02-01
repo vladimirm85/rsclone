@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     canvasContainer: {
       display: 'flex',
+      position: 'relative',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
@@ -49,6 +50,22 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    paused: {
+      '&-enter': {
+        opacity: 0,
+        '&-active': {
+          opacity: 1,
+          transition: 'opacity 300ms',
+        },
+      },
+      '&-exit': {
+        opacity: 1,
+        '&-active': {
+          opacity: 0,
+          transition: 'opacity 300ms',
+        },
+      },
+    },
     gameContent: {
       display: 'flex',
       alignItems: 'center',
@@ -66,6 +83,21 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     canvasElement: {
       cursor: 'none',
+    },
+    pause: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 20,
+      fontSize: '3rem',
+      fontFamily: "'Fredoka One', cursive",
+      color: '#ffffff',
+      padding: '20px',
+      border: '2px solid white',
+      '& p:nth-child(2)': {
+        paddingLeft: '60px',
+      },
     },
   }),
 );

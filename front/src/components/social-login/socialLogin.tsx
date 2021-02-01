@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import useStyles from './style';
 import { AppStateType } from '../../store/store';
 import { set } from '../../helpers/storage';
+import unmountCanvas from '../../hoc/unmomuntCanvas';
 
 type PropsType = {
   isAuth: boolean;
@@ -51,6 +53,9 @@ const mapStateToProps = (state: AppStateType) => {
   };
 };
 
-const SocialLoginW = connect(mapStateToProps)(SocialLogin);
+const SocialLoginW = compose<React.ComponentType>(
+  connect(mapStateToProps),
+  unmountCanvas,
+)(SocialLogin);
 
 export default SocialLoginW;

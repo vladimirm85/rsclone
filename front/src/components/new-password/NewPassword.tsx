@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { Typography, Container, TextField, Button } from '@material-ui/core';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import useStyles from './style';
 import AuthPreloader from '../common/Auth-preloader/AuthPreloader';
 import { AppStateType } from '../../store/store';
@@ -10,6 +11,7 @@ import {
   changeOldPassword,
 } from '../../store/action-creators/newPass-ac';
 import { passValidator } from '../../helpers/validator';
+import unmountCanvas from '../../hoc/unmomuntCanvas';
 
 type MapStatePropsType = {
   newPass: string;
@@ -179,9 +181,12 @@ const mapStateToProps = (state: AppStateType) => ({
   isAuth: state.authData.isAuth,
 });
 
-const NewPasswordW = connect(mapStateToProps, {
-  changeOldPassword,
-  ...newPassActions,
-})(NewPassword);
+const NewPasswordW = compose<React.ComponentType>(
+  connect(mapStateToProps, {
+    changeOldPassword,
+    ...newPassActions,
+  }),
+  unmountCanvas,
+)(NewPassword);
 
 export default NewPasswordW;
