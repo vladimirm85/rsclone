@@ -75,7 +75,7 @@ export const bonusHeight = 20;
 // *** GameInit ***
 
 export const initialGameData: GameConstructor = {
-  initLevel: 7,
+  initLevel: 4,
   numberOfLives: 3,
   score: 0,
   numberOfMisses: 1,

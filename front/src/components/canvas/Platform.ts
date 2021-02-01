@@ -1,4 +1,10 @@
-import { KEYS, gameWidth, platformStartData } from './constants';
+import {
+  KEYS,
+  gameWidth,
+  platformStartData,
+  blockWidth,
+  blockHeight,
+} from './constants';
 import { sprites } from './utils/preload';
 import { PlatformConstructor, PlatformInterface } from './interfaces';
 
@@ -26,17 +32,20 @@ export default class Platform implements PlatformInterface {
   }
 
   draw = (): void => {
-    this.ctx.drawImage(
-      sprites.platform!,
-      0,
-      this.size * this.height,
-      this.width,
-      this.height,
-      this.x,
+    const gradient = this.ctx.createLinearGradient(
+      this.x + blockWidth,
       this.y,
-      this.width,
-      this.height,
+      blockWidth + this.x,
+      blockHeight + this.y,
     );
+
+    gradient.addColorStop(0, 'rgba(0,172,174,1)');
+    gradient.addColorStop(0.5, 'rgba(13,134,145,1)');
+    gradient.addColorStop(1, 'rgba(0,172,174,1)');
+
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(this.x, this.y, this.width, this.height);
+    this.ctx.strokeRect(this.x, this.y, this.width, this.height);
   };
 
   start = (direction: string): void => {
@@ -56,8 +65,6 @@ export default class Platform implements PlatformInterface {
     this.dx = platformStartData.dx;
     this.x = platformStartData.x;
     this.y = platformStartData.y;
-    this.width = platformStartData.width;
-    this.size = platformStartData.size;
   };
 
   move = (): void => {
