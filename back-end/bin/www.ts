@@ -5,7 +5,7 @@
 
 import * as dotenv from 'dotenv';
 
-if(!process.env.FRONT_BASE_URL){
+if(process.env.NODE_ENV !== 'production'){
   dotenv.config();
 }
 
