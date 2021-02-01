@@ -18,6 +18,7 @@ import {
   githubRouteProtector,
   facebookRouteProtector,
 } from './middlewares';
+
 const swaggerDocs = YAML.load('./documentation-api/swagger.yaml');
 
 export const app = express();
@@ -42,7 +43,7 @@ facebookRouteProtector(passport);
 
 app.use(logger('dev'));
 app.use(cors());
-app.use(express.json({ limit: '200mb' }));
+app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/saves', savesRouter);
