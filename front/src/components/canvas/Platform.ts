@@ -5,7 +5,6 @@ import {
   blockWidth,
   blockHeight,
 } from './constants';
-import { sprites } from './utils/preload';
 import { PlatformConstructor, PlatformInterface } from './interfaces';
 
 export default class Platform implements PlatformInterface {
