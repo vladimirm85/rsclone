@@ -191,7 +191,7 @@ export default class Game implements GameInterface {
     this.ctx.fillRect(gameWidth - 200, gameHeight - 35, 200, 40);
 
     this.ctx.font = 'normal 20px sans-serif';
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = 'rgba(0,0,0,.6)';
     this.ctx.fillText(`Score: ${this.score}`, 10, gameHeight - 10);
     this.ctx.fillText(
       `Lives: ${this.numberOfLives}`,
