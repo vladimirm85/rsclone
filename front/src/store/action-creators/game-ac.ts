@@ -6,6 +6,7 @@ import {
   SET_USER_SAVES_LOADING,
   DEL_USER_SAVE,
   SET_GAME_OBJ,
+  CANCEL_FRAME,
 } from '../actions/gameActions';
 import { RESET } from '../actions/settingsActions';
 import { SavesType } from '../../types/types';
@@ -45,6 +46,10 @@ export const gameActions = {
     ({
       type: SET_GAME_OBJ,
       payload: { gameObj },
+    } as const),
+  cancelFrame: () =>
+    ({
+      type: CANCEL_FRAME,
     } as const),
   reset: () => ({ type: RESET } as const),
 };

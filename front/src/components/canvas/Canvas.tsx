@@ -118,8 +118,10 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   <Button
                     startIcon={<SaveIcon />}
                     onClick={() => {
-                      const save = gameObj!.getCurrentGameState();
-                      props.createUserSave(authKey, save);
+                      if (gameObj) {
+                        const save = gameObj.getCurrentGameState();
+                        props.createUserSave(authKey, save);
+                      }
                     }}
                   >
                     Save
@@ -130,9 +132,9 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                     startIcon={<PublishIcon />}
                     onClick={() => {
                       handleOpenSaves();
-                      if (!isPause) {
+                      if (!isPause && gameObj) {
                         setIsPause(true);
-                        gameObj!.setIsPause(true);
+                        gameObj.setIsPause(true);
                       }
                     }}
                   >
@@ -143,8 +145,10 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   startIcon={isPause ? <PlayArrowIcon /> : <PauseIcon />}
                   style={{ width: '100px' }}
                   onClick={() => {
-                    setIsPause(!isPause);
-                    gameObj!.setIsPause(!isPause);
+                    if (gameObj) {
+                      setIsPause(!isPause);
+                      gameObj.setIsPause(!isPause);
+                    }
                   }}
                 >
                   {isPause ? 'Play' : 'Pause'}
@@ -153,8 +157,10 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   startIcon={sounds ? <VolumeUpIcon /> : <VolumeOffIcon />}
                   style={{ width: '120px' }}
                   onClick={() => {
-                    setSounds(!sounds);
-                    gameObj!.setIsSound(!sounds);
+                    if (gameObj) {
+                      setSounds(!sounds);
+                      gameObj.setIsSound(!sounds);
+                    }
                   }}
                 >
                   {sounds ? 'Mute' : 'Unmute'}
@@ -162,8 +168,10 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                 <Button
                   startIcon={<VideogameAssetIcon />}
                   onClick={() => {
-                    gameObj!.stop();
-                    newGame(initialGameData);
+                    if (gameObj) {
+                      gameObj.stop();
+                      newGame(initialGameData);
+                    }
                   }}
                 >
                   New game

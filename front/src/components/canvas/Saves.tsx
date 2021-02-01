@@ -147,10 +147,12 @@ const Saves: React.FC<PropsType> = (props): JSX.Element => {
                                   size="small"
                                   startIcon={<PublishIcon />}
                                   onClick={() => {
-                                    setIsPause(!isPause);
-                                    gameObj!.setIsPause(!isPause);
-                                    handleClose();
-                                    gameObj?.load(row.saveData);
+                                    if (gameObj) {
+                                      setIsPause(!isPause);
+                                      gameObj.setIsPause(!isPause);
+                                      handleClose();
+                                      gameObj.load(row.saveData);
+                                    }
                                   }}
                                 >
                                   Load

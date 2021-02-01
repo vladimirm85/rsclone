@@ -17,6 +17,7 @@ import {
 import authApi from '../../api/auth-api';
 import { del, set } from '../../helpers/storage';
 import { RESET } from '../actions/settingsActions';
+import { gameActions } from './game-ac';
 
 export const authActions = {
   setEmail: (email: string) =>
@@ -114,6 +115,8 @@ export const loginAndSetUserData = (email: string, password: string) => async (
     if (data.data.success) {
       const authKey = data.data.payload;
       set('authKey', authKey);
+      dispatch(gameActions.startGame(false));
+      dispatch(gameActions.cancelFrame());
       dispatch(authActions.setInitializeStatus(false));
       dispatch(authActions.setLoginError(''));
       dispatch(authActions.setPassword(''));

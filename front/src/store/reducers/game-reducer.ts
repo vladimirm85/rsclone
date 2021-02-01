@@ -5,6 +5,7 @@ import {
   SET_USER_SAVES_LOADING,
   DEL_USER_SAVE,
   SET_GAME_OBJ,
+  CANCEL_FRAME,
 } from '../actions/gameActions';
 import { gameActions } from '../action-creators/game-ac';
 import { RESET } from '../actions/settingsActions';
@@ -45,6 +46,15 @@ const gameReducer = (
         // eslint-disable-next-line no-underscore-dangle
         userSaves: state.userSaves.filter((i) => i._id !== action.payload.id),
       };
+    case CANCEL_FRAME:
+      if (state.gameObj) {
+        state.gameObj.stop();
+        return {
+          ...state,
+          gameObj: null,
+        };
+      }
+      return state;
     case RESET:
       return initialState;
     default:
