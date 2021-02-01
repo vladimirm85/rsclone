@@ -282,9 +282,11 @@ export default class Game implements GameInterface {
           const bonusInitY = block.getY() + block.getHeight();
           this.createBonus(bonusInitX, bonusInitY);
         }
-        if (!block.isIndestructibleBlock()) block.reduceLives();
+        if (!block.isIndestructibleBlock()) {
+          block.reduceLives();
+          this.addScorePoint();
+        }
         this.ball.changeDirection(block.getX(), block.getWidth());
-        this.addScorePoint();
         if (this.getIsSound()) {
           sounds.pim!.currentTime = 0;
           sounds.pim!.play();
