@@ -4,7 +4,10 @@
 
 
 import * as dotenv from 'dotenv';
-dotenv.config();
+
+if(!process.env.FRONT_BASE_URL){
+  dotenv.config();
+}
 
 import { app } from '../app';
 import debug0 from 'debug';
