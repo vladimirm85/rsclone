@@ -170,7 +170,13 @@ export interface PlatformInterface extends PlatformConstructor {
   stop: () => void;
   setStartPosition: () => void;
   move: () => void;
+  moveWithMouse: (event: MouseEvent) => void;
   collideBounds: () => void;
+  collideBoundsWithMouse: (event: MouseEvent) => void;
+  stopNearTheBorder: (
+    elementLeftPosition: number,
+    elementRightPosition: number,
+  ) => void;
   changeSize: (option: string) => void;
   getCurrentPlatformData: () => PlatformConstructor;
   getTouchOffset: (ballTouchX: number) => number;

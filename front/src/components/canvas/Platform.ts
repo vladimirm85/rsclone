@@ -66,17 +66,33 @@ export default class Platform implements PlatformInterface {
     }
   };
 
+  moveWithMouse = (event: MouseEvent): void => {
+    this.x = event.offsetX - this.width / 2;
+  };
+
   collideBounds = (): void => {
     const platformLeft = this.x + this.dx;
     const platformRight = platformLeft + this.width;
+    this.stopNearTheBorder(platformLeft, platformRight);
+  };
 
+  collideBoundsWithMouse = (event: MouseEvent): void => {
+    const mouseLeftPosition = event.offsetX - this.width / 2;
+    const mouseRightPosition = event.offsetX + this.width / 2;
+    this.stopNearTheBorder(mouseLeftPosition, mouseRightPosition);
+  };
+
+  stopNearTheBorder = (
+    elementLeftPosition: number,
+    elementRightPosition: number,
+  ): void => {
     const worldLeft = 0;
 
-    if (platformLeft < worldLeft) {
+    if (elementLeftPosition < worldLeft) {
       this.dx = 0;
       this.x = 0;
     }
-    if (platformRight > gameWidth) {
+    if (elementRightPosition > gameWidth) {
       this.dx = 0;
       this.x = gameWidth - this.width;
     }

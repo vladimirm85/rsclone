@@ -36,12 +36,18 @@ export default class Game implements GameInterface {
   isPause: boolean;
   bonuses: BonusInterface[];
   isSoundOn: boolean;
+  canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   animationFrameId: number;
 
   // TODO: add TOTAL SCORE
-  constructor(props: GameConstructor, ctx: CanvasRenderingContext2D) {
+  constructor(
+    props: GameConstructor,
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+  ) {
     // TODO: REFACTOR!
+    this.canvas = canvas;
     this.ctx = ctx;
     this.currentLevel = props.initLevel;
     this.numberOfLives = props.numberOfLives;
@@ -78,6 +84,15 @@ export default class Game implements GameInterface {
 
     window.addEventListener('keyup', () => {
       this.platform.stop();
+    });
+
+    this.canvas.addEventListener('mousemove', (e) => {
+      this.platform.moveWithMouse(e);
+      this.platform.collideBoundsWithMouse(e);
+    });
+
+    this.canvas.addEventListener('click', () => {
+      this.ball.start();
     });
   };
 

@@ -64,6 +64,9 @@ const useStyles = makeStyles((theme: Theme) =>
     error: {
       color: 'red',
     },
+    canvasElement: {
+      cursor: 'none',
+    },
   }),
 );
 
