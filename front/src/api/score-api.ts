@@ -21,7 +21,7 @@ const scoreApi = {
   setGameLevelScore(key: string, level: number, score: number) {
     return api
       .post(
-        'total-score',
+        'levels-stats',
         { level, score },
         { headers: { Authorization: key } },
       )

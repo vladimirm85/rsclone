@@ -38,13 +38,21 @@ export default class Game implements GameInterface {
   isSoundOn: boolean;
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  totalScore: number;
   animationFrameId: number;
+  authStatus: boolean;
+  setTotalScore: (score: number) => void;
+  setLevelScore: (lvl: number, score: number) => void;
+  isEnd: boolean;
 
   // TODO: add TOTAL SCORE
   constructor(
     props: GameConstructor,
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
+    authStatus: boolean,
+    setTotalScore: (score: number) => void,
+    setLevelScore: (lvl: number, score: number) => void,
   ) {
     // TODO: REFACTOR!
     this.canvas = canvas;
@@ -62,6 +70,11 @@ export default class Game implements GameInterface {
     this.isSoundOn = props.isSound;
     this.isPause = false;
     this.animationFrameId = 0;
+    this.totalScore = 0;
+    this.authStatus = authStatus;
+    this.setTotalScore = setTotalScore;
+    this.setLevelScore = setLevelScore;
+    this.isEnd = false;
   }
 
   addListeners = (): void => {
@@ -318,33 +331,39 @@ export default class Game implements GameInterface {
       this.ball.setStartPosition();
       this.platform.setStartPosition();
       this.clearBonuses();
-      if (this.numberOfLives === 0) {
+      if (this.numberOfLives < 1) {
         console.log('GAME OVER');
+        this.totalScore = this.score; // TODO: REFACTOR
+        this.setIsEnd(); // TODO: REFACTOR?
+        this.stop();
       }
     }
   };
 
   updateCurrentStateGame = (): void => {
-    this.checkLifeLost();
-    this.checkHitOnBlocks();
-    this.bonusIsCollide();
-    this.collidePlatformWithBall();
-    if (this.ball.collideBounds()) {
-      this.increaseBlockMiss();
+    if (!this.getIsEnd()) {
+      console.log('push me');
+      this.checkLifeLost();
+      this.checkHitOnBlocks();
+      this.bonusIsCollide();
+      this.collidePlatformWithBall();
+      if (this.ball.collideBounds()) {
+        this.increaseBlockMiss();
+      }
+      this.platform.collideBounds();
+      this.platform.move();
+      if (!this.ball.getRunStatus()) {
+        this.ball.moveWithPlatform(this.platform.getMiddlePlatformPosition());
+      } else {
+        this.ball.move();
+      }
+      if (this.bonuses.length) {
+        this.bonuses.forEach((bonus) => {
+          bonus.move();
+        });
+      }
+      this.checkGameIsEnd(); // TODO !! and implement game end with Indestructible blocks
     }
-    this.platform.collideBounds();
-    this.platform.move();
-    if (!this.ball.getRunStatus()) {
-      this.ball.moveWithPlatform(this.platform.getMiddlePlatformPosition());
-    } else {
-      this.ball.move();
-    }
-    if (this.bonuses.length) {
-      this.bonuses.forEach((bonus) => {
-        bonus.move();
-      });
-    }
-    // this.checkGameIsEnd(); // TODO !! and implement game end with Indestructible blocks
   };
 
   addScorePoint = (): void => {
@@ -403,4 +422,19 @@ export default class Game implements GameInterface {
   };
 
   getIsSound = (): boolean => this.isSoundOn;
+
+  setIsEnd = (): void => {
+    this.isEnd = true;
+  };
+
+  getIsEnd = (): boolean => this.isEnd;
+
+  getAuthStatus = (): boolean => this.authStatus;
+
+  checkGameIsEnd = () => {
+    if (this.getIsEnd() && this.getAuthStatus()) {
+      this.setTotalScore(this.score);
+      this.setLevelScore(this.currentLevel + 1, this.totalScore);
+    }
+  };
 }

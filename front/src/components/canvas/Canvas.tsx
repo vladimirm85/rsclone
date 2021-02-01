@@ -56,9 +56,9 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
 
   const newGame = (
     gameSettings: GameConstructor,
-    // authStatus: boolean,
-    // setTotalScore: (score: number) => void,
-    // setLevelScore: (lvl: number, score: number) => void,
+    authStatus: boolean,
+    setTotalScore: (score: number) => void,
+    setLevelScore: (lvl: number, score: number) => void,
   ) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
@@ -66,9 +66,9 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
       gameSettings,
       canvas!,
       context!,
-      // authStatus,
-      // setTotalScore,
-      // setLevelScore,
+      authStatus,
+      setTotalScore,
+      setLevelScore,
     );
     game.start();
     setGameObj(game);
@@ -78,9 +78,9 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
     if (isGameStarted && !gameObj) {
       newGame(
         initialGameData,
-        // isAuth,
-        // props.setCurrentTotalScore,
-        // props.setCurrentLevelScore,
+        isAuth,
+        props.setCurrentTotalScore,
+        props.setCurrentLevelScore,
       );
     }
   });
@@ -193,7 +193,12 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   onClick={() => {
                     if (gameObj) {
                       gameObj.stop();
-                      newGame(initialGameData);
+                      newGame(
+                        initialGameData,
+                        isAuth,
+                        props.setCurrentTotalScore,
+                        props.setCurrentLevelScore,
+                      );
                     }
                   }}
                 >
