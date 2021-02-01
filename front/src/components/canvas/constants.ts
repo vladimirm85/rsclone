@@ -1,4 +1,3 @@
-import blocksLevelsData from './blocksLevelsData';
 import {
   BallConstructor,
   GameConstructor,
@@ -76,13 +75,13 @@ export const bonusHeight = 20;
 // *** GameInit ***
 
 export const initialGameData: GameConstructor = {
-  initLevel: 8,
+  initLevel: 0,
   numberOfLives: 3,
   score: 0,
   numberOfMisses: 1,
   ballData: ballStartData,
   platformData: platformStartData,
-  blocksData: blocksLevelsData[0], // TODO: REFACTOR!
+  blocksData: [],
   bonusesData: [],
   isSound: true,
 };

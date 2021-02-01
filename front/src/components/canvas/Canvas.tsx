@@ -50,8 +50,8 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
   const newGame = (gameSettings: GameConstructor) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
-    const game = new Game(gameSettings, context!);
-    game.init();
+    const game = new Game(gameSettings, canvas!, context!);
+    game.start();
     setGameData(game);
   };
 
@@ -85,7 +85,12 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
             unmountOnExit
           >
             <div className={classes.canvasContainer}>
-              <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />
+              <canvas
+                className={classes.canvasElement}
+                ref={canvasRef}
+                width={gameWidth}
+                height={gameHeight}
+              />
               <ButtonGroup
                 variant="text"
                 aria-label="button group"

@@ -13,7 +13,6 @@ export interface GameInit {
   numberOfLives: number;
   score: number;
   numberOfMisses: number;
-  blocksData: BlocksData;
 }
 
 export interface GameConstructor extends GameInit {
@@ -21,6 +20,7 @@ export interface GameConstructor extends GameInit {
   ballData: BallConstructor;
   platformData: PlatformConstructor;
   isSound: boolean;
+  blocksData: BlocksData;
   bonusesData?: BonusConstructor[];
 }
 
@@ -29,14 +29,19 @@ export interface GameInterface extends GameInit {
   ball: BallInterface;
   platform: PlatformInterface;
   addListeners: () => void;
-  init: () => void;
-  stop: () => void;
+  start: () => void;
   load: (save: GameConstructor) => void;
+  stop: () => void;
   draw: (ctx: CanvasRenderingContext2D) => void;
-  ballIsCollide: (element: BlockInterface | PlatformInterface) => boolean;
+  ballIsCollide: (
+    elemX: number,
+    elemY: number,
+    elemWidth: number,
+    elemHeight: number,
+  ) => boolean;
   bonusIsCollide: () => void;
   bonusDelete: (bonus: BonusInterface) => void;
-  spawnNewBonus: (bonus: BlockInterface) => void;
+  createBonus: (bonusInitX: number, bonusInitY: number) => void;
   checkHitOnBlocks: () => void;
   collidePlatformWithBall: () => void;
   checkLifeLost: () => void;
@@ -125,9 +130,10 @@ export interface BonusConstructor {
   platform: PlatformInterface;
   x: number;
   y: number;
-  typeOfBonus?: string;
-  isUsed?: boolean;
-  isActive?: boolean;
+  spriteNumber: number;
+  typeOfBonus: string;
+  isUsed: boolean;
+  isActive: boolean;
 }
 
 export interface BonusInterface extends BonusConstructor {
@@ -164,7 +170,13 @@ export interface PlatformInterface extends PlatformConstructor {
   stop: () => void;
   setStartPosition: () => void;
   move: () => void;
+  moveWithMouse: (event: MouseEvent) => void;
   collideBounds: () => void;
+  collideBoundsWithMouse: (event: MouseEvent) => void;
+  stopNearTheBorder: (
+    elementLeftPosition: number,
+    elementRightPosition: number,
+  ) => void;
   changeSize: (option: string) => void;
   getCurrentPlatformData: () => PlatformConstructor;
   getTouchOffset: (ballTouchX: number) => number;

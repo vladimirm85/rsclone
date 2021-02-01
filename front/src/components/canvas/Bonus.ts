@@ -18,9 +18,9 @@ export default class Bonus implements BonusInterface {
   ball: BallInterface;
   platform: PlatformInterface;
   spriteNumber: number;
-  typeOfBonus?: string;
-  isUsed?: boolean;
-  isActive?: boolean;
+  typeOfBonus: string;
+  isUsed: boolean;
+  isActive: boolean;
 
   constructor(props: BonusConstructor) {
     ({
@@ -28,18 +28,17 @@ export default class Bonus implements BonusInterface {
       platform: this.platform,
       x: this.x,
       y: this.y,
-      typeOfBonus: this.typeOfBonus = '',
-      // isUsed: this.isUsed = false,
-      // isActive: this.isActive = true,
+      spriteNumber: this.spriteNumber,
+      typeOfBonus: this.typeOfBonus,
+      isUsed: this.isUsed,
+      isActive: this.isActive,
     } = props);
-    this.dy = 1;
+    this.dy = 2;
     this.width = 20;
     this.height = 20;
-    this.spriteNumber = 0; // TODO:  m.b. delete?!
-    // this.typeOfBonus = '';
-    this.initBonus();
-    this.isUsed = props.isUsed || false;
-    this.isActive = props.isActive || true;
+    if (!this.typeOfBonus) {
+      this.initBonus();
+    }
   }
 
   initBonus = () => {
@@ -103,6 +102,7 @@ export default class Bonus implements BonusInterface {
     platform: this.platform,
     x: this.x,
     y: this.y,
+    spriteNumber: this.spriteNumber,
     typeOfBonus: this.typeOfBonus,
     isUsed: this.isUsed,
     isActive: this.isActive,
