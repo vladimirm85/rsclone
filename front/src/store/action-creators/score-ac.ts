@@ -8,6 +8,7 @@ import {
 import scoreApi from '../../api/score-api';
 import { ScoreType } from '../../types/types';
 import { RESET } from '../actions/settingsActions';
+import { get } from '../../helpers/storage';
 
 export const scoreActions = {
   setTotalScore: (totalScore: Array<ScoreType>) =>
@@ -67,4 +68,32 @@ export const getAndSetLevelScore = (key: string, lvl: number) => async (
     dispatch(scoreActions.setScoreError(e.message));
   }
   dispatch(scoreActions.setScoreLoading(false));
+};
+
+export const setCurrentTotalScore = (totalScore: number) => async (
+  dispatch: Dispatch,
+) => {
+  try {
+    const authKey = get('authKey');
+    const data = await scoreApi.setGameTotalScore(authKey, totalScore);
+    if (data.data.success) {
+      console.log(data);
+    }
+  } catch (e) {
+    console.log(e.message);
+  }
+};
+
+export const setCurrentLevelScore = (level: number, score: number) => async (
+  dispatch: Dispatch,
+) => {
+  try {
+    const authKey = get('authKey');
+    const data = await scoreApi.setGameLevelScore(authKey, level, score);
+    if (data.data.success) {
+      console.log(data);
+    }
+  } catch (e) {
+    console.log(e.message);
+  }
 };
