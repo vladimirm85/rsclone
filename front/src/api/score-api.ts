@@ -13,6 +13,20 @@ const scoreApi = {
       })
       .then((res) => res);
   },
+  setGameTotalScore(key: string, totalScore: number) {
+    return api
+      .post('total-score', { totalScore }, { headers: { Authorization: key } })
+      .then((res) => res);
+  },
+  setGameLevelScore(key: string, level: number, score: number) {
+    return api
+      .post(
+        'total-score',
+        { level, score },
+        { headers: { Authorization: key } },
+      )
+      .then((res) => res);
+  },
 };
 
 export default scoreApi;

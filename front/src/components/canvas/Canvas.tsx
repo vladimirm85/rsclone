@@ -23,6 +23,10 @@ import { gameWidth, gameHeight, initialGameData } from './constants';
 import Game from './Game';
 import { GameConstructor, GameInterface } from './interfaces';
 import { get } from '../../helpers/storage';
+import {
+  setCurrentTotalScore,
+  setCurrentLevelScore,
+} from '../../store/action-creators/score-ac';
 
 type MapStatePropsType = {
   isGameStarted: boolean;
@@ -35,6 +39,8 @@ type MapDispatchPropsType = {
   loadUserSaves: (key: string) => void;
   createUserSave: (key: string, save: GameConstructor) => void;
   setGameObj: (gameObj: GameInterface | null) => void;
+  setCurrentTotalScore: (totalScore: number) => void;
+  setCurrentLevelScore: (level: number, score: number) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
@@ -48,17 +54,34 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
   const [sounds, setSounds] = React.useState(true);
   const authKey = get('authKey');
 
-  const newGame = (gameSettings: GameConstructor) => {
+  const newGame = (
+    gameSettings: GameConstructor,
+    // authStatus: boolean,
+    // setTotalScore: (score: number) => void,
+    // setLevelScore: (lvl: number, score: number) => void,
+  ) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
-    const game = new Game(gameSettings, canvas!, context!);
+    const game = new Game(
+      gameSettings,
+      canvas!,
+      context!,
+      // authStatus,
+      // setTotalScore,
+      // setLevelScore,
+    );
     game.start();
     setGameObj(game);
   };
 
   useEffect(() => {
     if (isGameStarted && !gameObj) {
-      newGame(initialGameData);
+      newGame(
+        initialGameData,
+        // isAuth,
+        // props.setCurrentTotalScore,
+        // props.setCurrentLevelScore,
+      );
     }
   });
 
@@ -213,6 +236,8 @@ const CanvasW = connect(mapStateToProps, {
   ...gameActions,
   loadUserSaves,
   createUserSave,
+  setCurrentTotalScore,
+  setCurrentLevelScore,
 })(Canvas);
 
 export default CanvasW;
