@@ -39,12 +39,26 @@ const GameOverModal: React.FC<PropsType> = (props): JSX.Element => {
       >
         <Fade in={gameOverModalOpen}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">ХЗАХАХАХААЗАЗАЗА</h2>
-            <p id="transition-modal-description">ТЫ ПРОЕБАЛ, ЕБЛАН___)))))</p>
-            <p>{gameResult.score}</p>
-            <Button variant="contained" color="primary">
-              Primary
-            </Button>
+            <div className={classes.gameOverContainer}>
+              <div className={classes.gameOverTitle}>
+                {gameResult.victory ? (
+                  <span>
+                    Vict<span className="red-letter">o</span>ry!
+                  </span>
+                ) : (
+                  <span>
+                    Y<span className="red-letter">o</span>u l
+                    <span className="red-letter">o</span>se :(
+                  </span>
+                )}
+              </div>
+              <div className={classes.gameOverSubtitle}>
+                Score: {gameResult.score}
+              </div>
+              <Button variant="outlined" onClick={handleCloseGameOverModal}>
+                {gameResult.victory ? 'Yohoo!' : 'Try again'}
+              </Button>
+            </div>
           </div>
         </Fade>
       </Modal>

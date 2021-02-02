@@ -120,6 +120,24 @@ const useStyles = makeStyles((theme: Theme) =>
         background: '#00ACAE',
       },
     },
+    gameOverContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '30px',
+    },
+    gameOverTitle: {
+      fontFamily: "'Fredoka One', cursive",
+      fontSize: '3rem',
+      color: '#565656',
+      marginBottom: '30px',
+    },
+    gameOverSubtitle: {
+      fontSize: '1.5rem',
+      color: '#565656',
+      marginBottom: '30px',
+    },
   }),
 );
 
