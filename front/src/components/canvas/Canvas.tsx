@@ -192,7 +192,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   startIcon={<VideogameAssetIcon />}
                   onClick={() => {
                     if (gameObj) {
-                      gameObj.stop();
+                      gameObj.stopAnimation();
                       newGame(
                         initialGameData,
                         isAuth,
