@@ -88,9 +88,6 @@ export default class Game implements GameInterface {
           case KEYS.RIGHT:
             this.platform.start(e.code);
             break;
-          case KEYS.Z:
-            this.isPause = !this.isPause;
-            break;
           default:
             break;
         }
@@ -158,8 +155,8 @@ export default class Game implements GameInterface {
   };
 
   nextLevel = (): void => {
-    this.currentLevel += 1;
     this.setScoreToBack();
+    this.currentLevel += 1;
     this.ball.setStartPosition();
     this.platform.setStartPosition();
     this.blocks = blocksLevelsData[this.currentLevel].map(
@@ -487,9 +484,9 @@ export default class Game implements GameInterface {
 
   setScoreToBack = (): void => {
     if (this.getAuthStatus()) {
-      this.setTotalScore(this.score);
-      this.setLevelScore(this.currentLevel + 1, this.totalScore);
       this.updateTotalScore();
+      this.setTotalScore(this.totalScore);
+      this.setLevelScore(this.currentLevel + 1, this.score);
       this.clearScore();
     }
   };
