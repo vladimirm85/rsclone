@@ -34,7 +34,7 @@ export default class Bonus implements BonusInterface {
       isActive: this.isActive,
     } = props);
     this.dy = 2;
-    this.width = 20;
+    this.width = 40;
     this.height = 20;
     if (!this.typeOfBonus) {
       this.initBonus();

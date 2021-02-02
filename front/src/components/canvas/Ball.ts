@@ -1,6 +1,5 @@
-import { gameWidth, ballStartData } from './constants';
+import { gameWidth, ballStartData, blockWidth, blockHeight } from './constants';
 import getRandomValue from './helpers/getRandomValue';
-import { sprites } from './utils/preload';
 import { BallConstructor, BallInterface } from './interfaces';
 
 export default class Ball implements BallInterface {
@@ -33,17 +32,16 @@ export default class Ball implements BallInterface {
   }
 
   draw = (): void => {
-    this.ctx.drawImage(
-      sprites.ball!,
-      this.frame * this.width,
+    this.ctx.beginPath();
+    this.ctx.fillStyle = '#FF1E3C';
+    this.ctx.arc(
+      this.x + this.width / 2,
+      this.y + this.height / 2,
+      this.width / 2,
       0,
-      this.width,
-      this.height,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
+      2 * Math.PI,
     );
+    this.ctx.fill();
   };
 
   start = (): void => {
@@ -55,12 +53,6 @@ export default class Ball implements BallInterface {
 
     this.animate();
   };
-
-  // stop = (): void => {
-  //   this.isRun = false;
-  //   this.dx = 0;
-  //   this.dy = 0;
-  // };
 
   setStartPosition = (): void => {
     this.velocity = ballStartData.velocity;
@@ -86,7 +78,7 @@ export default class Ball implements BallInterface {
     this.x = platformMiddlePosition - this.width / 2;
   };
 
-  changeDirection = (blockX: number, blockWidth: number): void => {
+  changeDirection = (blockX: number): void => {
     const fullBallX = this.x + this.width;
     const fullBlockX = blockX + blockWidth;
 

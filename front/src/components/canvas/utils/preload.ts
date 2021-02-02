@@ -1,23 +1,20 @@
 // Import sprites
-import ballSprite from '../assets/img/ball.png';
 import bonusSprite from '../assets/img/bonus.png';
 
 // Import sounds
 // @ts-ignore
 import collideSound from '../assets/sound/pim.mp3';
 
-const spritesLinks = [ballSprite, bonusSprite];
+const spritesLinks = [bonusSprite];
 const soundsLinks = [collideSound];
 
 type HTMLOrNull = HTMLImageElement | null;
 
 interface Sprites {
-  ball: HTMLOrNull;
   bonus: HTMLOrNull;
 }
 
 export const sprites: Sprites = {
-  ball: null,
   bonus: null,
 };
 
