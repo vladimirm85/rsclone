@@ -1,4 +1,4 @@
-import { gameWidth, ballStartData, blockWidth, blockHeight } from './constants';
+import { gameWidth, ballStartData, blockWidth } from './constants';
 import getRandomValue from './helpers/getRandomValue';
 import { BallConstructor, BallInterface } from './interfaces';
 
