@@ -61,5 +61,5 @@ export const createTotalScore = async (req: Request, res: Response): Promise<Res
     }
   }
 
-  return successHandler(res, 200, '');
+  return successHandler(res, 200, 'New Total is less then old total');
 };

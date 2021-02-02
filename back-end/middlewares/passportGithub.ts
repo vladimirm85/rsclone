@@ -22,7 +22,7 @@ export const githubRouteProtector = (passport: PassportStatic) => {
       try {
         const userCandidate = await UserModel.findOne({ email });
         if (userCandidate) {
-          done(null, userCandidate);
+          return done(null, userCandidate);
         }
 
         const userData: UserInterface = {
@@ -44,7 +44,7 @@ export const githubRouteProtector = (passport: PassportStatic) => {
         const verificationKey = await VerKeyModel.create(verificationKeyData);
         await verificationKey.save();
 
-        done(null, await user.save());
+        return done(null, await user.save());
       } catch (e: unknown) {
         if (!(e instanceof Error)) throw e;
         console.log(e);
