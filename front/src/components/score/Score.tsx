@@ -90,6 +90,10 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
               <MenuItem value={4}>Level 4</MenuItem>
               <MenuItem value={5}>Level 5</MenuItem>
               <MenuItem value={6}>Level 6</MenuItem>
+              <MenuItem value={7}>Level 7</MenuItem>
+              <MenuItem value={8}>Level 8</MenuItem>
+              <MenuItem value={9}>Level 9</MenuItem>
+              <MenuItem value={10}>Level 10</MenuItem>
             </Select>
           </FormControl>
           {scoreError ? (

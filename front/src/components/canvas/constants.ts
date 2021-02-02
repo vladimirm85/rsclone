@@ -11,6 +11,11 @@ export const KEYS = {
   LEFT: 'ArrowLeft',
   RIGHT: 'ArrowRight',
   ARROW_UP: 'ArrowUp',
+  KEY_Z: 'KeyZ',
+  KEY_X: 'KeyX',
+  KEY_C: 'KeyC',
+  KEY_V: 'KeyV',
+  KEY_B: 'KeyB',
 };
 
 export const gameWidth = 768;

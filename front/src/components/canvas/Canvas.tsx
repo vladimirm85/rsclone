@@ -19,7 +19,7 @@ import useStyles from './style';
 import SavesW from './Saves';
 
 // Import constants
-import { gameWidth, gameHeight, initialGameData } from './constants';
+import { gameWidth, gameHeight, initialGameData, KEYS } from './constants';
 import Game from './Game';
 import { GameConstructor, GameInterface } from './interfaces';
 import { get } from '../../helpers/storage';
@@ -27,6 +27,7 @@ import {
   setCurrentTotalScore,
   setCurrentLevelScore,
 } from '../../store/action-creators/score-ac';
+import GameInstruction from './GameInstruction';
 
 type MapStatePropsType = {
   isGameStarted: boolean;
@@ -74,6 +75,82 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
     setGameObj(game);
   };
 
+  const handleOpenSaves = () => {
+    setOpen(true);
+    props.loadUserSaves(authKey);
+  };
+
+  const handleCloseSaves = () => {
+    setOpen(false);
+  };
+
+  const gameLauncher = () => {
+    startGame(true);
+  };
+
+  const handleSave = () => {
+    if (gameObj && isAuth) {
+      const save = gameObj.getCurrentGameState();
+      props.createUserSave(authKey, save);
+    }
+  };
+
+  const handleLoad = () => {
+    if (gameObj && isAuth) {
+      handleOpenSaves();
+      setIsPause(true);
+      gameObj.setIsPause(true);
+    }
+  };
+
+  const handlePause = () => {
+    if (gameObj) {
+      setIsPause(!isPause);
+      gameObj.setIsPause(!isPause);
+    }
+  };
+
+  const handleSound = () => {
+    if (gameObj) {
+      setSounds(!sounds);
+      gameObj.setIsSound(!sounds);
+    }
+  };
+
+  const handleNewGame = () => {
+    if (gameObj) {
+      gameObj.stopAnimation();
+      newGame(
+        initialGameData,
+        isAuth,
+        props.setCurrentTotalScore,
+        props.setCurrentLevelScore,
+      );
+    }
+  };
+
+  const keyListener = (e: KeyboardEvent) => {
+    switch (e.code) {
+      case KEYS.KEY_Z:
+        handleSave();
+        break;
+      case KEYS.KEY_X:
+        handleLoad();
+        break;
+      case KEYS.KEY_C:
+        handlePause();
+        break;
+      case KEYS.KEY_V:
+        handleSound();
+        break;
+      case KEYS.KEY_B:
+        handleNewGame();
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     if (isGameStarted && !gameObj) {
       newGame(
@@ -83,20 +160,11 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
         props.setCurrentLevelScore,
       );
     }
+    window.addEventListener('keydown', keyListener);
+    return () => {
+      window.removeEventListener('keydown', keyListener);
+    };
   });
-
-  const gameLauncher = () => {
-    startGame(true);
-  };
-
-  const handleOpenSaves = () => {
-    setOpen(true);
-    props.loadUserSaves(authKey);
-  };
-
-  const handleCloseSaves = () => {
-    setOpen(false);
-  };
 
   return (
     <main>
@@ -138,69 +206,32 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                 className={classes.buttons}
               >
                 {isAuth && (
-                  <Button
-                    startIcon={<SaveIcon />}
-                    onClick={() => {
-                      if (gameObj) {
-                        const save = gameObj.getCurrentGameState();
-                        props.createUserSave(authKey, save);
-                      }
-                    }}
-                  >
+                  <Button startIcon={<SaveIcon />} onClick={handleSave}>
                     Save
                   </Button>
                 )}
                 {isAuth && (
-                  <Button
-                    startIcon={<PublishIcon />}
-                    onClick={() => {
-                      handleOpenSaves();
-                      if (!isPause && gameObj) {
-                        setIsPause(true);
-                        gameObj.setIsPause(true);
-                      }
-                    }}
-                  >
+                  <Button startIcon={<PublishIcon />} onClick={handleLoad}>
                     Load
                   </Button>
                 )}
                 <Button
                   startIcon={isPause ? <PlayArrowIcon /> : <PauseIcon />}
                   style={{ width: '100px' }}
-                  onClick={() => {
-                    if (gameObj) {
-                      setIsPause(!isPause);
-                      gameObj.setIsPause(!isPause);
-                    }
-                  }}
+                  onClick={handlePause}
                 >
                   {isPause ? 'Play' : 'Pause'}
                 </Button>
                 <Button
                   startIcon={sounds ? <VolumeUpIcon /> : <VolumeOffIcon />}
                   style={{ width: '120px' }}
-                  onClick={() => {
-                    if (gameObj) {
-                      setSounds(!sounds);
-                      gameObj.setIsSound(!sounds);
-                    }
-                  }}
+                  onClick={handleSound}
                 >
                   {sounds ? 'Mute' : 'Unmute'}
                 </Button>
                 <Button
                   startIcon={<VideogameAssetIcon />}
-                  onClick={() => {
-                    if (gameObj) {
-                      gameObj.stopAnimation();
-                      newGame(
-                        initialGameData,
-                        isAuth,
-                        props.setCurrentTotalScore,
-                        props.setCurrentLevelScore,
-                      );
-                    }
-                  }}
+                  onClick={handleNewGame}
                 >
                   New game
                 </Button>
@@ -208,13 +239,16 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
             </div>
           </CSSTransition>
           {!isGameStarted && (
-            <button
-              className="start-button"
-              type="button"
-              onClick={gameLauncher}
-            >
-              Start game
-            </button>
+            <>
+              <button
+                className="start-button"
+                type="button"
+                onClick={gameLauncher}
+              >
+                Start game
+              </button>
+              <GameInstruction />
+            </>
           )}
         </div>
       </div>

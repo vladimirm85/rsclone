@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     gameContent: {
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       '& canvas': {
@@ -97,6 +98,26 @@ const useStyles = makeStyles((theme: Theme) =>
       border: '2px solid white',
       '& p:nth-child(2)': {
         paddingLeft: '60px',
+      },
+    },
+    gameInstruction: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: '70px',
+      '& kbd': {
+        marginRight: '10px',
+      },
+      '& li': {
+        margin: '8px',
+      },
+      '& li:nth-child(2) kbd': {
+        background: '#D0C74B',
+      },
+      '& li:nth-child(3) kbd': {
+        background: '#F41C1C',
+      },
+      '& li:nth-child(5) kbd': {
+        background: '#00ACAE',
       },
     },
   }),
