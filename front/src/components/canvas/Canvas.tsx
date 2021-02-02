@@ -71,6 +71,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
     authStatus: boolean,
     setTotalScore: (score: number) => void,
     setLevelScore: (lvl: number, score: number) => void,
+    handleOpenGameOverModal: (args: GameResultPropsType) => void,
   ) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
@@ -81,6 +82,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
       authStatus,
       setTotalScore,
       setLevelScore,
+      handleOpenGameOverModal,
     );
     game.start();
     setGameObj(game);
@@ -128,6 +130,11 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
     }
   };
 
+  const handleOpenGameOverModal = (gameResult: GameResultPropsType) => {
+    setGameResult(gameResult);
+    setGameOverModalOpen(true);
+  };
+
   const handleNewGame = () => {
     if (gameObj) {
       setIsPause(false);
@@ -137,13 +144,9 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
         isAuth,
         props.setCurrentTotalScore,
         props.setCurrentLevelScore,
+        handleOpenGameOverModal,
       );
     }
-  };
-
-  const handleOpenGameOverModal = (gameResult: GameResultPropsType) => {
-    setGameResult(gameResult);
-    setGameOverModalOpen(true);
   };
 
   const handleCloseGameOverModal = () => {
@@ -180,7 +183,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
         isAuth,
         props.setCurrentTotalScore,
         props.setCurrentLevelScore,
-        // handleOpenGameOverModal,
+        handleOpenGameOverModal,
       );
     }
     window.addEventListener('keydown', keyListener);

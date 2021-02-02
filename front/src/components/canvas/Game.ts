@@ -24,6 +24,7 @@ import {
 } from './interfaces';
 import blocksLevelsData from './blocksLevelsData';
 import bgLevelsGradientsData from './bgLevelsGradientsData';
+import { GameResultPropsType } from '../../types/types';
 
 export default class Game implements GameInterface {
   currentLevel: number;
@@ -44,8 +45,8 @@ export default class Game implements GameInterface {
   setTotalScore: (score: number) => void;
   setLevelScore: (lvl: number, score: number) => void;
   isEnd: boolean;
+  handleOpenGameOverModal: (args: GameResultPropsType) => void;
 
-  // TODO: add TOTAL SCORE
   constructor(
     props: GameConstructor,
     canvas: HTMLCanvasElement,
@@ -53,8 +54,8 @@ export default class Game implements GameInterface {
     authStatus: boolean,
     setTotalScore: (score: number) => void,
     setLevelScore: (lvl: number, score: number) => void,
+    handleOpenGameOverModal: (args: GameResultPropsType) => void,
   ) {
-    // TODO: REFACTOR!
     this.canvas = canvas;
     this.ctx = ctx;
     this.currentLevel = props.initLevel;
@@ -75,6 +76,7 @@ export default class Game implements GameInterface {
     this.setTotalScore = setTotalScore;
     this.setLevelScore = setLevelScore;
     this.isEnd = false;
+    this.handleOpenGameOverModal = handleOpenGameOverModal;
   }
 
   addListeners = (): void => {
@@ -138,13 +140,13 @@ export default class Game implements GameInterface {
   };
 
   win = (): void => {
+    this.handleOpenGameOverModal({ victory: true, score: this.score });
     this.clear();
-    console.log('you won the game');
   };
 
   lose = (): void => {
+    this.handleOpenGameOverModal({ victory: false, score: this.score });
     this.clear();
-    console.log('you lost the game');
   };
 
   clear = (): void => {
