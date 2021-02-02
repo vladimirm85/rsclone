@@ -62,7 +62,8 @@ export default class Platform implements PlatformInterface {
   setStartPosition = (): void => {
     this.velocity = platformStartData.velocity;
     this.dx = platformStartData.dx;
-    this.x = platformStartData.x;
+    this.width = platformStartData.width;
+    this.x = gameWidth / 2 - this.width / 2;
     this.y = platformStartData.y;
   };
 
@@ -108,9 +109,11 @@ export default class Platform implements PlatformInterface {
     if (option === 'increase' && this.size <= 3) {
       this.size += 1;
       this.width += 20;
+      this.x -= 10;
     } else if (option === 'decrease' && this.size >= 1) {
       this.size -= 1;
       this.width -= 20;
+      this.x += 10;
     }
   };
 

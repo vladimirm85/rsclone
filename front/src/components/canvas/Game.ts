@@ -79,33 +79,41 @@ export default class Game implements GameInterface {
 
   addListeners = (): void => {
     window.addEventListener('keydown', (e) => {
-      switch (e.code) {
-        case KEYS.ARROW_UP:
-          this.ball.start();
-          break;
-        case KEYS.LEFT:
-        case KEYS.RIGHT:
-          this.platform.start(e.code);
-          break;
-        case KEYS.Z:
-          this.isPause = !this.isPause;
-          break;
-        default:
-          break;
+      if (!this.isEnd) {
+        switch (e.code) {
+          case KEYS.ARROW_UP:
+            this.ball.start();
+            break;
+          case KEYS.LEFT:
+          case KEYS.RIGHT:
+            this.platform.start(e.code);
+            break;
+          case KEYS.Z:
+            this.isPause = !this.isPause;
+            break;
+          default:
+            break;
+        }
       }
     });
 
     window.addEventListener('keyup', () => {
-      this.platform.stop();
+      if (!this.isEnd) {
+        this.platform.stop();
+      }
     });
 
     this.canvas.addEventListener('mousemove', (e) => {
-      this.platform.moveWithMouse(e);
-      this.platform.collideBoundsWithMouse(e);
+      if (!this.isEnd) {
+        this.platform.moveWithMouse(e);
+        this.platform.collideBoundsWithMouse(e);
+      }
     });
 
     this.canvas.addEventListener('click', () => {
-      this.ball.start();
+      if (!this.isEnd) {
+        this.ball.start();
+      }
     });
   };
 
@@ -132,6 +140,34 @@ export default class Game implements GameInterface {
     });
   };
 
+  win = (): void => {
+    this.clear();
+    console.log('you won the game');
+  };
+
+  lose = (): void => {
+    this.clear();
+    console.log('you lost the game');
+  };
+
+  clear = (): void => {
+    this.stop();
+    this.setScoreToBack();
+    this.ball.setStartPosition();
+    this.platform.setStartPosition();
+  };
+
+  nextLevel = (): void => {
+    this.currentLevel += 1;
+    this.setScoreToBack();
+    this.ball.setStartPosition();
+    this.platform.setStartPosition();
+    this.blocks = blocksLevelsData[this.currentLevel].map(
+      (block: BlockConstructor) => new Block(block, this.ctx),
+    );
+    this.clearBonuses();
+  };
+
   load = (props: GameConstructor): void => {
     this.bonuses = [];
     this.currentLevel = props.initLevel;
@@ -155,10 +191,9 @@ export default class Game implements GameInterface {
     });
     this.isSoundOn = true;
     this.animationFrameId = 0;
-    console.log(this.bonuses);
   };
 
-  stop = (): void => {
+  stopAnimation = (): void => {
     window.cancelAnimationFrame(this.animationFrameId);
   };
 
@@ -200,12 +235,13 @@ export default class Game implements GameInterface {
     }
 
     this.ctx.fillStyle = 'rgba(255,255,255,.3)';
-    this.ctx.fillRect(0, gameHeight - 35, 150, 40);
+    this.ctx.fillRect(0, gameHeight - 35, 300, 40);
     this.ctx.fillRect(gameWidth - 200, gameHeight - 35, 200, 40);
 
-    this.ctx.font = 'normal 20px sans-serif';
+    this.ctx.font = 'normal 20px Fredoka One';
     this.ctx.fillStyle = 'rgba(0,0,0,.6)';
     this.ctx.fillText(`Score: ${this.score}`, 10, gameHeight - 10);
+    this.ctx.fillText(`Total: ${this.totalScore}`, 160, gameHeight - 10);
     this.ctx.fillText(
       `Lives: ${this.numberOfLives}`,
       gameWidth - 190,
@@ -332,17 +368,13 @@ export default class Game implements GameInterface {
       this.platform.setStartPosition();
       this.clearBonuses();
       if (this.numberOfLives < 1) {
-        console.log('GAME OVER');
-        this.totalScore = this.score; // TODO: REFACTOR
-        this.setIsEnd(); // TODO: REFACTOR?
-        this.stop();
+        this.lose();
       }
     }
   };
 
   updateCurrentStateGame = (): void => {
-    if (!this.getIsEnd()) {
-      console.log('push me');
+    if (!this.isEnd) {
       this.checkLifeLost();
       this.checkHitOnBlocks();
       this.bonusIsCollide();
@@ -362,7 +394,23 @@ export default class Game implements GameInterface {
           bonus.move();
         });
       }
-      this.checkGameIsEnd(); // TODO !! and implement game end with Indestructible blocks
+      this.checkAllBlocksAreDestroyed();
+    }
+  };
+
+  checkAllBlocksAreDestroyed = (): void => {
+    const numberOfBlocks = this.blocks.length;
+    const numberOfIndestructibleBlocks = this.blocks.reduce(
+      (total, block) => (block.isIndestructibleBlock() ? total + 1 : total),
+      0,
+    );
+
+    if (numberOfBlocks - numberOfIndestructibleBlocks === 0) {
+      if (this.currentLevel + 1 < 10) {
+        this.nextLevel();
+      } else {
+        this.win();
+      }
     }
   };
 
@@ -423,18 +471,26 @@ export default class Game implements GameInterface {
 
   getIsSound = (): boolean => this.isSoundOn;
 
-  setIsEnd = (): void => {
+  stop = (): void => {
     this.isEnd = true;
   };
 
-  getIsEnd = (): boolean => this.isEnd;
-
   getAuthStatus = (): boolean => this.authStatus;
 
-  checkGameIsEnd = () => {
-    if (this.getIsEnd() && this.getAuthStatus()) {
+  updateTotalScore = (): void => {
+    this.totalScore += this.score;
+  };
+
+  clearScore = (): void => {
+    this.score = 0;
+  };
+
+  setScoreToBack = (): void => {
+    if (this.getAuthStatus()) {
       this.setTotalScore(this.score);
       this.setLevelScore(this.currentLevel + 1, this.totalScore);
+      this.updateTotalScore();
+      this.clearScore();
     }
   };
 }

@@ -32,7 +32,7 @@ function unmountCanvas<WCP>(WrappedComponent: React.ComponentType<WCP>) {
     } = props;
 
     if (gameObj) {
-      gameObj.stop();
+      gameObj.stopAnimation();
       setGameObj(null);
     }
     if (isGameStarted) {

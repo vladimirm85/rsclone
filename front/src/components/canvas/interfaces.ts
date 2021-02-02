@@ -30,8 +30,12 @@ export interface GameInterface extends GameInit {
   platform: PlatformInterface;
   addListeners: () => void;
   start: () => void;
+  win: () => void;
+  lose: () => void;
+  clear: () => void;
+  nextLevel: () => void;
   load: (save: GameConstructor) => void;
-  stop: () => void;
+  stopAnimation: () => void;
   draw: (ctx: CanvasRenderingContext2D) => void;
   ballIsCollide: (
     elemX: number,
@@ -41,11 +45,19 @@ export interface GameInterface extends GameInit {
   ) => boolean;
   bonusIsCollide: () => void;
   bonusDelete: (bonus: BonusInterface) => void;
-  createBonus: (bonusInitX: number, bonusInitY: number) => void;
+  createBonus: (
+    bonusInitX: number,
+    bonusInitY: number,
+    spriteNumber: number,
+    typeOfBonus: string,
+    isUsed: boolean,
+    isActive: boolean,
+  ) => void;
   checkHitOnBlocks: () => void;
   collidePlatformWithBall: () => void;
   checkLifeLost: () => void;
   updateCurrentStateGame: () => void;
+  checkAllBlocksAreDestroyed: () => void;
   addScorePoint: () => void;
   getScoreRatio: () => number;
   increaseBlockMiss: () => void;
@@ -57,6 +69,11 @@ export interface GameInterface extends GameInit {
   getIsPause: () => boolean;
   setIsSound: (option: boolean) => void;
   getIsSound: () => boolean;
+  stop: () => void;
+  getAuthStatus: () => boolean;
+  updateTotalScore: () => void;
+  clearScore: () => void;
+  setScoreToBack: () => void;
 }
 
 // *** Ball ***

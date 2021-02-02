@@ -48,7 +48,7 @@ const gameReducer = (
       };
     case CANCEL_FRAME:
       if (state.gameObj) {
-        state.gameObj.stop();
+        state.gameObj.stopAnimation();
         return {
           ...state,
           gameObj: null,
