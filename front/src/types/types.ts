@@ -16,3 +16,8 @@ export type SavesType = {
   userId: string;
   __v: number;
 };
+
+export type GameResultPropsType = {
+  victory: boolean;
+  score: number;
+};

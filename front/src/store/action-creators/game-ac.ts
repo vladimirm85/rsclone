@@ -7,9 +7,10 @@ import {
   DEL_USER_SAVE,
   SET_GAME_OBJ,
   CANCEL_FRAME,
+  SET_GAME_RESULT,
 } from '../actions/gameActions';
 import { RESET } from '../actions/settingsActions';
-import { SavesType } from '../../types/types';
+import { GameResultPropsType, SavesType } from '../../types/types';
 import savesApi from '../../api/saves-api';
 import {
   GameConstructor,
@@ -46,6 +47,11 @@ export const gameActions = {
     ({
       type: SET_GAME_OBJ,
       payload: { gameObj },
+    } as const),
+  setGameResult: (gameResult: GameResultPropsType) =>
+    ({
+      type: SET_GAME_RESULT,
+      payload: { gameResult },
     } as const),
   cancelFrame: () =>
     ({

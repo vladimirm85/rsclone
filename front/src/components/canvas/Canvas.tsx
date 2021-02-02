@@ -28,6 +28,8 @@ import {
   setCurrentLevelScore,
 } from '../../store/action-creators/score-ac';
 import GameInstruction from './GameInstruction';
+import { GameResultPropsType } from '../../types/types';
+import GameOverModalW from './GameOverModal';
 
 type MapStatePropsType = {
   isGameStarted: boolean;
@@ -42,17 +44,26 @@ type MapDispatchPropsType = {
   setGameObj: (gameObj: GameInterface | null) => void;
   setCurrentTotalScore: (totalScore: number) => void;
   setCurrentLevelScore: (level: number, score: number) => void;
+  setGameResult: (gameResult: GameResultPropsType) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
 
 const Canvas: React.FC<PropsType> = (props): JSX.Element => {
-  const { isGameStarted, startGame, isAuth, gameObj, setGameObj } = props;
+  const {
+    isGameStarted,
+    startGame,
+    isAuth,
+    gameObj,
+    setGameObj,
+    setGameResult,
+  } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [isPause, setIsPause] = React.useState(false);
   const [sounds, setSounds] = React.useState(true);
+  const [gameOverModalOpen, setGameOverModalOpen] = React.useState(false);
   const authKey = get('authKey');
 
   const newGame = (
@@ -119,6 +130,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
 
   const handleNewGame = () => {
     if (gameObj) {
+      setIsPause(false);
       gameObj.stopAnimation();
       newGame(
         initialGameData,
@@ -127,6 +139,16 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
         props.setCurrentLevelScore,
       );
     }
+  };
+
+  const handleOpenGameOverModal = (gameResult: GameResultPropsType) => {
+    setGameResult(gameResult);
+    setGameOverModalOpen(true);
+  };
+
+  const handleCloseGameOverModal = () => {
+    setGameOverModalOpen(false);
+    handleNewGame();
   };
 
   const keyListener = (e: KeyboardEvent) => {
@@ -158,6 +180,7 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
         isAuth,
         props.setCurrentTotalScore,
         props.setCurrentLevelScore,
+        // handleOpenGameOverModal,
       );
     }
     window.addEventListener('keydown', keyListener);
@@ -236,6 +259,10 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   New game
                 </Button>
               </ButtonGroup>
+              <GameOverModalW
+                gameOverModalOpen={gameOverModalOpen}
+                handleCloseGameOverModal={handleCloseGameOverModal}
+              />
             </div>
           </CSSTransition>
           {!isGameStarted && (
