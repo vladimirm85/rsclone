@@ -87,7 +87,6 @@ export interface BallConstructor extends GameData {
 export interface BallInterface extends BallConstructor {
   draw: () => void;
   start: () => void;
-  // stop: () => void;
   setStartPosition: () => void;
   move: () => void;
   moveWithPlatform: (platformMiddlePosition: number) => void;
