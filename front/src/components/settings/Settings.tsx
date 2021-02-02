@@ -21,7 +21,11 @@ import {
 } from '@material-ui/core';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
-import { authActions, loadAvatar } from '../../store/action-creators/auth-ac';
+import {
+  authActions,
+  loadAvatar,
+  authMe,
+} from '../../store/action-creators/auth-ac';
 import { del, get } from '../../helpers/storage';
 import useStyles from './style';
 import { ScoreType } from '../../types/types';
@@ -47,6 +51,7 @@ type MapDispatchToProps = {
     key: string,
   ) => void;
   reset: () => void;
+  authMe: (key: string) => void;
 };
 
 type PropsType = MapStateProps & MapDispatchToProps;
@@ -72,10 +77,10 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
     rowsPerPage - Math.min(rowsPerPage, userScore.length - page * rowsPerPage);
 
   useEffect(() => {
-    if (userScore.length === 0 && !userScoreError) {
-      props.loadUserScore(authKey, 1, 1);
-    }
-  });
+    props.loadUserScore(authKey, 1, 1);
+    props.authMe(authKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const logout = () => {
     del('authKey');
@@ -115,7 +120,7 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
             align="center"
             className={classes.score}
           >
-            Total score: {userTotalScore}
+            Best score: {userTotalScore}
           </Typography>
           <ButtonGroup
             variant="text"
@@ -241,7 +246,12 @@ const MapStateToProps = (state: AppStateType) => ({
 });
 
 const SettingsW = compose<React.ComponentType>(
-  connect(MapStateToProps, { ...authActions, loadAvatar, loadUserScore }),
+  connect(MapStateToProps, {
+    ...authActions,
+    loadAvatar,
+    loadUserScore,
+    authMe,
+  }),
   withAuthRedirect,
   unmountCanvas,
 )(Settings);

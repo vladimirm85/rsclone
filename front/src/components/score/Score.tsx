@@ -56,10 +56,9 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
     rowsPerPage - Math.min(rowsPerPage, dataArray.length - page * rowsPerPage);
 
   useEffect(() => {
-    if (totalScore.length === 0 && !scoreError) {
-      props.getAndSetTotalScore(authKey);
-    }
-  });
+    props.getAndSetTotalScore(authKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setScoreType(event.target.value as string);

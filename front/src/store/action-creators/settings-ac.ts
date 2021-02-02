@@ -34,6 +34,7 @@ export const loadUserScore = (
 ) => async (dispatch: Dispatch) => {
   dispatch(settingsActions.setUserScoreLoading(true));
   try {
+    dispatch(settingsActions.setUserScoreError(''));
     const data = await scoreApi.getLevelScore(key, lvl, 100, forUser);
     if (data.data.success) {
       if (data.data.payload.length === 0) {

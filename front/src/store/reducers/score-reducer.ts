@@ -27,15 +27,7 @@ const scoreReducer = (
 ): InitialStateType => {
   switch (action.type) {
     case SET_TOTAL_SCORE:
-      return {
-        ...state,
-        totalScore: action.payload,
-      };
     case SET_LEVEL_SCORE:
-      return {
-        ...state,
-        levelScore: action.payload,
-      };
     case SET_SCORE_ERROR:
     case SET_SCORE_LOADING:
       return {

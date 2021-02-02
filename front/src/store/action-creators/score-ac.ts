@@ -14,12 +14,12 @@ export const scoreActions = {
   setTotalScore: (totalScore: Array<ScoreType>) =>
     ({
       type: SET_TOTAL_SCORE,
-      payload: totalScore,
+      payload: { totalScore },
     } as const),
   setLevelScore: (levelScore: Array<ScoreType>) =>
     ({
       type: SET_LEVEL_SCORE,
-      payload: levelScore,
+      payload: { levelScore },
     } as const),
   setScoreError: (scoreError: string) =>
     ({
@@ -74,13 +74,11 @@ export const setCurrentTotalScore = (totalScore: number) => async (
   dispatch: Dispatch,
 ) => {
   try {
+    dispatch(scoreActions.setScoreError(''));
     const authKey = get('authKey');
-    const data = await scoreApi.setGameTotalScore(authKey, totalScore);
-    if (data.data.success) {
-      console.log(data);
-    }
+    await scoreApi.setGameTotalScore(authKey, totalScore);
   } catch (e) {
-    console.log(e.message);
+    dispatch(scoreActions.setScoreError(e.message));
   }
 };
 
@@ -88,12 +86,10 @@ export const setCurrentLevelScore = (level: number, score: number) => async (
   dispatch: Dispatch,
 ) => {
   try {
+    dispatch(scoreActions.setScoreError(''));
     const authKey = get('authKey');
-    const data = await scoreApi.setGameLevelScore(authKey, level, score);
-    if (data.data.success) {
-      console.log(data);
-    }
+    await scoreApi.setGameLevelScore(authKey, level, score);
   } catch (e) {
-    console.log(e.message);
+    dispatch(scoreActions.setScoreError(e.message));
   }
 };
