@@ -15,7 +15,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     score: {
       marginBottom: '15px',
-      fontSize: '1rem',
+      fontSize: '1.1rem',
+      color: '#565656',
     },
     table: {
       minWidth: 500,

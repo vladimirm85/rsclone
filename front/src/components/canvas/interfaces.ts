@@ -13,7 +13,6 @@ export interface GameInit {
   numberOfLives: number;
   score: number;
   numberOfMisses: number;
-  blocksData: BlocksData;
 }
 
 export interface GameConstructor extends GameInit {
@@ -21,6 +20,7 @@ export interface GameConstructor extends GameInit {
   ballData: BallConstructor;
   platformData: PlatformConstructor;
   isSound: boolean;
+  blocksData: BlocksData;
   bonusesData?: BonusConstructor[];
 }
 
@@ -29,18 +29,35 @@ export interface GameInterface extends GameInit {
   ball: BallInterface;
   platform: PlatformInterface;
   addListeners: () => void;
-  init: () => void;
-  stop: () => void;
+  start: () => void;
+  win: () => void;
+  lose: () => void;
+  clear: () => void;
+  nextLevel: () => void;
   load: (save: GameConstructor) => void;
+  stopAnimation: () => void;
   draw: (ctx: CanvasRenderingContext2D) => void;
-  ballIsCollide: (element: BlockInterface | PlatformInterface) => boolean;
+  ballIsCollide: (
+    elemX: number,
+    elemY: number,
+    elemWidth: number,
+    elemHeight: number,
+  ) => boolean;
   bonusIsCollide: () => void;
   bonusDelete: (bonus: BonusInterface) => void;
-  spawnNewBonus: (bonus: BlockInterface) => void;
+  createBonus: (
+    bonusInitX: number,
+    bonusInitY: number,
+    spriteNumber: number,
+    typeOfBonus: string,
+    isUsed: boolean,
+    isActive: boolean,
+  ) => void;
   checkHitOnBlocks: () => void;
   collidePlatformWithBall: () => void;
   checkLifeLost: () => void;
   updateCurrentStateGame: () => void;
+  checkAllBlocksAreDestroyed: () => void;
   addScorePoint: () => void;
   getScoreRatio: () => number;
   increaseBlockMiss: () => void;
@@ -52,6 +69,11 @@ export interface GameInterface extends GameInit {
   getIsPause: () => boolean;
   setIsSound: (option: boolean) => void;
   getIsSound: () => boolean;
+  stop: () => void;
+  getAuthStatus: () => boolean;
+  updateTotalScore: () => void;
+  clearScore: () => void;
+  setScoreToBack: () => void;
 }
 
 // *** Ball ***
@@ -65,13 +87,12 @@ export interface BallConstructor extends GameData {
 export interface BallInterface extends BallConstructor {
   draw: () => void;
   start: () => void;
-  // stop: () => void;
   setStartPosition: () => void;
   move: () => void;
   moveWithPlatform: (platformMiddlePosition: number) => void;
   changeDirection: (blockX: number, blockWide: number) => void;
   platformBounce: (platformDx: number, platformTouchOffset: number) => void;
-  collideBounds: () => boolean;
+  collideBounds: (getIsSound: () => boolean) => boolean;
   getRunStatus: () => boolean;
   changeSpeed: (option: string) => void;
   getCurrentBallData: () => BallConstructor;
@@ -125,9 +146,10 @@ export interface BonusConstructor {
   platform: PlatformInterface;
   x: number;
   y: number;
-  typeOfBonus?: string;
-  isUsed?: boolean;
-  isActive?: boolean;
+  spriteNumber: number;
+  typeOfBonus: string;
+  isUsed: boolean;
+  isActive: boolean;
 }
 
 export interface BonusInterface extends BonusConstructor {
@@ -164,7 +186,13 @@ export interface PlatformInterface extends PlatformConstructor {
   stop: () => void;
   setStartPosition: () => void;
   move: () => void;
+  moveWithMouse: (event: MouseEvent) => void;
   collideBounds: () => void;
+  collideBoundsWithMouse: (event: MouseEvent) => void;
+  stopNearTheBorder: (
+    elementLeftPosition: number,
+    elementRightPosition: number,
+  ) => void;
   changeSize: (option: string) => void;
   getCurrentPlatformData: () => PlatformConstructor;
   getTouchOffset: (ballTouchX: number) => number;
@@ -184,3 +212,24 @@ export interface LevelGradientInterface {
 }
 
 export type LevelsGradients = Array<LevelGradientInterface>;
+
+// *** Assets ***
+
+type HTMLImageOrNull = HTMLImageElement | null;
+
+export interface Sprites {
+  bonus: HTMLImageOrNull;
+}
+
+type HTMLAudioOrNull = HTMLAudioElement | null;
+
+export interface Sounds {
+  blockBump: HTMLAudioOrNull;
+  boundsBump: HTMLAudioOrNull;
+  gameSound: HTMLAudioOrNull;
+  levelLose: HTMLAudioOrNull;
+  lose: HTMLAudioOrNull;
+  nextLevel: HTMLAudioOrNull;
+  platformBump: HTMLAudioOrNull;
+  win: HTMLAudioOrNull;
+}

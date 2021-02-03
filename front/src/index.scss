@@ -15,7 +15,7 @@ code {
 }
 
 body {
-  background: #f4f4f5;
+  background: url('./assets/img/background.svg') #f4f4f5;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -28,16 +28,15 @@ main {
 }
 
 .container-inner {
-  max-width: 1100px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 40px;
 }
 
 .main-title {
-  font-size: 3rem;
+  font-size: 2.7rem;
   font-family: 'Prata', serif;
   color: #565656;
-  text-align: center;
   margin-bottom: 25px;
   line-height: 130%;
 
@@ -46,6 +45,58 @@ main {
   }
 }
 
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
 .red-letter {
   color: red;
+}
+
+.ocean-letter {
+  color: #00ACAE;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1em;
+  padding: .2em .5em;
+  font: normal 1.5em/1 "Lucida Grande", Lucida, Arial, sans-serif;
+  text-align: center;
+  background: #565656;
+  color: white;
+  text-decoration: none;
+  -moz-border-radius: .3em;
+  -webkit-border-radius: .3em;
+  border-radius: .3em;
+  border: none;
+  cursor: default;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  box-shadow: 2px 2px 0 rgb(33, 33, 33);
+}
+
+.slick-slider img {
+  width: 100%;
+}
+
+p > ul, p > ol {
+  padding-left: 50px;
+}
+
+p > ul {
+  list-style: disc;
+}
+
+p > ol {
+  list-style: decimal;
 }

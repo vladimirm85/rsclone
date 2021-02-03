@@ -1,47 +1,51 @@
 // Import sprites
-import bgSprite from '../assets/img/background.png';
-import ballSprite from '../assets/img/ball.png';
-import platformSprite from '../assets/img/platform.png';
-import blockSprite from '../assets/img/block.png';
 import bonusSprite from '../assets/img/bonus.png';
 
 // Import sounds
+
 // @ts-ignore
-import collideSound from '../assets/sound/pim.mp3';
+import blockBump from '../assets/sound/blockBump.mp3';
+// @ts-ignore
+import boundsBump from '../assets/sound/boundsBump.wav';
+// @ts-ignore
+import gameSound from '../assets/sound/gameSound.mp3';
+// @ts-ignore
+import levelLose from '../assets/sound/levelLose.mp3';
+// @ts-ignore
+import lose from '../assets/sound/lose.mp3';
+// @ts-ignore
+import nextLevel from '../assets/sound/nextLevel.mp3';
+// @ts-ignore
+import platformBump from '../assets/sound/platformBump.wav';
+// @ts-ignore
+import win from '../assets/sound/win.mp3';
+import { Sounds, Sprites } from '../interfaces';
 
-const spritesLinks = [
-  bgSprite,
-  ballSprite,
-  platformSprite,
-  blockSprite,
-  bonusSprite,
+const spritesLinks = [bonusSprite];
+const soundsLinks = [
+  blockBump,
+  boundsBump,
+  gameSound,
+  levelLose,
+  lose,
+  nextLevel,
+  platformBump,
+  win,
 ];
-const soundsLinks = [collideSound];
-
-type HTMLOrNull = HTMLImageElement | null;
-
-interface Sprites {
-  bg: HTMLOrNull;
-  ball: HTMLOrNull;
-  platform: HTMLOrNull;
-  block: HTMLOrNull;
-  bonus: HTMLOrNull;
-}
 
 export const sprites: Sprites = {
-  bg: null,
-  ball: null,
-  platform: null,
-  block: null,
   bonus: null,
 };
 
-interface Sounds {
-  pim: HTMLAudioElement | undefined;
-}
-
 export const sounds: Sounds = {
-  pim: undefined,
+  blockBump: null,
+  boundsBump: null,
+  gameSound: null,
+  levelLose: null,
+  lose: null,
+  nextLevel: null,
+  platformBump: null,
+  win: null,
 };
 
 const preloadSprites = (onResourceLoad: () => void) => {
@@ -67,11 +71,11 @@ const preloadSound = (onResourceLoad: () => void) => {
 
 export const preload = (callback: () => void) => {
   let loaded = 0;
-  const required = Object.keys(sprites).length + 1;
+  let required = Object.keys(sprites).length;
+  required += Object.keys(sounds).length;
 
   const onResourceLoad = () => {
     loaded += 1;
-
     if (loaded >= required) {
       callback();
     }

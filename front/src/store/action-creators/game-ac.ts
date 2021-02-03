@@ -5,11 +5,18 @@ import {
   SET_USER_SAVES_ERROR,
   SET_USER_SAVES_LOADING,
   DEL_USER_SAVE,
+  SET_GAME_OBJ,
+  CANCEL_FRAME,
+  SET_GAME_RESULT,
+  SET_IS_SAVED,
 } from '../actions/gameActions';
 import { RESET } from '../actions/settingsActions';
-import { SavesType } from '../../types/types';
+import { GameResultPropsType, SavesType } from '../../types/types';
 import savesApi from '../../api/saves-api';
-import { GameConstructor } from '../../components/canvas/interfaces';
+import {
+  GameConstructor,
+  GameInterface,
+} from '../../components/canvas/interfaces';
 
 export const gameActions = {
   startGame: (isGameStarted: boolean) =>
@@ -36,6 +43,25 @@ export const gameActions = {
     ({
       type: DEL_USER_SAVE,
       payload: { id },
+    } as const),
+  setGameObj: (gameObj: GameInterface | null) =>
+    ({
+      type: SET_GAME_OBJ,
+      payload: { gameObj },
+    } as const),
+  setGameResult: (gameResult: GameResultPropsType) =>
+    ({
+      type: SET_GAME_RESULT,
+      payload: { gameResult },
+    } as const),
+  setIsSaved: (isSaved: boolean) =>
+    ({
+      type: SET_IS_SAVED,
+      payload: { isSaved },
+    } as const),
+  cancelFrame: () =>
+    ({
+      type: CANCEL_FRAME,
     } as const),
   reset: () => ({ type: RESET } as const),
 };
@@ -76,6 +102,10 @@ export const createUserSave = (key: string, save: GameConstructor) => async (
 ) => {
   try {
     await savesApi.createSave(key, save);
+    dispatch(gameActions.setIsSaved(true));
+    setTimeout(() => {
+      dispatch(gameActions.setIsSaved(false));
+    }, 400);
   } catch (e) {
     dispatch(gameActions.setUserSavesError(e.message));
   }

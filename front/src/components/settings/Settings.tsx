@@ -21,13 +21,18 @@ import {
 } from '@material-ui/core';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 import { AppStateType } from '../../store/store';
-import { authActions, loadAvatar } from '../../store/action-creators/auth-ac';
+import {
+  authActions,
+  loadAvatar,
+  authMe,
+} from '../../store/action-creators/auth-ac';
 import { del, get } from '../../helpers/storage';
 import useStyles from './style';
 import { ScoreType } from '../../types/types';
 import Preloader from '../common/Preloader/Preloader';
 import { loadUserScore } from '../../store/action-creators/settings-ac';
 import TableFooterActions from '../table/TableFooter';
+import unmountCanvas from '../../hoc/unmomuntCanvas';
 
 type MapStateProps = {
   authEmail: string;
@@ -46,6 +51,7 @@ type MapDispatchToProps = {
     key: string,
   ) => void;
   reset: () => void;
+  authMe: (key: string) => void;
 };
 
 type PropsType = MapStateProps & MapDispatchToProps;
@@ -71,10 +77,10 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
     rowsPerPage - Math.min(rowsPerPage, userScore.length - page * rowsPerPage);
 
   useEffect(() => {
-    if (userScore.length === 0 && !userScoreError) {
-      props.loadUserScore(authKey, 1, 1);
-    }
-  });
+    props.loadUserScore(authKey, 1, 1);
+    props.authMe(authKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const logout = () => {
     del('authKey');
@@ -106,7 +112,7 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
     <main>
       <div className="container-inner">
         <div className="saves-content">
-          <div className="main-title">Hello, {name}</div>
+          <div className="main-title text-center">Hello, {name}</div>
           <Avatar alt="Avatar" src={avatar} className={classes.large} />
           <Typography
             variant="overline"
@@ -114,7 +120,7 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
             align="center"
             className={classes.score}
           >
-            Total score: {userTotalScore}
+            Best score: {userTotalScore}
           </Typography>
           <ButtonGroup
             variant="text"
@@ -157,6 +163,10 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
               <MenuItem value={4}>Level 4</MenuItem>
               <MenuItem value={5}>Level 5</MenuItem>
               <MenuItem value={6}>Level 6</MenuItem>
+              <MenuItem value={7}>Level 7</MenuItem>
+              <MenuItem value={8}>Level 8</MenuItem>
+              <MenuItem value={9}>Level 9</MenuItem>
+              <MenuItem value={10}>Level 10</MenuItem>
             </Select>
           </FormControl>
           {userScoreError ? (
@@ -240,8 +250,14 @@ const MapStateToProps = (state: AppStateType) => ({
 });
 
 const SettingsW = compose<React.ComponentType>(
-  connect(MapStateToProps, { ...authActions, loadAvatar, loadUserScore }),
+  connect(MapStateToProps, {
+    ...authActions,
+    loadAvatar,
+    loadUserScore,
+    authMe,
+  }),
   withAuthRedirect,
+  unmountCanvas,
 )(Settings);
 
 export default SettingsW;

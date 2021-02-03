@@ -28,6 +28,7 @@ import { ScoreType } from '../../types/types';
 import Preloader from '../common/Preloader/Preloader';
 import useStyles2 from './style';
 import TableFooterActions from '../table/TableFooter';
+import unmountCanvas from '../../hoc/unmomuntCanvas';
 
 type MapStateToPropsType = {
   totalScore: Array<ScoreType>;
@@ -55,10 +56,9 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
     rowsPerPage - Math.min(rowsPerPage, dataArray.length - page * rowsPerPage);
 
   useEffect(() => {
-    if (totalScore.length === 0 && !scoreError) {
-      props.getAndSetTotalScore(authKey);
-    }
-  });
+    props.getAndSetTotalScore(authKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setScoreType(event.target.value as string);
@@ -74,7 +74,7 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
     <main>
       <div className="container-inner">
         <div className="score-content">
-          <div className="main-title">Top players</div>
+          <div className="main-title text-center">Top players</div>
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Score for:</InputLabel>
             <Select
@@ -90,6 +90,10 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
               <MenuItem value={4}>Level 4</MenuItem>
               <MenuItem value={5}>Level 5</MenuItem>
               <MenuItem value={6}>Level 6</MenuItem>
+              <MenuItem value={7}>Level 7</MenuItem>
+              <MenuItem value={8}>Level 8</MenuItem>
+              <MenuItem value={9}>Level 9</MenuItem>
+              <MenuItem value={10}>Level 10</MenuItem>
             </Select>
           </FormControl>
           {scoreError ? (
@@ -181,6 +185,7 @@ const ScoreW = compose<React.ComponentType>(
     getAndSetLevelScore,
   }),
   withAuthRedirect,
+  unmountCanvas,
 )(Score);
 
 export default ScoreW;

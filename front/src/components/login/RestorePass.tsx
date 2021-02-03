@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { Typography } from '@material-ui/core';
@@ -10,6 +10,7 @@ import {
   restoreActions,
   restore,
 } from '../../store/action-creators/restorePass-ac';
+import { emailValidator } from '../../helpers/validator';
 
 type MapStatePropsType = {
   restoreEmail: string;
@@ -44,13 +45,18 @@ const RestorePass: React.FC<PropsType> = (props): JSX.Element => {
     setModal,
   } = props;
 
+  const [emailValidatorError, setEmailValidatorError] = useState('');
+
   const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRestoreEmail(e.target.value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    props.restore(restoreEmail);
+    const emailValidate = emailValidator(restoreEmail, setEmailValidatorError);
+    if (emailValidate) {
+      props.restore(restoreEmail);
+    }
   };
 
   const handleSubmitRestore = () => {
@@ -70,6 +76,7 @@ const RestorePass: React.FC<PropsType> = (props): JSX.Element => {
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField
+              error={!!emailValidatorError}
               variant="outlined"
               margin="normal"
               required
@@ -81,6 +88,7 @@ const RestorePass: React.FC<PropsType> = (props): JSX.Element => {
               value={restoreEmail}
               onChange={emailHandler}
               autoFocus
+              helperText={emailValidatorError}
             />
             {restoreError && (
               <Typography component="p" variant="subtitle1" color="error">

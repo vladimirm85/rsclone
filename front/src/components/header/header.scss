@@ -19,7 +19,9 @@ header {
     }
 
     &__img {
-      line-height: 0;
+      a, img {
+        display: block;
+      }
 
       @media (max-width: 870px) {
         margin-bottom: 25px;

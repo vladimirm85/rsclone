@@ -2,10 +2,12 @@ import React, { useEffect } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
+import { compose } from 'redux';
 import { AppStateType } from '../../store/store';
 import { verifyEmail } from '../../store/action-creators/verify-ac';
 import Preloader from '../common/Preloader/Preloader';
 import useStyles from './style';
+import unmountCanvas from '../../hoc/unmomuntCanvas';
 
 type PropsType = {
   isLoading: boolean;
@@ -80,6 +82,9 @@ const mapStateToProps = (state: AppStateType) => {
   };
 };
 
-const VerificationW = connect(mapStateToProps, { verifyEmail })(Verification);
+const VerificationW = compose<React.ComponentType>(
+  connect(mapStateToProps, { verifyEmail }),
+  unmountCanvas,
+)(Verification);
 
 export default VerificationW;

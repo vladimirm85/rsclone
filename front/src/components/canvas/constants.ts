@@ -1,4 +1,3 @@
-import blocksLevelsData from './blocksLevelsData';
 import {
   BallConstructor,
   GameConstructor,
@@ -12,7 +11,11 @@ export const KEYS = {
   LEFT: 'ArrowLeft',
   RIGHT: 'ArrowRight',
   ARROW_UP: 'ArrowUp',
-  Z: 'KeyZ',
+  KEY_Z: 'KeyZ',
+  KEY_X: 'KeyX',
+  KEY_C: 'KeyC',
+  KEY_V: 'KeyV',
+  KEY_B: 'KeyB',
 };
 
 export const gameWidth = 768;
@@ -40,7 +43,7 @@ export const typesOfBonuses: TypesOfBonuses[] = [
 // *** Ball ***
 
 export const ballStartData: BallConstructor = {
-  velocity: 6,
+  velocity: 10,
   dx: 0,
   dy: 0,
   x: 374,
@@ -76,13 +79,13 @@ export const bonusHeight = 20;
 // *** GameInit ***
 
 export const initialGameData: GameConstructor = {
-  initLevel: 8,
+  initLevel: 0,
   numberOfLives: 3,
   score: 0,
   numberOfMisses: 1,
   ballData: ballStartData,
   platformData: platformStartData,
-  blocksData: blocksLevelsData[0], // TODO: REFACTOR!
+  blocksData: [],
   bonusesData: [],
   isSound: true,
 };

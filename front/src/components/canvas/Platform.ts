@@ -1,5 +1,10 @@
-import { KEYS, gameWidth, platformStartData } from './constants';
-import { sprites } from './utils/preload';
+import {
+  KEYS,
+  gameWidth,
+  platformStartData,
+  blockWidth,
+  blockHeight,
+} from './constants';
 import { PlatformConstructor, PlatformInterface } from './interfaces';
 
 export default class Platform implements PlatformInterface {
@@ -26,17 +31,20 @@ export default class Platform implements PlatformInterface {
   }
 
   draw = (): void => {
-    this.ctx.drawImage(
-      sprites.platform!,
-      0,
-      this.size * this.height,
-      this.width,
-      this.height,
-      this.x,
+    const gradient = this.ctx.createLinearGradient(
+      this.x + blockWidth,
       this.y,
-      this.width,
-      this.height,
+      blockWidth + this.x,
+      blockHeight + this.y,
     );
+
+    gradient.addColorStop(0, 'rgba(0,172,174,1)');
+    gradient.addColorStop(0.5, 'rgba(13,134,145,1)');
+    gradient.addColorStop(1, 'rgba(0,172,174,1)');
+
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(this.x, this.y, this.width, this.height);
+    this.ctx.strokeRect(this.x, this.y, this.width, this.height);
   };
 
   start = (direction: string): void => {
@@ -54,10 +62,9 @@ export default class Platform implements PlatformInterface {
   setStartPosition = (): void => {
     this.velocity = platformStartData.velocity;
     this.dx = platformStartData.dx;
-    this.x = platformStartData.x;
-    this.y = platformStartData.y;
     this.width = platformStartData.width;
-    this.size = platformStartData.size;
+    this.x = gameWidth / 2 - this.width / 2;
+    this.y = platformStartData.y;
   };
 
   move = (): void => {
@@ -66,17 +73,33 @@ export default class Platform implements PlatformInterface {
     }
   };
 
+  moveWithMouse = (event: MouseEvent): void => {
+    this.x = event.offsetX - this.width / 2;
+  };
+
   collideBounds = (): void => {
     const platformLeft = this.x + this.dx;
     const platformRight = platformLeft + this.width;
+    this.stopNearTheBorder(platformLeft, platformRight);
+  };
 
+  collideBoundsWithMouse = (event: MouseEvent): void => {
+    const mouseLeftPosition = event.offsetX - this.width / 2;
+    const mouseRightPosition = event.offsetX + this.width / 2;
+    this.stopNearTheBorder(mouseLeftPosition, mouseRightPosition);
+  };
+
+  stopNearTheBorder = (
+    elementLeftPosition: number,
+    elementRightPosition: number,
+  ): void => {
     const worldLeft = 0;
 
-    if (platformLeft < worldLeft) {
+    if (elementLeftPosition < worldLeft) {
       this.dx = 0;
       this.x = 0;
     }
-    if (platformRight > gameWidth) {
+    if (elementRightPosition > gameWidth) {
       this.dx = 0;
       this.x = gameWidth - this.width;
     }
@@ -86,9 +109,11 @@ export default class Platform implements PlatformInterface {
     if (option === 'increase' && this.size <= 3) {
       this.size += 1;
       this.width += 20;
+      this.x -= 10;
     } else if (option === 'decrease' && this.size >= 1) {
       this.size -= 1;
       this.width -= 20;
+      this.x += 10;
     }
   };
 

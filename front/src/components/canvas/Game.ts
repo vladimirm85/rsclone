@@ -1,5 +1,12 @@
-import { bonusWidth, gameHeight, gameWidth, KEYS } from './constants';
-import { preload, sounds } from './utils/preload';
+import {
+  blockHeight,
+  blockWidth,
+  bonusWidth,
+  gameHeight,
+  gameWidth,
+  KEYS,
+} from './constants';
+import { preload } from './utils/preload';
 import Ball from './Ball';
 import Platform from './Platform';
 import Block from './Block';
@@ -9,7 +16,6 @@ import {
   BallInterface,
   BlockConstructor,
   BlockInterface,
-  BlocksData,
   BonusConstructor,
   BonusInterface,
   GameConstructor,
@@ -18,6 +24,9 @@ import {
 } from './interfaces';
 import blocksLevelsData from './blocksLevelsData';
 import bgLevelsGradientsData from './bgLevelsGradientsData';
+import { GameResultPropsType } from '../../types/types';
+import playSound from './helpers/playSound';
+import stopSound from './helpers/stopSound';
 
 export default class Game implements GameInterface {
   currentLevel: number;
@@ -26,58 +35,90 @@ export default class Game implements GameInterface {
   numberOfMisses: number;
   ball: BallInterface;
   platform: PlatformInterface;
-  blocksData: BlocksData;
   blocks: BlockInterface[];
   isPause: boolean;
   bonuses: BonusInterface[];
   isSoundOn: boolean;
+  canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  totalScore: number;
   animationFrameId: number;
+  authStatus: boolean;
+  setTotalScore: (score: number) => void;
+  setLevelScore: (lvl: number, score: number) => void;
+  isEnd: boolean;
+  handleOpenGameOverModal: (args: GameResultPropsType) => void;
 
-  // TODO: add TOTAL SCORE
-  constructor(props: GameConstructor, ctx: CanvasRenderingContext2D) {
+  constructor(
+    props: GameConstructor,
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    authStatus: boolean,
+    setTotalScore: (score: number) => void,
+    setLevelScore: (lvl: number, score: number) => void,
+    handleOpenGameOverModal: (args: GameResultPropsType) => void,
+  ) {
+    this.canvas = canvas;
+    this.ctx = ctx;
     this.currentLevel = props.initLevel;
     this.numberOfLives = props.numberOfLives;
     this.score = props.score;
     this.numberOfMisses = props.numberOfMisses;
-    this.ctx = ctx;
     this.ball = new Ball(props.ballData, this.ctx);
     this.platform = new Platform(props.platformData, this.ctx);
-    this.blocksData = props.blocksData;
     this.blocks = blocksLevelsData[this.currentLevel].map(
       (block: BlockConstructor) => new Block(block, this.ctx),
     );
-    this.bonuses = props.bonusesData!.map((bonusData) => new Bonus(bonusData));
-    this.isPause = false;
+    this.bonuses = [];
     this.isSoundOn = props.isSound;
-    this.ctx = ctx;
+    this.isPause = false;
     this.animationFrameId = 0;
+    this.totalScore = 0;
+    this.authStatus = authStatus;
+    this.setTotalScore = setTotalScore;
+    this.setLevelScore = setLevelScore;
+    this.isEnd = false;
+    this.handleOpenGameOverModal = handleOpenGameOverModal;
   }
 
   addListeners = (): void => {
     window.addEventListener('keydown', (e) => {
-      switch (e.code) {
-        case KEYS.ARROW_UP:
-          this.ball.start();
-          break;
-        case KEYS.LEFT:
-        case KEYS.RIGHT:
-          this.platform.start(e.code);
-          break;
-        case KEYS.Z:
-          this.isPause = !this.isPause;
-          break;
-        default:
-          break;
+      if (!this.isEnd) {
+        switch (e.code) {
+          case KEYS.ARROW_UP:
+            this.ball.start();
+            break;
+          case KEYS.LEFT:
+          case KEYS.RIGHT:
+            this.platform.start(e.code);
+            break;
+          default:
+            break;
+        }
       }
     });
 
     window.addEventListener('keyup', () => {
-      this.platform.stop();
+      if (!this.isEnd) {
+        this.platform.stop();
+      }
+    });
+
+    this.canvas.addEventListener('mousemove', (e) => {
+      if (!this.isEnd) {
+        this.platform.moveWithMouse(e);
+        this.platform.collideBoundsWithMouse(e);
+      }
+    });
+
+    this.canvas.addEventListener('click', () => {
+      if (!this.isEnd) {
+        this.ball.start();
+      }
     });
   };
 
-  init = (): void => {
+  start = (): void => {
     this.addListeners();
 
     let start: number | null = null;
@@ -98,26 +139,71 @@ export default class Game implements GameInterface {
       // @ts-ignore
       render();
     });
+    stopSound('gameSound');
+    playSound(this.getIsSound(), 'gameSound');
+  };
+
+  win = (): void => {
+    stopSound('gameSound');
+    playSound(this.getIsSound(), 'win');
+    this.handleOpenGameOverModal({ victory: true, score: this.score });
+    this.clear();
+  };
+
+  lose = (): void => {
+    stopSound('gameSound');
+    playSound(this.getIsSound(), 'lose');
+    this.handleOpenGameOverModal({ victory: false, score: this.score });
+    this.clear();
+  };
+
+  clear = (): void => {
+    this.stop();
+    this.setScoreToBack();
+    this.ball.setStartPosition();
+    this.platform.setStartPosition();
+  };
+
+  nextLevel = (): void => {
+    playSound(this.getIsSound(), 'nextLevel');
+    this.setScoreToBack();
+    this.currentLevel += 1;
+    this.ball.setStartPosition();
+    this.platform.setStartPosition();
+    this.blocks = blocksLevelsData[this.currentLevel].map(
+      (block: BlockConstructor) => new Block(block, this.ctx),
+    );
+    this.clearBonuses();
   };
 
   load = (props: GameConstructor): void => {
+    this.bonuses = [];
     this.currentLevel = props.initLevel;
     this.numberOfLives = props.numberOfLives;
     this.score = props.score;
     this.numberOfMisses = props.numberOfMisses;
     this.ball = new Ball(props.ballData, this.ctx);
     this.platform = new Platform(props.platformData, this.ctx);
-    this.blocksData = props.blocksData;
-    this.blocks = this.blocksData.map(
+    this.blocks = props.blocksData.map(
       (block: BlockConstructor) => new Block(block, this.ctx),
     );
-    this.bonuses = [];
+    props.bonusesData!.map((bonus: BonusConstructor) => {
+      return this.createBonus(
+        bonus.x,
+        bonus.y,
+        bonus.spriteNumber,
+        bonus.typeOfBonus,
+        bonus.isUsed,
+        bonus.isActive,
+      );
+    });
     this.isSoundOn = true;
     this.animationFrameId = 0;
   };
 
-  stop = (): void => {
+  stopAnimation = (): void => {
     window.cancelAnimationFrame(this.animationFrameId);
+    stopSound('gameSound');
   };
 
   draw = (): void => {
@@ -158,12 +244,13 @@ export default class Game implements GameInterface {
     }
 
     this.ctx.fillStyle = 'rgba(255,255,255,.3)';
-    this.ctx.fillRect(0, gameHeight - 35, 150, 40);
+    this.ctx.fillRect(0, gameHeight - 35, 300, 40);
     this.ctx.fillRect(gameWidth - 200, gameHeight - 35, 200, 40);
 
-    this.ctx.font = 'normal 20px sans-serif';
-    this.ctx.fillStyle = 'white';
+    this.ctx.font = 'normal 20px Fredoka One';
+    this.ctx.fillStyle = 'rgba(0,0,0,.6)';
     this.ctx.fillText(`Score: ${this.score}`, 10, gameHeight - 10);
+    this.ctx.fillText(`Total: ${this.totalScore}`, 160, gameHeight - 10);
     this.ctx.fillText(
       `Lives: ${this.numberOfLives}`,
       gameWidth - 190,
@@ -176,15 +263,20 @@ export default class Game implements GameInterface {
     );
   };
 
-  ballIsCollide = (elem: BlockInterface | PlatformInterface): boolean => {
+  ballIsCollide = (
+    elemX: number,
+    elemY: number,
+    elemWidth: number,
+    elemHeight: number,
+  ): boolean => {
     const ballX = this.ball.getX() + this.ball.getDx();
     const ballY = this.ball.getY() + this.ball.getDy();
 
     return (
-      ballX + this.ball.getWidth() > elem.getX() &&
-      ballX < elem.getX() + elem.getWidth() &&
-      ballY + this.ball.getHeight() > elem.getY() &&
-      ballY < elem.getY() + elem.getHeight()
+      ballX + this.ball.getWidth() > elemX &&
+      ballX < elemX + elemWidth &&
+      ballY + this.ball.getHeight() > elemY &&
+      ballY < elemY + elemHeight
     );
   };
 
@@ -214,12 +306,23 @@ export default class Game implements GameInterface {
     this.bonuses.splice(bonusIndex, 1);
   };
 
-  spawnNewBonus = (block: BlockInterface): void => {
+  createBonus = (
+    bonusInitX: number,
+    bonusInitY: number,
+    spriteNumber = 0,
+    typeOfBonus = '',
+    isUsed = false,
+    isActive = true,
+  ): void => {
     const initBonus: BonusConstructor = {
       ball: this.ball,
       platform: this.platform,
-      x: block.getX() + bonusWidth / 2,
-      y: block.getY() + block.getHeight(),
+      x: bonusInitX,
+      y: bonusInitY,
+      spriteNumber,
+      typeOfBonus,
+      isUsed,
+      isActive,
     };
     const bonus = new Bonus(initBonus);
     this.bonuses.push(bonus);
@@ -228,27 +331,39 @@ export default class Game implements GameInterface {
   checkHitOnBlocks = (): void => {
     this.deleteNoActiveBlocks();
     this.blocks.forEach((block: BlockInterface) => {
-      if (block.isActive() && this.ballIsCollide(block)) {
+      if (
+        block.isActive() &&
+        this.ballIsCollide(block.getX(), block.getY(), blockWidth, blockHeight)
+      ) {
         if (!block.isIndestructibleBlock() && isBonusGenerated()) {
-          this.spawnNewBonus(block);
+          const bonusInitX = block.getX() + bonusWidth / 2;
+          const bonusInitY = block.getY() + block.getHeight();
+          this.createBonus(bonusInitX, bonusInitY);
         }
-        if (!block.isIndestructibleBlock()) block.reduceLives();
+        if (!block.isIndestructibleBlock()) {
+          block.reduceLives();
+          this.addScorePoint();
+        }
         this.ball.changeDirection(block.getX(), block.getWidth());
-        this.addScorePoint();
-        if (this.getIsSound()) {
-          sounds.pim!.currentTime = 0;
-          sounds.pim!.play();
-        }
+        playSound(this.getIsSound(), 'blockBump');
       }
     });
   };
 
   collidePlatformWithBall = (): void => {
-    if (this.ballIsCollide(this.platform)) {
+    if (
+      this.ballIsCollide(
+        this.platform.getX(),
+        this.platform.getY(),
+        this.platform.getWidth(),
+        this.platform.getHeight(),
+      )
+    ) {
       const platformTouchOffset = this.platform.getTouchOffset(
         this.ball.getTouchX(),
       );
       this.ball.platformBounce(this.platform.getDx(), platformTouchOffset);
+      playSound(this.getIsSound(), 'platformBump');
       this.increaseBlockMiss();
     }
   };
@@ -259,33 +374,51 @@ export default class Game implements GameInterface {
       this.ball.setStartPosition();
       this.platform.setStartPosition();
       this.clearBonuses();
-      if (this.numberOfLives === 0) {
-        console.log('GAME OVER');
+      if (this.numberOfLives < 1) {
+        this.lose();
       }
     }
   };
 
   updateCurrentStateGame = (): void => {
-    this.checkLifeLost();
-    this.checkHitOnBlocks();
-    this.bonusIsCollide();
-    this.collidePlatformWithBall();
-    if (this.ball.collideBounds()) {
-      this.increaseBlockMiss();
+    if (!this.isEnd) {
+      this.checkLifeLost();
+      this.checkHitOnBlocks();
+      this.bonusIsCollide();
+      this.collidePlatformWithBall();
+      if (this.ball.collideBounds(this.getIsSound)) {
+        this.increaseBlockMiss();
+      }
+      this.platform.collideBounds();
+      this.platform.move();
+      if (!this.ball.getRunStatus()) {
+        this.ball.moveWithPlatform(this.platform.getMiddlePlatformPosition());
+      } else {
+        this.ball.move();
+      }
+      if (this.bonuses.length) {
+        this.bonuses.forEach((bonus) => {
+          bonus.move();
+        });
+      }
+      this.checkAllBlocksAreDestroyed();
     }
-    this.platform.collideBounds();
-    this.platform.move();
-    if (!this.ball.getRunStatus()) {
-      this.ball.moveWithPlatform(this.platform.getMiddlePlatformPosition());
-    } else {
-      this.ball.move();
+  };
+
+  checkAllBlocksAreDestroyed = (): void => {
+    const numberOfBlocks = this.blocks.length;
+    const numberOfIndestructibleBlocks = this.blocks.reduce(
+      (total, block) => (block.isIndestructibleBlock() ? total + 1 : total),
+      0,
+    );
+
+    if (numberOfBlocks - numberOfIndestructibleBlocks === 0) {
+      if (this.currentLevel + 1 < 10) {
+        this.nextLevel();
+      } else {
+        this.win();
+      }
     }
-    if (this.bonuses.length) {
-      this.bonuses.forEach((bonus) => {
-        bonus.move();
-      });
-    }
-    // this.checkGameIsEnd(); // TODO !! and implement game end with Indestructible blocks
   };
 
   addScorePoint = (): void => {
@@ -326,6 +459,7 @@ export default class Game implements GameInterface {
   };
 
   reduceLives = (): void => {
+    playSound(this.getIsSound(), 'levelLose');
     this.numberOfLives -= 1;
   };
 
@@ -341,7 +475,35 @@ export default class Game implements GameInterface {
 
   setIsSound = (option: boolean): void => {
     this.isSoundOn = option;
+    if (!option) {
+      stopSound('gameSound');
+    } else {
+      playSound(this.getIsSound(), 'gameSound');
+    }
   };
 
   getIsSound = (): boolean => this.isSoundOn;
+
+  stop = (): void => {
+    this.isEnd = true;
+  };
+
+  getAuthStatus = (): boolean => this.authStatus;
+
+  updateTotalScore = (): void => {
+    this.totalScore += this.score;
+  };
+
+  clearScore = (): void => {
+    this.score = 0;
+  };
+
+  setScoreToBack = (): void => {
+    if (this.getAuthStatus()) {
+      this.updateTotalScore();
+      this.setTotalScore(this.totalScore);
+      this.setLevelScore(this.currentLevel + 1, this.score);
+      this.clearScore();
+    }
+  };
 }

@@ -26,7 +26,9 @@ const Header: React.FC<PropsType> = (props): JSX.Element => {
       <div className="container-inner">
         <div className="header-content">
           <div className="header-content__img">
-            <img src={logo} alt="logo" />
+            <a href="/game">
+              <img src={logo} alt="logo" />
+            </a>
           </div>
           <nav className="header-content__nav">
             <ul>

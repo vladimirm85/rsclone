@@ -19,50 +19,75 @@ import useStyles from './style';
 import SavesW from './Saves';
 
 // Import constants
-import { gameWidth, gameHeight, initialGameData } from './constants';
+import { gameWidth, gameHeight, initialGameData, KEYS } from './constants';
 import Game from './Game';
 import { GameConstructor, GameInterface } from './interfaces';
 import { get } from '../../helpers/storage';
+import {
+  setCurrentTotalScore,
+  setCurrentLevelScore,
+} from '../../store/action-creators/score-ac';
+import GameInstruction from './GameInstruction';
+import { GameResultPropsType } from '../../types/types';
+import GameOverModalW from './GameOverModal';
 
 type MapStatePropsType = {
   isGameStarted: boolean;
   isAuth: boolean;
+  gameObj: GameInterface | null;
+  isSaved: boolean;
 };
 
 type MapDispatchPropsType = {
   startGame: (isGameStarted: boolean) => void;
   loadUserSaves: (key: string) => void;
   createUserSave: (key: string, save: GameConstructor) => void;
+  setGameObj: (gameObj: GameInterface | null) => void;
+  setCurrentTotalScore: (totalScore: number) => void;
+  setCurrentLevelScore: (level: number, score: number) => void;
+  setGameResult: (gameResult: GameResultPropsType) => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
 
 const Canvas: React.FC<PropsType> = (props): JSX.Element => {
-  const { isGameStarted, startGame, isAuth } = props;
+  const {
+    isGameStarted,
+    startGame,
+    isAuth,
+    gameObj,
+    setGameObj,
+    setGameResult,
+    isSaved,
+  } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
   const [isPause, setIsPause] = React.useState(false);
   const [sounds, setSounds] = React.useState(true);
-  const [gameData, setGameData] = React.useState<GameInterface>();
+  const [open, setOpen] = React.useState(false);
+  const [gameOverModalOpen, setGameOverModalOpen] = React.useState(false);
   const authKey = get('authKey');
+  const classes = useStyles();
 
-  const newGame = (gameSettings: GameConstructor) => {
+  const newGame = (
+    gameSettings: GameConstructor,
+    authStatus: boolean,
+    setTotalScore: (score: number) => void,
+    setLevelScore: (lvl: number, score: number) => void,
+    handleOpenGameOverModal: (args: GameResultPropsType) => void,
+  ) => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
-    const game = new Game(gameSettings, context!);
-    game.init();
-    setGameData(game);
-  };
-
-  useEffect(() => {
-    if (isGameStarted && !gameData) {
-      newGame(initialGameData);
-    }
-  });
-
-  const gameLauncher = () => {
-    startGame(true);
+    const game = new Game(
+      gameSettings,
+      canvas!,
+      context!,
+      authStatus,
+      setTotalScore,
+      setLevelScore,
+      handleOpenGameOverModal,
+    );
+    game.start();
+    setGameObj(game);
   };
 
   const handleOpenSaves = () => {
@@ -73,6 +98,101 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
   const handleCloseSaves = () => {
     setOpen(false);
   };
+
+  const gameLauncher = () => {
+    startGame(true);
+  };
+
+  const handleSave = () => {
+    if (gameObj && isAuth) {
+      const save = gameObj.getCurrentGameState();
+      props.createUserSave(authKey, save);
+    }
+  };
+
+  const handleLoad = () => {
+    if (gameObj && isAuth) {
+      handleOpenSaves();
+      setIsPause(true);
+      gameObj.setIsPause(true);
+    }
+  };
+
+  const handlePause = () => {
+    if (gameObj) {
+      setIsPause(!isPause);
+      gameObj.setIsPause(!isPause);
+    }
+  };
+
+  const handleSound = () => {
+    if (gameObj) {
+      setSounds(!sounds);
+      gameObj.setIsSound(!sounds);
+    }
+  };
+
+  const handleOpenGameOverModal = (gameResult: GameResultPropsType) => {
+    setGameResult(gameResult);
+    setGameOverModalOpen(true);
+  };
+
+  const handleNewGame = () => {
+    if (gameObj) {
+      setIsPause(false);
+      gameObj.stopAnimation();
+      newGame(
+        initialGameData,
+        isAuth,
+        props.setCurrentTotalScore,
+        props.setCurrentLevelScore,
+        handleOpenGameOverModal,
+      );
+    }
+  };
+
+  const handleCloseGameOverModal = () => {
+    setGameOverModalOpen(false);
+    handleNewGame();
+  };
+
+  const keyListener = (e: KeyboardEvent) => {
+    switch (e.code) {
+      case KEYS.KEY_Z:
+        handleSave();
+        break;
+      case KEYS.KEY_X:
+        handleLoad();
+        break;
+      case KEYS.KEY_C:
+        handlePause();
+        break;
+      case KEYS.KEY_V:
+        handleSound();
+        break;
+      case KEYS.KEY_B:
+        handleNewGame();
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    if (isGameStarted && !gameObj) {
+      newGame(
+        initialGameData,
+        isAuth,
+        props.setCurrentTotalScore,
+        props.setCurrentLevelScore,
+        handleOpenGameOverModal,
+      );
+    }
+    window.addEventListener('keydown', keyListener);
+    return () => {
+      window.removeEventListener('keydown', keyListener);
+    };
+  });
 
   return (
     <main>
@@ -85,7 +205,35 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
             unmountOnExit
           >
             <div className={classes.canvasContainer}>
-              <canvas ref={canvasRef} width={gameWidth} height={gameHeight} />
+              <CSSTransition
+                in={isPause}
+                timeout={500}
+                classNames={classes.paused}
+                unmountOnExit
+              >
+                <div className={classes.pause}>
+                  <p>
+                    G<span className="ocean-letter">A</span>ME
+                  </p>
+                  <p>
+                    P<span className="ocean-letter">A</span>USED
+                  </p>
+                </div>
+              </CSSTransition>
+              <CSSTransition
+                in={isSaved}
+                timeout={200}
+                classNames={classes.saved}
+                unmountOnExit
+              >
+                <div className={classes.save}>Saved</div>
+              </CSSTransition>
+              <canvas
+                className={classes.canvasElement}
+                ref={canvasRef}
+                width={gameWidth}
+                height={gameHeight}
+              />
               <ButtonGroup
                 variant="text"
                 aria-label="button group"
@@ -96,74 +244,61 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                 {isAuth && (
                   <Button
                     startIcon={<SaveIcon />}
-                    onClick={() => {
-                      const save = gameData!.getCurrentGameState();
-                      props.createUserSave(authKey, save);
-                    }}
+                    onClick={handleSave}
+                    disabled={isSaved}
                   >
                     Save
                   </Button>
                 )}
                 {isAuth && (
-                  <Button
-                    startIcon={<PublishIcon />}
-                    onClick={() => {
-                      handleOpenSaves();
-                      if (!isPause) {
-                        setIsPause(true);
-                        gameData!.setIsPause(true);
-                      }
-                    }}
-                  >
+                  <Button startIcon={<PublishIcon />} onClick={handleLoad}>
                     Load
                   </Button>
                 )}
                 <Button
                   startIcon={isPause ? <PlayArrowIcon /> : <PauseIcon />}
                   style={{ width: '100px' }}
-                  onClick={() => {
-                    setIsPause(!isPause);
-                    gameData!.setIsPause(!isPause);
-                  }}
+                  onClick={handlePause}
                 >
                   {isPause ? 'Play' : 'Pause'}
                 </Button>
                 <Button
                   startIcon={sounds ? <VolumeUpIcon /> : <VolumeOffIcon />}
                   style={{ width: '120px' }}
-                  onClick={() => {
-                    setSounds(!sounds);
-                    gameData!.setIsSound(!sounds);
-                  }}
+                  onClick={handleSound}
                 >
                   {sounds ? 'Mute' : 'Unmute'}
                 </Button>
                 <Button
                   startIcon={<VideogameAssetIcon />}
-                  onClick={() => {
-                    gameData!.stop();
-                    newGame(initialGameData);
-                  }}
+                  onClick={handleNewGame}
                 >
                   New game
                 </Button>
               </ButtonGroup>
+              <GameOverModalW
+                gameOverModalOpen={gameOverModalOpen}
+                handleCloseGameOverModal={handleCloseGameOverModal}
+              />
             </div>
           </CSSTransition>
           {!isGameStarted && (
-            <button
-              className="start-button"
-              type="button"
-              onClick={gameLauncher}
-            >
-              Start game
-            </button>
+            <>
+              <button
+                className="start-button"
+                type="button"
+                onClick={gameLauncher}
+              >
+                Start game
+              </button>
+              <GameInstruction />
+            </>
           )}
         </div>
       </div>
       {isAuth && (
         <SavesW
-          gameData={gameData}
+          gameObj={gameObj}
           open={open}
           handleClose={handleCloseSaves}
           isPause={isPause}
@@ -177,12 +312,16 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
 const mapStateToProps = (state: AppStateType) => ({
   isGameStarted: state.gameData.isGameStarted,
   isAuth: state.authData.isAuth,
+  gameObj: state.gameData.gameObj,
+  isSaved: state.gameData.isSaved,
 });
 
 const CanvasW = connect(mapStateToProps, {
   ...gameActions,
   loadUserSaves,
   createUserSave,
+  setCurrentTotalScore,
+  setCurrentLevelScore,
 })(Canvas);
 
 export default CanvasW;

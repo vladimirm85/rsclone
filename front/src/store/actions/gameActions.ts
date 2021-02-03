@@ -1,5 +1,9 @@
 export const START_GAME = 'START_GAME';
+export const SET_GAME_OBJ = 'SET_GAME_OBJ';
 export const SET_USER_SAVES = 'SET_USER_SAVES';
 export const DEL_USER_SAVE = 'DEL_USER_SAVE';
 export const SET_USER_SAVES_ERROR = 'SET_USER_SAVES_ERROR';
 export const SET_USER_SAVES_LOADING = 'SET_USER_SAVES_LOADING';
+export const SET_GAME_RESULT = 'SET_GAME_RESULT';
+export const CANCEL_FRAME = 'CANCEL_FRAME';
+export const SET_IS_SAVED = 'SET_IS_SAVED';

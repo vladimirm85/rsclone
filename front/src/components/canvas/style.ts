@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     canvasContainer: {
       display: 'flex',
+      position: 'relative',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
@@ -49,8 +50,41 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    paused: {
+      '&-enter': {
+        opacity: 0,
+        '&-active': {
+          opacity: 1,
+          transition: 'opacity 300ms',
+        },
+      },
+      '&-exit': {
+        opacity: 1,
+        '&-active': {
+          opacity: 0,
+          transition: 'opacity 300ms',
+        },
+      },
+    },
+    saved: {
+      '&-enter': {
+        opacity: 0,
+        '&-active': {
+          opacity: 1,
+          transition: 'opacity 400ms',
+        },
+      },
+      '&-exit': {
+        opacity: 1,
+        '&-active': {
+          opacity: 0,
+          transition: 'opacity 400ms',
+        },
+      },
+    },
     gameContent: {
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       '& canvas': {
@@ -63,6 +97,72 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     error: {
       color: 'red',
+    },
+    canvasElement: {
+      cursor: 'none',
+    },
+    pause: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 20,
+      fontSize: '3rem',
+      fontFamily: "'Fredoka One', cursive",
+      color: '#ffffff',
+      padding: '20px',
+      border: '2px solid white',
+      '& p:nth-child(2)': {
+        paddingLeft: '60px',
+      },
+    },
+    gameInstruction: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: '70px',
+      '& kbd': {
+        marginRight: '10px',
+      },
+      '& li': {
+        margin: '8px',
+      },
+      '& li:nth-child(2) kbd': {
+        background: '#D0C74B',
+      },
+      '& li:nth-child(3) kbd': {
+        background: '#F41C1C',
+      },
+      '& li:nth-child(5) kbd': {
+        background: '#00ACAE',
+      },
+    },
+    gameOverContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '30px',
+    },
+    gameOverTitle: {
+      fontFamily: "'Fredoka One', cursive",
+      fontSize: '3rem',
+      color: '#565656',
+      marginBottom: '30px',
+    },
+    gameOverSubtitle: {
+      fontSize: '1.5rem',
+      color: '#565656',
+      marginBottom: '30px',
+    },
+    save: {
+      position: 'absolute',
+      top: '65%',
+      left: '50%',
+      transform: 'translate(-50%, 0)',
+      zIndex: 20,
+      fontSize: '2.5rem',
+      fontFamily: "'Fredoka One', cursive",
+      color: '#ffffff',
     },
   }),
 );

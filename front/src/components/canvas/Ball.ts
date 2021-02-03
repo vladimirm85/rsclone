@@ -1,7 +1,7 @@
-import { gameWidth, ballStartData } from './constants';
+import { gameWidth, ballStartData, blockWidth } from './constants';
 import getRandomValue from './helpers/getRandomValue';
-import { sprites } from './utils/preload';
 import { BallConstructor, BallInterface } from './interfaces';
+import playSound from './helpers/playSound';
 
 export default class Ball implements BallInterface {
   velocity: number;
@@ -33,17 +33,16 @@ export default class Ball implements BallInterface {
   }
 
   draw = (): void => {
-    this.ctx.drawImage(
-      sprites.ball!,
-      this.frame * this.width,
+    this.ctx.beginPath();
+    this.ctx.fillStyle = '#FF1E3C';
+    this.ctx.arc(
+      this.x + this.width / 2,
+      this.y + this.height / 2,
+      this.width / 2,
       0,
-      this.width,
-      this.height,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
+      2 * Math.PI,
     );
+    this.ctx.fill();
   };
 
   start = (): void => {
@@ -55,12 +54,6 @@ export default class Ball implements BallInterface {
 
     this.animate();
   };
-
-  // stop = (): void => {
-  //   this.isRun = false;
-  //   this.dx = 0;
-  //   this.dy = 0;
-  // };
 
   setStartPosition = (): void => {
     this.velocity = ballStartData.velocity;
@@ -86,7 +79,7 @@ export default class Ball implements BallInterface {
     this.x = platformMiddlePosition - this.width / 2;
   };
 
-  changeDirection = (blockX: number, blockWidth: number): void => {
+  changeDirection = (blockX: number): void => {
     const fullBallX = this.x + this.width;
     const fullBlockX = blockX + blockWidth;
 
@@ -111,7 +104,7 @@ export default class Ball implements BallInterface {
     }
   };
 
-  collideBounds = (): boolean => {
+  collideBounds = (getIsSound: () => boolean): boolean => {
     const ballLeft = this.x + this.dx;
     const ballRight = ballLeft + this.width;
     const ballTop = this.y + this.dy;
@@ -120,14 +113,17 @@ export default class Ball implements BallInterface {
     const worldTop = 0;
     if (ballLeft < worldLeft) {
       this.dx *= -1;
+      playSound(getIsSound(), 'boundsBump');
       return true;
     }
     if (ballRight > gameWidth) {
       this.dx *= -1;
+      playSound(getIsSound(), 'boundsBump');
       return true;
     }
     if (ballTop < worldTop) {
       this.dy *= -1;
+      playSound(getIsSound(), 'boundsBump');
       return true;
     }
     return false;
@@ -138,23 +134,15 @@ export default class Ball implements BallInterface {
   };
 
   changeSpeed = (option: string): void => {
-    if (option === 'increase' && this.velocity <= 6) {
-      this.velocity *= 1.2;
-      this.dx *= 1.2;
-      this.dy *= 1.2;
-    } else if (option === 'decrease' && this.velocity >= 6) {
-      this.velocity /= 1.2;
-      this.dx /= 1.2;
-      this.dy /= 1.2;
+    if (option === 'increase' && this.velocity <= 12) {
+      this.velocity *= 1.3;
+      this.dx *= 1.3;
+      this.dy *= 1.3;
+    } else if (option === 'decrease' && this.velocity >= 8) {
+      this.velocity /= 1.3;
+      this.dx /= 1.3;
+      this.dy /= 1.3;
     }
-    // console.log(
-    //   'this.ball.velocity',
-    //   this.velocity,
-    //   'this.ball.dx:',
-    //   this.dx,
-    //   'this.ball.dy:',
-    //   this.dy,
-    // );
   };
 
   getCurrentBallData = (): BallConstructor => ({
