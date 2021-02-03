@@ -1,6 +1,7 @@
 import { gameWidth, ballStartData, blockWidth } from './constants';
 import getRandomValue from './helpers/getRandomValue';
 import { BallConstructor, BallInterface } from './interfaces';
+import playSound from './helpers/playSound';
 
 export default class Ball implements BallInterface {
   velocity: number;
@@ -103,7 +104,7 @@ export default class Ball implements BallInterface {
     }
   };
 
-  collideBounds = (): boolean => {
+  collideBounds = (getIsSound: () => boolean): boolean => {
     const ballLeft = this.x + this.dx;
     const ballRight = ballLeft + this.width;
     const ballTop = this.y + this.dy;
@@ -112,14 +113,17 @@ export default class Ball implements BallInterface {
     const worldTop = 0;
     if (ballLeft < worldLeft) {
       this.dx *= -1;
+      playSound(getIsSound(), 'boundsBump');
       return true;
     }
     if (ballRight > gameWidth) {
       this.dx *= -1;
+      playSound(getIsSound(), 'boundsBump');
       return true;
     }
     if (ballTop < worldTop) {
       this.dy *= -1;
+      playSound(getIsSound(), 'boundsBump');
       return true;
     }
     return false;
@@ -130,23 +134,15 @@ export default class Ball implements BallInterface {
   };
 
   changeSpeed = (option: string): void => {
-    if (option === 'increase' && this.velocity <= 6) {
-      this.velocity *= 1.2;
-      this.dx *= 1.2;
-      this.dy *= 1.2;
-    } else if (option === 'decrease' && this.velocity >= 6) {
-      this.velocity /= 1.2;
-      this.dx /= 1.2;
-      this.dy /= 1.2;
+    if (option === 'increase' && this.velocity <= 12) {
+      this.velocity *= 1.3;
+      this.dx *= 1.3;
+      this.dy *= 1.3;
+    } else if (option === 'decrease' && this.velocity >= 8) {
+      this.velocity /= 1.3;
+      this.dx /= 1.3;
+      this.dy /= 1.3;
     }
-    // console.log(
-    //   'this.ball.velocity',
-    //   this.velocity,
-    //   'this.ball.dx:',
-    //   this.dx,
-    //   'this.ball.dy:',
-    //   this.dy,
-    // );
   };
 
   getCurrentBallData = (): BallConstructor => ({

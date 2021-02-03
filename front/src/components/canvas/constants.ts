@@ -43,7 +43,7 @@ export const typesOfBonuses: TypesOfBonuses[] = [
 // *** Ball ***
 
 export const ballStartData: BallConstructor = {
-  velocity: 6,
+  velocity: 10,
   dx: 0,
   dy: 0,
   x: 374,
