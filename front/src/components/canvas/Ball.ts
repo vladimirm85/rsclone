@@ -134,14 +134,14 @@ export default class Ball implements BallInterface {
   };
 
   changeSpeed = (option: string): void => {
-    if (option === 'increase' && this.velocity <= 6) {
-      this.velocity *= 1.5;
-      this.dx *= 1.5;
-      this.dy *= 1.5;
-    } else if (option === 'decrease' && this.velocity >= 6) {
-      this.velocity /= 1.5;
-      this.dx /= 1.5;
-      this.dy /= 1.5;
+    if (option === 'increase' && this.velocity <= 12) {
+      this.velocity *= 1.3;
+      this.dx *= 1.3;
+      this.dy *= 1.3;
+    } else if (option === 'decrease' && this.velocity >= 8) {
+      this.velocity /= 1.3;
+      this.dx /= 1.3;
+      this.dy /= 1.3;
     }
   };
 
