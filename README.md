@@ -55,6 +55,6 @@ FACEBOOK_CLIENT_SECRET=<Facebook client secret>
 
 #### [Git authentication setup instructions](https://docs.github.com/en/rest/guides/basics-of-authentication)
 #### [Google authentication setup instructions](https://developers.google.com/adwords/api/docs/guides/authentication)
-#### [Google authentication setup instructions](https://developers.facebook.com/docs/)
+#### [Facebook authentication setup instructions](https://developers.facebook.com/docs/)
 
 You can set up just one of them for testing
