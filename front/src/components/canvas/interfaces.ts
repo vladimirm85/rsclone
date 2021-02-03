@@ -92,7 +92,7 @@ export interface BallInterface extends BallConstructor {
   moveWithPlatform: (platformMiddlePosition: number) => void;
   changeDirection: (blockX: number, blockWide: number) => void;
   platformBounce: (platformDx: number, platformTouchOffset: number) => void;
-  collideBounds: () => boolean;
+  collideBounds: (getIsSound: () => boolean) => boolean;
   getRunStatus: () => boolean;
   changeSpeed: (option: string) => void;
   getCurrentBallData: () => BallConstructor;
@@ -212,3 +212,24 @@ export interface LevelGradientInterface {
 }
 
 export type LevelsGradients = Array<LevelGradientInterface>;
+
+// *** Assets ***
+
+type HTMLImageOrNull = HTMLImageElement | null;
+
+export interface Sprites {
+  bonus: HTMLImageOrNull;
+}
+
+type HTMLAudioOrNull = HTMLAudioElement | null;
+
+export interface Sounds {
+  blockBump: HTMLAudioOrNull;
+  boundsBump: HTMLAudioOrNull;
+  gameSound: HTMLAudioOrNull;
+  levelLose: HTMLAudioOrNull;
+  lose: HTMLAudioOrNull;
+  nextLevel: HTMLAudioOrNull;
+  platformBump: HTMLAudioOrNull;
+  win: HTMLAudioOrNull;
+}

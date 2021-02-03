@@ -6,7 +6,7 @@ import {
   gameWidth,
   KEYS,
 } from './constants';
-import { preload, sounds } from './utils/preload';
+import { preload } from './utils/preload';
 import Ball from './Ball';
 import Platform from './Platform';
 import Block from './Block';
@@ -25,6 +25,8 @@ import {
 import blocksLevelsData from './blocksLevelsData';
 import bgLevelsGradientsData from './bgLevelsGradientsData';
 import { GameResultPropsType } from '../../types/types';
+import playSound from './helpers/playSound';
+import stopSound from './helpers/stopSound';
 
 export default class Game implements GameInterface {
   currentLevel: number;
@@ -137,14 +139,20 @@ export default class Game implements GameInterface {
       // @ts-ignore
       render();
     });
+    stopSound('gameSound');
+    playSound(this.getIsSound(), 'gameSound');
   };
 
   win = (): void => {
+    stopSound('gameSound');
+    playSound(this.getIsSound(), 'win');
     this.handleOpenGameOverModal({ victory: true, score: this.score });
     this.clear();
   };
 
   lose = (): void => {
+    stopSound('gameSound');
+    playSound(this.getIsSound(), 'lose');
     this.handleOpenGameOverModal({ victory: false, score: this.score });
     this.clear();
   };
@@ -194,6 +202,7 @@ export default class Game implements GameInterface {
 
   stopAnimation = (): void => {
     window.cancelAnimationFrame(this.animationFrameId);
+    stopSound('gameSound');
   };
 
   draw = (): void => {
@@ -335,10 +344,7 @@ export default class Game implements GameInterface {
           this.addScorePoint();
         }
         this.ball.changeDirection(block.getX(), block.getWidth());
-        if (this.getIsSound()) {
-          sounds.pim!.currentTime = 0;
-          sounds.pim!.play();
-        }
+        playSound(this.getIsSound(), 'blockBump');
       }
     });
   };
@@ -356,6 +362,7 @@ export default class Game implements GameInterface {
         this.ball.getTouchX(),
       );
       this.ball.platformBounce(this.platform.getDx(), platformTouchOffset);
+      playSound(this.getIsSound(), 'platformBump');
       this.increaseBlockMiss();
     }
   };
@@ -378,7 +385,7 @@ export default class Game implements GameInterface {
       this.checkHitOnBlocks();
       this.bonusIsCollide();
       this.collidePlatformWithBall();
-      if (this.ball.collideBounds()) {
+      if (this.ball.collideBounds(this.getIsSound)) {
         this.increaseBlockMiss();
       }
       this.platform.collideBounds();
@@ -451,6 +458,7 @@ export default class Game implements GameInterface {
   };
 
   reduceLives = (): void => {
+    playSound(this.getIsSound(), 'levelLose');
     this.numberOfLives -= 1;
   };
 
