@@ -5,7 +5,7 @@ import { createToken, errorHandler, TokenUserData } from '../../utils';
 export const loginGoogle = async (req: Request, res: Response): Promise<void | Response> => {
   const user = req.user;
 
-  const baseUrl = process.env.FRONT_BASE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.FRONT_BASE_URL || 'http://localhost:3006';
 
   const token = await createToken(pick(user, ['_id', 'email']) as TokenUserData);
   if (!token) {
