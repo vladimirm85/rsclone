@@ -3,6 +3,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { connect } from 'react-redux';
+import { Button } from '@material-ui/core';
 import useStyles from './style';
 import { AppStateType } from '../../store/store';
 import { GameResultPropsType } from '../../types/types';
@@ -38,8 +39,26 @@ const GameOverModal: React.FC<PropsType> = (props): JSX.Element => {
       >
         <Fade in={gameOverModalOpen}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">ХЗАХАХАХААЗАЗАЗА</h2>
-            <p id="transition-modal-description">ТЫ ПРОЕБАЛ, ЕБЛАН___)))))</p>
+            <div className={classes.gameOverContainer}>
+              <div className={classes.gameOverTitle}>
+                {gameResult.victory ? (
+                  <span>
+                    Vict<span className="red-letter">o</span>ry!
+                  </span>
+                ) : (
+                  <span>
+                    Y<span className="red-letter">o</span>u l
+                    <span className="red-letter">o</span>se :(
+                  </span>
+                )}
+              </div>
+              <div className={classes.gameOverSubtitle}>
+                Score: {gameResult.score}
+              </div>
+              <Button variant="outlined" onClick={handleCloseGameOverModal}>
+                {gameResult.victory ? 'Yohoo!' : 'Try again'}
+              </Button>
+            </div>
           </div>
         </Fade>
       </Modal>
