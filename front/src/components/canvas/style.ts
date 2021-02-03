@@ -66,6 +66,22 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    saved: {
+      '&-enter': {
+        opacity: 0,
+        '&-active': {
+          opacity: 1,
+          transition: 'opacity 400ms',
+        },
+      },
+      '&-exit': {
+        opacity: 1,
+        '&-active': {
+          opacity: 0,
+          transition: 'opacity 400ms',
+        },
+      },
+    },
     gameContent: {
       display: 'flex',
       flexDirection: 'column',
@@ -137,6 +153,16 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1.5rem',
       color: '#565656',
       marginBottom: '30px',
+    },
+    save: {
+      position: 'absolute',
+      top: '65%',
+      left: '50%',
+      transform: 'translate(-50%, 0)',
+      zIndex: 20,
+      fontSize: '2.5rem',
+      fontFamily: "'Fredoka One', cursive",
+      color: '#ffffff',
     },
   }),
 );

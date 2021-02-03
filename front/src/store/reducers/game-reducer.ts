@@ -7,6 +7,7 @@ import {
   SET_GAME_OBJ,
   CANCEL_FRAME,
   SET_GAME_RESULT,
+  SET_IS_SAVED,
 } from '../actions/gameActions';
 import { gameActions } from '../action-creators/game-ac';
 import { RESET } from '../actions/settingsActions';
@@ -20,6 +21,7 @@ const initialState = {
   userSavesLoading: false,
   gameObj: (null as unknown) as GameInterface | null,
   gameResult: { victory: false, score: 0 },
+  isSaved: false,
 };
 
 type InitialStateType = typeof initialState;
@@ -39,6 +41,7 @@ const gameReducer = (
     case SET_USER_SAVES_LOADING:
     case SET_GAME_OBJ:
     case SET_GAME_RESULT:
+    case SET_IS_SAVED:
       return {
         ...state,
         ...action.payload,

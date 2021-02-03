@@ -8,6 +8,7 @@ import {
   SET_GAME_OBJ,
   CANCEL_FRAME,
   SET_GAME_RESULT,
+  SET_IS_SAVED,
 } from '../actions/gameActions';
 import { RESET } from '../actions/settingsActions';
 import { GameResultPropsType, SavesType } from '../../types/types';
@@ -53,6 +54,11 @@ export const gameActions = {
       type: SET_GAME_RESULT,
       payload: { gameResult },
     } as const),
+  setIsSaved: (isSaved: boolean) =>
+    ({
+      type: SET_IS_SAVED,
+      payload: { isSaved },
+    } as const),
   cancelFrame: () =>
     ({
       type: CANCEL_FRAME,
@@ -96,6 +102,10 @@ export const createUserSave = (key: string, save: GameConstructor) => async (
 ) => {
   try {
     await savesApi.createSave(key, save);
+    dispatch(gameActions.setIsSaved(true));
+    setTimeout(() => {
+      dispatch(gameActions.setIsSaved(false));
+    }, 400);
   } catch (e) {
     dispatch(gameActions.setUserSavesError(e.message));
   }

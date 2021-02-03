@@ -35,6 +35,7 @@ type MapStatePropsType = {
   isGameStarted: boolean;
   isAuth: boolean;
   gameObj: GameInterface | null;
+  isSaved: boolean;
 };
 
 type MapDispatchPropsType = {
@@ -57,14 +58,15 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
     gameObj,
     setGameObj,
     setGameResult,
+    isSaved,
   } = props;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
   const [isPause, setIsPause] = React.useState(false);
   const [sounds, setSounds] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [gameOverModalOpen, setGameOverModalOpen] = React.useState(false);
   const authKey = get('authKey');
+  const classes = useStyles();
 
   const newGame = (
     gameSettings: GameConstructor,
@@ -218,6 +220,14 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                   </p>
                 </div>
               </CSSTransition>
+              <CSSTransition
+                in={isSaved}
+                timeout={200}
+                classNames={classes.saved}
+                unmountOnExit
+              >
+                <div className={classes.save}>Saved</div>
+              </CSSTransition>
               <canvas
                 className={classes.canvasElement}
                 ref={canvasRef}
@@ -232,7 +242,11 @@ const Canvas: React.FC<PropsType> = (props): JSX.Element => {
                 className={classes.buttons}
               >
                 {isAuth && (
-                  <Button startIcon={<SaveIcon />} onClick={handleSave}>
+                  <Button
+                    startIcon={<SaveIcon />}
+                    onClick={handleSave}
+                    disabled={isSaved}
+                  >
                     Save
                   </Button>
                 )}
@@ -299,6 +313,7 @@ const mapStateToProps = (state: AppStateType) => ({
   isGameStarted: state.gameData.isGameStarted,
   isAuth: state.authData.isAuth,
   gameObj: state.gameData.gameObj,
+  isSaved: state.gameData.isSaved,
 });
 
 const CanvasW = connect(mapStateToProps, {
