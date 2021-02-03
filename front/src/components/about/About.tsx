@@ -191,8 +191,45 @@ const About: React.FC = (): JSX.Element => {
               В проекте реализована регистрация пользователей по email и с
               помощью социальных сетей (google, facebook, github).
             </Typography>
-            <Typography paragraph variant="h5" component="p">
-              BackEnd
+
+            <Typography paragraph variant="h6" component="p">
+              Регистрация по e-mail:
+            </Typography>
+            <Typography paragraph variant="body1" component="p">
+              <ul>
+                <li>Получаем почту и пароль от фронта;</li>
+                <li>Валидируем полученные данные при помощи библиотеки Joi;</li>
+                <li>Хэшируем пароль при помощи Bcryptjs;</li>
+                <li>
+                  Отправляем пользователю письмо со ссылкой на верификацию
+                  e-mail (Реализована возможность повторной отправки письма,
+                  если юзер не получил его с первого раза);
+                </li>
+                <li>
+                  После верификации возвращаем фронту токен, что можно получить
+                  доступ к защищенным маршрутам. Например для получения данных
+                  аккаунта;
+                </li>
+                <li>
+                  Если пароль утрачен, реализована возможность его восстановить.
+                </li>
+              </ul>
+            </Typography>
+            <Typography paragraph variant="h6" component="p">
+              Регистрация через социальные сети (google, facebook, github):
+            </Typography>
+            <Typography paragraph variant="body1" component="p">
+              <ul>
+                <li>
+                  Получаем от фронта ссылку по которой отправляем юзера на один
+                  из вышеуказанных сайтов (google, facebook или github);
+                </li>
+                <li>
+                  Пользователь разрешает нашему приложению доступ и
+                  автоматически переадресовывается на сайт с приложением;
+                </li>
+                <li>Происходит автоматический логин.</li>
+              </ul>
             </Typography>
             <Typography
               className={classes.textLeftPadding}
