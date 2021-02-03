@@ -2,6 +2,7 @@
 [RS School RS Clone task](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
 
 ## Front-end part
+#### React/ TypeScript/ Redux/ Redux Thunk/ Material UI/ Ant-Design/ React-router-dom/ React-transition-group/ Canvas/ Eslint 
 #### [Link to deploy](https://ball-bouncer.herokuapp.com/game)
 (wait a bit until the server wakes up)
 
@@ -16,6 +17,8 @@
 6. you are in business!
 
 ## Back-end part
+#### NodeJS/ TypeScript/ Express/ MongoDB/ Mongoose/ Bcryptjs/ Joi/ JsonWebToken/ Passport.js/
+Swagger
 #### [Link to deploy](https://arkanoid-rsclone-be.herokuapp.com)
 #### [Swagger documentation for API](hhttps://arkanoid-rsclone-be.herokuapp.com/api-docs)
 
