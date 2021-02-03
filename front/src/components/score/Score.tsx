@@ -74,7 +74,7 @@ const Score: React.FC<PropsType> = (props): JSX.Element => {
     <main>
       <div className="container-inner">
         <div className="score-content">
-          <div className="main-title">Top players</div>
+          <div className="main-title text-center">Top players</div>
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Score for:</InputLabel>
             <Select

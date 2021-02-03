@@ -112,7 +112,7 @@ const Settings: React.FC<PropsType> = (props): JSX.Element => {
     <main>
       <div className="container-inner">
         <div className="saves-content">
-          <div className="main-title">Hello, {name}</div>
+          <div className="main-title text-center">Hello, {name}</div>
           <Avatar alt="Avatar" src={avatar} className={classes.large} />
           <Typography
             variant="overline"

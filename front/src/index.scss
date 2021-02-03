@@ -37,13 +37,24 @@ main {
   font-size: 2.7rem;
   font-family: 'Prata', serif;
   color: #565656;
-  text-align: center;
   margin-bottom: 25px;
   line-height: 130%;
 
   @media (max-width: 640px) {
     font-size: 2.5rem;
   }
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
 }
 
 .red-letter {
@@ -72,4 +83,20 @@ kbd {
   -webkit-user-select: none;
   user-select: none;
   box-shadow: 2px 2px 0 rgb(33, 33, 33);
+}
+
+.slick-slider img {
+  width: 100%;
+}
+
+p > ul, p > ol {
+  padding-left: 50px;
+}
+
+p > ul {
+  list-style: disc;
+}
+
+p > ol {
+  list-style: decimal;
 }
