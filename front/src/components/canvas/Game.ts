@@ -165,6 +165,7 @@ export default class Game implements GameInterface {
   };
 
   nextLevel = (): void => {
+    playSound(this.getIsSound(), 'nextLevel');
     this.setScoreToBack();
     this.currentLevel += 1;
     this.ball.setStartPosition();
