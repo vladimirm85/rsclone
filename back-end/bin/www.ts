@@ -2,6 +2,12 @@
  * Module dependencies.
  */
 
+import * as dotenv from 'dotenv';
+
+if(process.env.NODE_ENV !== 'production'){
+  dotenv.config();
+}
+
 import { app } from '../app';
 import debug0 from 'debug';
 import * as http from 'http';

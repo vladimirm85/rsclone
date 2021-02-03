@@ -4,7 +4,7 @@ import * as passport from 'passport';
 
 export const authRouter = Router();
 
-const baseUrl = process.env.FRONT_BASE_URL || 'http://localhost:3000';
+const baseUrl = process.env.FRONT_BASE_URL || 'http://localhost:3006';
 
 authRouter.post('/login', login);
 
