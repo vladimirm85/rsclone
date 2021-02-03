@@ -473,7 +473,12 @@ export default class Game implements GameInterface {
   getIsPause = (): boolean => this.isPause;
 
   setIsSound = (option: boolean): void => {
-    this.isSoundOn = option;
+    if (option) {
+      this.isSoundOn = option;
+      playSound(this.getIsSound(), 'gameSound');
+    } else {
+      stopSound('gameSound');
+    }
   };
 
   getIsSound = (): boolean => this.isSoundOn;
