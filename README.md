@@ -1,10 +1,12 @@
 # Ball-bouncer (Arkanoid) game
 [RS School RS Clone task](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
 
+[Link to PR](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
+
 ## Front-end part
 #### React/ TypeScript/ Redux/ Redux Thunk/ Material UI/ Ant-Design/ React-router-dom/ React-transition-group/ Canvas/ Eslint 
 #### [Link to deploy](https://ball-bouncer.herokuapp.com/game)
-(wait a bit until the server wakes up)
+(Wait a bit until the server wakes up. You don't need to configure anything, just enjoy the game)
 
 
 ### To start project locally you need:
