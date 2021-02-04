@@ -19,8 +19,7 @@
 6. you are in business!
 
 ## Back-end part
-#### NodeJS/ TypeScript/ Express/ MongoDB/ Mongoose/ Bcryptjs/ Joi/ JsonWebToken/ Passport.js/
-Swagger
+#### NodeJS/ TypeScript/ Express/ MongoDB/ Mongoose/ Bcryptjs/ Joi/ JsonWebToken/ Passport.js/ Swagger
 #### [Link to deploy](https://arkanoid-rsclone-be.herokuapp.com)
 #### [Swagger documentation for API](https://arkanoid-rsclone-be.herokuapp.com/api-docs)
 
