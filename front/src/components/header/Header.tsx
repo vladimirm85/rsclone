@@ -14,12 +14,13 @@ type MapStatePropsType = {
 
 type MapDispatchPropsType = {
   setModal: (isModalOpen: boolean) => void;
+  resetForm: () => void;
 };
 
 type PropsType = MapStatePropsType & MapDispatchPropsType;
 
 const Header: React.FC<PropsType> = (props): JSX.Element => {
-  const { isAuth, isModalOpen, setModal } = props;
+  const { isAuth, isModalOpen, setModal, resetForm } = props;
 
   return (
     <header>
@@ -66,7 +67,11 @@ const Header: React.FC<PropsType> = (props): JSX.Element => {
           </nav>
         </div>
       </div>
-      <AuthModal isModalOpen={isModalOpen} setModal={setModal} />
+      <AuthModal
+        isModalOpen={isModalOpen}
+        setModal={setModal}
+        resetForm={resetForm}
+      />
     </header>
   );
 };

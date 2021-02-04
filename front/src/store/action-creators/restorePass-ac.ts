@@ -7,6 +7,7 @@ import {
 } from '../actions/restorePassActions';
 import restorePassApi from '../../api/restorePass-api';
 import { RESET } from '../actions/settingsActions';
+import { RESET_FORM } from '../actions/authActions';
 
 export const restoreActions = {
   setRestoreEmail: (restoreEmail: string) =>
@@ -29,6 +30,10 @@ export const restoreActions = {
       type: SET_RESTORE_LOADING,
       payload: { isLoading },
     } as const),
+  resetForm: () =>
+    ({
+      type: RESET_FORM,
+    } as const),
   reset: () => ({ type: RESET } as const),
 };
 
@@ -41,7 +46,12 @@ export const restore = (email: string) => async (dispatch: Dispatch) => {
       dispatch(restoreActions.setRestoreEmail(''));
     }
   } catch (e) {
-    dispatch(restoreActions.setRestoreError(e.message));
+    const errorMessage = e.message;
+    if (errorMessage.includes(404)) {
+      dispatch(restoreActions.setRestoreError('Email not found.'));
+    } else {
+      dispatch(restoreActions.setRestoreError(e.message));
+    }
   }
   dispatch(restoreActions.setLoading(false));
 };

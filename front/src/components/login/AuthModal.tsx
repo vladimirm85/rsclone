@@ -12,16 +12,26 @@ import { useModalStyles } from './style';
 export type PropsType = {
   isModalOpen: boolean;
   setModal: (isModalOpen: boolean) => void;
+  resetForm: () => void;
 };
 
 const AuthModal: React.FC<PropsType> = ({
   isModalOpen,
   setModal,
+  resetForm,
 }): JSX.Element => {
   const classes = useModalStyles();
   const [modalType, setModalType] = useState<
     'login' | 'register' | 'restorePass'
   >('login');
+
+  const modalHandler = () => {
+    setModal(false);
+    setTimeout(() => {
+      setModalType('login');
+      resetForm();
+    }, 300);
+  };
 
   return (
     <div>
@@ -30,9 +40,7 @@ const AuthModal: React.FC<PropsType> = ({
         aria-describedby="transition-modal-description"
         className={classes.modal}
         open={isModalOpen}
-        onClose={() => {
-          setModal(false);
-        }}
+        onClose={modalHandler}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{

@@ -6,6 +6,7 @@ import {
 } from '../actions/restorePassActions';
 import { restoreActions } from '../action-creators/restorePass-ac';
 import { RESET } from '../actions/settingsActions';
+import { RESET_FORM } from '../actions/authActions';
 
 const initialState = {
   restoreEmail: '',
@@ -32,6 +33,12 @@ const restoreReducer = (
       return {
         ...state,
         ...action.payload,
+      };
+    case RESET_FORM:
+      return {
+        ...state,
+        restoreEmail: '',
+        restoreError: '',
       };
     case RESET:
       return initialState;
