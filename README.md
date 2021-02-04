@@ -1,7 +1,7 @@
 # Ball-bouncer (Arkanoid) game
 [RS School RS Clone task](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
 
-[Link to PR](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
+[Link to PR](https://github.com/vladimirm85/rsclone/pull/13)
 
 ## Front-end part
 #### React/ TypeScript/ Redux/ Redux Thunk/ Material UI/ Ant-Design/ React-router-dom/ React-transition-group/ Canvas/ Eslint 
