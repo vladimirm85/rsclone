@@ -100,3 +100,13 @@ p > ul {
 p > ol {
   list-style: decimal;
 }
+
+@media (max-width: 599px) {
+  .order-top {
+    order: 1;
+  }
+
+  .order-bot {
+    order: 2;
+  }
+}

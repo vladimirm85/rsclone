@@ -31,16 +31,15 @@ const About: React.FC = (): JSX.Element => {
               container
               spacing={3}
               alignItems="center"
-              wrap="nowrap"
             >
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Avatar
                   alt="Remy Sharp"
                   src={vladimir}
                   className={classes.large}
                 />
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={12} sm={8}>
                 <Typography paragraph variant="h6" component="p">
                   Мажирин Владимир
                 </Typography>
@@ -68,7 +67,7 @@ const About: React.FC = (): JSX.Element => {
               spacing={3}
               alignItems="center"
             >
-              <Grid item xs={8}>
+              <Grid className="order-bot" item xs={12} sm={8}>
                 <Typography paragraph variant="h6" component="p">
                   Кулев Александр
                 </Typography>
@@ -96,7 +95,7 @@ const About: React.FC = (): JSX.Element => {
                   идеальна я считаю её реализацию довольно успешной.
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid className="order-top" item xs={12} sm={4}>
                 <Avatar
                   alt="Remy Sharp"
                   src={sasha}
@@ -110,14 +109,14 @@ const About: React.FC = (): JSX.Element => {
               spacing={3}
               alignItems="center"
             >
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Avatar
                   alt="Remy Sharp"
                   src={artem}
                   className={classes.large}
                 />
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={12} sm={8}>
                 <Typography paragraph variant="h6" component="p">
                   Цыбулько Артем
                 </Typography>

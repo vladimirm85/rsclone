@@ -13,6 +13,7 @@ import {
   SET_TOTAL_USER_SCORE,
   SET_AVATAR_ERROR,
   SET_SHOW_RESEND_BUTTON,
+  RESET_FORM,
 } from '../actions/authActions';
 import authApi from '../../api/auth-api';
 import { del, set } from '../../helpers/storage';
@@ -84,6 +85,10 @@ export const authActions = {
     ({
       type: SET_SHOW_RESEND_BUTTON,
       payload: { isResendButtonShow },
+    } as const),
+  resetForm: () =>
+    ({
+      type: RESET_FORM,
     } as const),
   reset: () => ({ type: RESET } as const),
 };

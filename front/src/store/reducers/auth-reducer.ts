@@ -1,17 +1,18 @@
 import {
-  SET_LOGIN_PASSWORD,
-  SET_LOGIN_EMAIL,
+  RESET_FORM,
   SET_AUTH_STATUS,
   SET_AUTH_USER_EMAIL,
+  SET_AVATAR_ERROR,
+  SET_INITIALIZE_STATUS,
+  SET_LOGIN_EMAIL,
   SET_LOGIN_ERROR,
   SET_LOGIN_LOADING,
+  SET_LOGIN_PASSWORD,
   SET_MODAL,
-  SET_INITIALIZE_STATUS,
   SET_NOTIFY_MODAL,
-  SET_USER_AVATAR,
-  SET_TOTAL_USER_SCORE,
-  SET_AVATAR_ERROR,
   SET_SHOW_RESEND_BUTTON,
+  SET_TOTAL_USER_SCORE,
+  SET_USER_AVATAR,
 } from '../actions/authActions';
 import { authActions } from '../action-creators/auth-ac';
 import { RESET } from '../actions/settingsActions';
@@ -59,6 +60,13 @@ const authReducer = (
       return {
         ...state,
         ...action.payload,
+      };
+    case RESET_FORM:
+      return {
+        ...state,
+        email: '',
+        password: '',
+        loginError: '',
       };
     case RESET:
       return initialState;

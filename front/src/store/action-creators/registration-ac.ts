@@ -9,6 +9,7 @@ import {
 } from '../actions/registrationActions';
 import regApi from '../../api/reg-api';
 import { RESET } from '../actions/settingsActions';
+import { RESET_FORM } from '../actions/authActions';
 
 export const registerActions = {
   setRegEmail: (regEmail: string) =>
@@ -40,6 +41,10 @@ export const registerActions = {
     ({
       type: SET_REG_LOADING,
       payload: { isLoading },
+    } as const),
+  resetForm: () =>
+    ({
+      type: RESET_FORM,
     } as const),
   reset: () => ({ type: RESET } as const),
 };

@@ -8,6 +8,7 @@ import {
 } from '../actions/registrationActions';
 import { registerActions } from '../action-creators/registration-ac';
 import { RESET } from '../actions/settingsActions';
+import { RESET_FORM } from '../actions/authActions';
 
 const initialState = {
   regEmail: '',
@@ -38,6 +39,14 @@ const regReducer = (
       return {
         ...state,
         ...action.payload,
+      };
+    case RESET_FORM:
+      return {
+        ...state,
+        regEmail: '',
+        regPassword: '',
+        regRepeatPassword: '',
+        regError: '',
       };
     case RESET:
       return initialState;
